@@ -32,23 +32,19 @@ namespace IGLRhinoCommon
         }
 
 
-        public static List<List<int>> getAdjacencyLst(Rhino.Geometry.Mesh rhino_mesh)
+        public static List<List<int>> getAdjacencyLst(ref Rhino.Geometry.Mesh rhinoMesh)
         {
             // initialize the pointer and pass data
-            int nV = rhino_mesh.Vertices.Count;
-            int nF = rhino_mesh.Faces.Count;
-
-            //IntPtr[] V = new IntPtr[nV];
-            //IntPtr[] F = new IntPtr[nF];
+            int nF = rhinoMesh.Faces.Count;
 
             // copy data into the IntPtr
             //float[] V = rhino_mesh.Vertices.ToFloatArray();
-            int[] F = rhino_mesh.Faces.ToIntArray(true);
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
             IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
             Marshal.Copy(F, 0, meshF, F.Length);
 
             // assume each vert has most 10 neighbours
-            int numEle = 3 * nV * 20;
+            int numEle = 3 * rhinoMesh.Vertices.Count * 20;
             IntPtr adjLstFromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * numEle);
 
             int sz;
@@ -57,6 +53,10 @@ namespace IGLRhinoCommon
             int[] processedAdjLst = new int[numEle];
             Marshal.Copy(adjLstFromCpp, processedAdjLst, 0, numEle);
             List<List<int>> adjLst = new List<List<int>>();
+
+            // free memory
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(adjLstFromCpp);
 
             int cnt = 0;
             while (cnt < sz)
