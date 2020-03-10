@@ -31,3 +31,8 @@ double Add(double a, double b);
 
 RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
+
+RH_C_FUNCTION
+void extractIsoLinePts(double* V, int nV, int* F, int nF,
+  int* con_idx, double* con_value, int numCon,
+  int divN, int* isoLnPts, int* numPtsPerLst);

@@ -7,7 +7,7 @@ using namespace std;
 
 
 // helper function
-void convertArrayToEigenXd(float* inputArray, int sz, Eigen::MatrixXd& outputEigen)
+void convertArrayToEigenXd(double* inputArray, int sz, Eigen::MatrixXd& outputEigen)
 {
   int cnt = 0;
   outputEigen.resize(sz, 3);
@@ -56,3 +56,16 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
   // the total # of neighbouring vert + the # of vert (as indicator of each vector's size)
   sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0, [&](int res, vector<int>& vec) {return res + vec.size(); });
 }
+
+RH_C_FUNCTION
+void extractIsoLinePts(double* V, int nV, int* F, int nF, int* con_idx, double* con_value, int numCon, int divN, int* isoLnPts, int* numPtsPerLst)
+{
+  // the size of 'numPtsPerLst'  =  divN; "numPtsPerLst" contains the # of pts of "isoLnPts' in each isoline
+  Eigen::MatrixXd eigenV;
+  Eigen::MatrixXi eigenF;
+  convertArrayToEigenXd(V, nV, eigenV);
+  convertArrayToEigenXi(F, nF, eigenF);
+
+
+}
+

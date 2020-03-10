@@ -58,7 +58,8 @@
   <ItemGroup>
     <Compile Include="iglGH_simpleAdd.cs" />
     <Compile Include="igl_GrassHopperInfo.cs" />
-    <Compile Include="iglGH_adjacentList.cs" />
+    <Compile Include="iglGH_meshAdjacentList.cs" />
+    <Compile Include="iglGH_meshIsoLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
