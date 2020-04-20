@@ -33,6 +33,10 @@ RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
-void extractIsoLinePts(double* V, int nV, int* F, int nF,
+void extractIsoLinePts(float* V, int nV, int* F, int nF,
   int* con_idx, double* con_value, int numCon,
-  int divN, int* isoLnPts, int* numPtsPerLst);
+  int divN, float* isoLnPts, int* numPtsPerLst);
+
+RH_C_FUNCTION
+void computeLaplacian(float* V, int nV, int* F, int nF,
+  int* con_idx, double* con_value, int numCon, float* laplacianValue);

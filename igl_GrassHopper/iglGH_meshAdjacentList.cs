@@ -14,7 +14,7 @@ namespace igl_GrassHopper
         public IGL_adjacentList()
           : base("IGL_AdjacencyList", "iglAdjList",
               "compute the adjacency list of the given mesh.",
-              "IGL", "mesh processing")
+              "IGL", "mesh")
         {
         }
 
@@ -46,7 +46,7 @@ namespace igl_GrassHopper
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Util.getAdjacencyLst(ref mesh);
+            var res = IGLRhinoCommon.Utils.getAdjacencyLst(ref mesh);
 
             // construct the index & pt tree from the adjacency list
             Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();

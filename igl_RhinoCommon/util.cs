@@ -79,7 +79,7 @@ namespace IGLRhinoCommon
             Marshal.Copy(con_val.ToArray(), 0, conVal, con_val.Count);
 
             // since we don't know the # of pts in a isoLine, let's assme # = V at most
-            int assumedDataNum = Marshal.SizeOf(typeof(double)) * 3 * nV;
+            int assumedDataNum = Marshal.SizeOf(typeof(float)) * 3 * nV;
             IntPtr isoLinePts = Marshal.AllocHGlobal(assumedDataNum);
             IntPtr numPtsEachLst = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * divN);
 
@@ -92,7 +92,7 @@ namespace IGLRhinoCommon
 
             int totalNumPts = 0;
             for (int i = 0; i < divN; i++) totalNumPts += processedNumPtsLst[i];
-            double[] processedIsoLine = new double[Marshal.SizeOf(typeof(double)) * 3 * nV];
+            float[] processedIsoLine = new float[Marshal.SizeOf(typeof(float)) * 3 * nV * divN];
             Marshal.Copy(isoLinePts, processedIsoLine, 0, totalNumPts * 3);
 
             // free memory
@@ -122,5 +122,49 @@ namespace IGLRhinoCommon
 
             return isolst;
         }
+
+        public static List<float> getLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<double> con_val)
+        {
+            float[] V = rhinoMesh.Vertices.ToFloatArray();
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+
+            // data transformation and memory allocation
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            IntPtr conIdx = Marshal.AllocHGlobal(Marshal.SizeOf(con_idx[0]) * con_idx.Count);
+            IntPtr conVal = Marshal.AllocHGlobal(Marshal.SizeOf(con_val[0]) * con_val.Count);
+            Marshal.Copy(V, 0, meshV, V.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+            Marshal.Copy(con_idx.ToArray(), 0, conIdx, con_idx.Count);
+            Marshal.Copy(con_val.ToArray(), 0, conVal, con_val.Count);
+
+            // since we don't know the # of pts in a isoLine, let's assme # = V at most
+            int assumedDataNum = Marshal.SizeOf(typeof(float)) * 3 * nV;
+            IntPtr laplacianValue = Marshal.AllocHGlobal(assumedDataNum / 3);
+
+            //CppIGL
+            CppIGL.computeLaplacian(meshV, nV, meshF, nF, conIdx, conVal, con_idx.Count, laplacianValue);
+
+            // process returned data
+            float[] processedScalarValue = new float[nV];
+            Marshal.Copy(laplacianValue, processedScalarValue, 0, nV);
+
+            List<float> laplacianV = new List<float>();
+            for (int i = 0; i < nV; i++) {
+                laplacianV.Add(processedScalarValue[i]);
+            }
+
+            // free memory
+            Marshal.FreeHGlobal(meshV);
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(conIdx);
+            Marshal.FreeHGlobal(conVal);
+            Marshal.FreeHGlobal(laplacianValue);
+
+            return laplacianV;
+        }
+
     }
 }

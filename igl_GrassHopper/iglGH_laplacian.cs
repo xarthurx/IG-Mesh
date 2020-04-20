@@ -6,17 +6,18 @@ using Rhino.Geometry;
 
 namespace igl_GrassHopper
 {
-    public class iglGH_meshIsoLine : GH_Component
+    public class IGL_laplacian : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public iglGH_meshIsoLine()
-          : base("mesh isoline", "isoline",
-              "extract the isolines of a given mesh",
+        public IGL_laplacian()
+          : base("IGL_Laplacian", "laplacian",
+              "Solve laplacian equation under given boundary condition.",
               "IGL", "mesh")
         {
         }
+        
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -26,7 +27,6 @@ namespace igl_GrassHopper
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Constraint Indices", "I", "the indices to be constrained", GH_ParamAccess.list);
             pManager.AddNumberParameter("Constraint Values", "V", "the values to constrain with", GH_ParamAccess.list);
-            pManager.AddIntegerParameter("Number of Isolines", "N", "the number of isolines", GH_ParamAccess.item, 3);
         }
 
         /// <summary>
@@ -34,8 +34,8 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddCurveParameter("Iso Curves", "C", "the extracted isolines from input mesh", GH_ParamAccess.list);
-            pManager.AddPointParameter("Isoline Points", "P", "extracted points on isolines", GH_ParamAccess.tree);
+            //pManager.AddMeshParameter("Mesh", "M", "output mesh with color info.", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Scalar Value", "D", "scalar value for all vertices.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -47,7 +47,6 @@ namespace igl_GrassHopper
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             List<int> con_idx = new List<int>();
             List<double> con_val = new List<double>();
-            int divN = 1;
 
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
@@ -56,37 +55,13 @@ namespace igl_GrassHopper
             if (!DA.GetDataList(2, con_val)) { return; }
             if (!(con_idx.Count > 0) || !(con_val.Count > 0)) { return; }
             if (con_idx.Count != con_val.Count) { return; }
-            // TODO: add warning message
-            if (!DA.GetData(3, ref divN)) { return; }
+
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getIsolinePts(ref mesh, ref con_idx, ref con_val, divN);
+            var res = IGLRhinoCommon.Utils.getLapacianScalar(ref mesh, ref con_idx, ref con_val);
+            
 
-            // construct the index & pt tree from the adjacency list
-            Grasshopper.DataTree<Point3d> ptTree = new Grasshopper.DataTree<Point3d>();
-            Grasshopper.DataTree<Curve> crvTree = new Grasshopper.DataTree<Curve>();
-            for (int i = 0; i < res.Count; i++)
-            {
-                var path = new Grasshopper.Kernel.Data.GH_Path(i);
-                ptTree.AddRange(res[i], path);
-
-                // if has move than 2 pts, interpolate curves
-                if (res[i].Count > 3)
-                {
-                    var crv = Curve.CreateInterpolatedCurve(res[i], 3);
-                    crvTree.Add(crv, path);
-                }
-                else if (res[i].Count > 2)
-                {
-                    var crv = Curve.CreateInterpolatedCurve(res[i], 2);
-                    crvTree.Add(crv, path);
-                }
-
-            }
-
-            // assign to the output
-            DA.SetDataTree(0, crvTree);
-            DA.SetDataTree(1, ptTree);
+            DA.SetDataList(0, res);
         }
 
         /// <summary>
@@ -98,7 +73,7 @@ namespace igl_GrassHopper
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.meshIsoline;
+                return null;
             }
         }
 
@@ -107,7 +82,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("e0086ab2-5d49-42b6-991c-92b2cd95faf3"); }
+            get { return new Guid("9a5af6ef-c8fd-4e0f-9e70-84b709f53be7"); }
         }
     }
 }

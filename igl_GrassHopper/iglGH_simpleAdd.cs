@@ -93,7 +93,7 @@ namespace ghIGL
             // We're set to create the spiral now. To keep the size of the SolveInstance() method small, 
             // The actual functionality will be in a different method:
             //Curve spiral = CreateSpiral(plane, radius0, radius1, turns);
-            var res = IGLRhinoCommon.Util.Sum(x, y);
+            var res = IGLRhinoCommon.Utils.Sum(x, y);
 
             // Finally assign the spiral to the output parameter.
             DA.SetData(0, res);

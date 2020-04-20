@@ -6,7 +6,8 @@ namespace IGLRhinoCommon
 {
     internal static class Import
     {
-        public const string lib = @"C:\Users\xarthur\source\repos\gh-igl\x64\Debug\igl_cppPort.dll";
+        //public const string lib = @"C:\Users\xarthur\source\repos\gh-igl\x64\Debug\igl_cppPort.dll";
+        public const string lib = @"C:\Users\xarthur\source\repos\gh-igl\x64\Release\igl_cppPort.dll";
     }
 
     internal static class CppIGL
@@ -26,5 +27,9 @@ namespace IGLRhinoCommon
         [DllImport(Import.lib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void extractIsoLinePts(IntPtr V, int nV, IntPtr F, int nF,
             IntPtr con_idx, IntPtr con_val, int numCon, int divN, IntPtr isoLnPts, IntPtr numPtEachLst);
+
+        [DllImport(Import.lib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void computeLaplacian(IntPtr V, int nV, IntPtr F, int nF,
+            IntPtr con_idx, IntPtr con_val, int numCon, IntPtr laplacianValue);
     }
 }

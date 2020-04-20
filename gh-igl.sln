@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igl-RhinoCommon", "igl_RhinoCommon\igl-RhinoCommon.csproj", "{FD9F533F-D593-4911-8567-DA682C80E658}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0155EDC-0CF5-4994-A073-BE696DB6DF54} = {B0155EDC-0CF5-4994-A073-BE696DB6DF54}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "igl_cppPort", "igl_cppPort\igl_cppPort.vcxproj", "{B0155EDC-0CF5-4994-A073-BE696DB6DF54}"
 EndProject
