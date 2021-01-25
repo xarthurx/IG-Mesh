@@ -62,7 +62,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Util.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="cppNativeMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

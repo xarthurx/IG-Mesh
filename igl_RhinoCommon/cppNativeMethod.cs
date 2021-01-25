@@ -25,6 +25,9 @@ namespace IGLRhinoCommon
         internal static extern void igl_adjacency_list(IntPtr F, int nF, IntPtr adjLstFromCpp, out int sz);
 
         [DllImport(Import.lib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_boundary_loop(IntPtr F, int nF, IntPtr bndLoopFromCpp, out int sz);
+
+        [DllImport(Import.lib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void extractIsoLinePts(IntPtr V, int nV, IntPtr F, int nF,
             IntPtr con_idx, IntPtr con_val, int numCon, int divN, IntPtr isoLnPts, IntPtr numPtEachLst);
 

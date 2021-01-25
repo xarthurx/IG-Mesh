@@ -1,3 +1,4 @@
+
 #include <numeric>
 
 #include "igl_functions.h"
@@ -5,10 +6,10 @@
 #include "igl/parula.h"
 
 #include "geolib.h"
+#include "igl/boundary_loop.h"
 
 using namespace std;
 using namespace Eigen;
-
 
 // helper function
 void convertArrayToEigenXd(float* inputArray, int sz, Eigen::MatrixXd& outputEigen)
@@ -36,13 +37,13 @@ void convertArrayToEigenXi(int* inputArray, int sz, Eigen::MatrixXi& outputEigen
   }
 }
 
-RH_C_FUNCTION
+//RH_C_FUNCTION
 double Add(double a, double b) {
   double c = a + b;
   return c;
 }
 
-RH_C_FUNCTION
+//RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
   Eigen::MatrixXi eigenF;
   convertArrayToEigenXi(F, nF, eigenF);
@@ -64,6 +65,29 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
   sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0, [&](int res, vector<int>& vec) {return res + vec.size(); });
 }
 
+void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
+  Eigen::MatrixXi eigenF;
+  convertArrayToEigenXi(F, nF, eigenF);
+
+  vector<vector<int>> lst;
+  igl::boundary_loop(eigenF, lst);
+
+  vector<int> transferLst(0);
+  for_each(lst.begin(), lst.end(), [&](vector<int>& vec) {
+    // size as indicator
+    transferLst.push_back(vec.size());
+    // copy all values
+    std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
+    });
+
+  std::copy(transferLst.begin(), transferLst.end(), adjLst);
+
+  // the total # of boundary loops + the # of vert (as indicator of each vector's size)
+  sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0, [&](int res, vector<int>& vec) {return res + vec.size(); });
+}
+
+//RH_C_FUNCTION
+void extractIsoLinePts(double* V, int nV, int* F, int nF, int* con_idx, double* con_value, int numCon, int divN, int* isoLnPts, int* numPtsPerLst)
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF,
   int* con_idx, double* con_value, int numCon,

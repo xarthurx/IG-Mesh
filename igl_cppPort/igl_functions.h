@@ -26,13 +26,16 @@
 void convertArrayToEigenXd(float* inputArray, int sz, Eigen::MatrixXd& outputEigen);
 void convertArrayToEigenXi(int* inputArray, int sz, Eigen::MatrixXi& outputEigen);
 
-RH_C_FUNCTION
-double Add(double a, double b);
+extern "C" __declspec(dllimport) double Add(double a, double b);
 
 RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
+void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
+
+RH_C_FUNCTION
+void extractIsoLinePts(double* V, int nV, int* F, int nF,
 void extractIsoLinePts(float* V, int nV, int* F, int nF,
   int* con_idx, double* con_value, int numCon,
   int divN, float* isoLnPts, int* numPtsPerLst);

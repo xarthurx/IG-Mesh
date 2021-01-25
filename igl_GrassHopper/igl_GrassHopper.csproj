@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="iglGH_meshBoundLoop.cs" />
     <Compile Include="iglGH_simpleAdd.cs" />
     <Compile Include="igl_GrassHopperInfo.cs" />
     <Compile Include="iglGH_meshAdjacentList.cs" />
