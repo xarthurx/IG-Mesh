@@ -35,7 +35,6 @@ RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
-void extractIsoLinePts(double* V, int nV, int* F, int nF,
 void extractIsoLinePts(float* V, int nV, int* F, int nF,
   int* con_idx, double* con_value, int numCon,
   int divN, float* isoLnPts, int* numPtsPerLst);
