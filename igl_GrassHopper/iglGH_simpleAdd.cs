@@ -19,7 +19,7 @@ namespace ghIGL
         public iglGH_simpleAdd()
           : base("Sum", "addSum",
               "example function for using cpp code in c#",
-              "IGL", "test")
+              "IGL", "testCase")
         {
         }
 

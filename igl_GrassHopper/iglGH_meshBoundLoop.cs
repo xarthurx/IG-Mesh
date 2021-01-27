@@ -14,7 +14,7 @@ namespace igl_GrassHopper
         public IGL_boundLoop()
           : base("IGL_BoundaryLoop", "iglBoundLoop",
               "compute the boundary loop of the given mesh.",
-              "IGL", "mesh processing")
+              "IGL", "mesh")
         {
         }
 
