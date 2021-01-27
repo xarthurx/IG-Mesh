@@ -1,4 +1,4 @@
-# GP_GH
+# igl-grasshopper
 
 ## A transported geometry processing library for Grasshopper (Rhino).
 
