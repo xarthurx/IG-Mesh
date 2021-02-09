@@ -89,7 +89,7 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
 //RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF,
   int* con_idx, double* con_value, int numCon,
-  int divN, float* isoLnPts, int* numPtsPerLst)
+  int divN, double* isoLnPts, int* numPtsPerLst)
 {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of "isoLnPts' in each isoline
 
