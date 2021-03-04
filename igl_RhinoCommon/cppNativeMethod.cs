@@ -7,7 +7,7 @@ namespace IGLRhinoCommon
     internal static class Import
     {
         //public const string lib = @"C:\Users\xarthur\source\repos\gh-igl\x64\Debug\igl_cppPort.dll";
-        public const string lib = @"C:\Users\xarthur\source\repos\gh-igl\x64\Release\igl_cppPort.dll";
+        public const string lib = @"C:\Users\xarthur\source\repos\igl-grasshopper\x64\Release\igl_cppPort.dll";
     }
 
     internal static class CppIGL
