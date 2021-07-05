@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: NuGet/setup-nuget@1.0.5
+    - uses: nuget/setup-nuget@v1
     
     - name: Install dependencies
       run: nuget install Grasshopper -OutputDirectory ./lib -source https://api.nuget.org/v3/index.json
