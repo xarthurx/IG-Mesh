@@ -29,5 +29,5 @@ jobs:
 
  
     - name: Build
-      run: msbuild /p:IncludePath="./external/eigen;./external/libigl/include"
+      run: msbuild /p:IncludePath="external/eigen;external/libigl/include"
 
