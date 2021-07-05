@@ -19,9 +19,12 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
     
+    - name: Download LibIGL lib
+      run:  git clone https://github.com/libigl/libigl.git ./libigl
+      
     - name: Install dependencies
       run: nuget install Grasshopper -OutputDirectory ./lib -source https://api.nuget.org/v3/index.json
       
     - name: Build
-      run: msbuild
+      run: msbuild /p:IncludePath=./libigl/include
 
