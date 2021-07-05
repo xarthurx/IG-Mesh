@@ -26,7 +26,7 @@ jobs:
       run: |
         git clone https://github.com/libigl/libigl.git ./external/libigl
         git clone https://gitlab.com/libeigen/eigen.git ./external/eigen
-        set INCLUDE=./external/eigen;./external/libigl/include
+        set INCLUDE="./external/eigen;./external/libigl/include"
         echo %INCLUDE% 
  
     - name: Build
