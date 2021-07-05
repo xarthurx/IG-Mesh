@@ -12,10 +12,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: nuget/setup-nuget@v1
+    
+    - name: Add NuGet to PATH
+      uses: nuget/setup-nuget@v1
+    
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
     
     - name: Install dependencies
       run: nuget install Grasshopper -OutputDirectory ./lib -source https://api.nuget.org/v3/index.json
+      
     - name: Build
       run: msbuild
 
