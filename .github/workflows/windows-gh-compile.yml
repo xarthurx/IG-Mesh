@@ -28,6 +28,11 @@ jobs:
         git clone https://gitlab.com/libeigen/eigen.git ./external/eigen
         set ILink_LibraryPath="./external/libigl/include;./external/eigen"
  
+    - name: Vcpkg
+      run: |
+        vcpkg install ligigl,eigen3
+        vcpkg integrate install
+          
     - name: Build
       run: msbuild
 #       run: msbuild /p:IncludePath="./external/libigl/include"
