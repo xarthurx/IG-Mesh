@@ -1,0 +1,21 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: NuGet/setup-nuget@1.0.5
+    
+    - name: Install dependencies
+      run: nuget install Grasshopper -OutputDirectory ./lib -source https://api.nuget.org/v3/index.json
+    - name: Build
+      run: msbuild
+
