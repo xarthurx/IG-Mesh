@@ -25,12 +25,11 @@ jobs:
     - name: Download dependency lib. LibIGL, Eigen
       run: |
         git clone https://github.com/libigl/libigl.git ./external/libigl
-        set INCLUDE=./external/libigl/include;%INCLUDE%
         git clone https://gitlab.com/libeigen/eigen.git ./external/eigen
-        set INCLUDE=./external/eigen;%INCLUDE%
+        set INCLUDE=./external/eigen;./external/libigl/include
         echo %INCLUDE% 
  
     - name: Build
       #run: msbuild /p:IncludePath=./external/libigl/include;./external/eigen
-      run: msbuild
+      run: msbuild /p:IncludePath=%INCLUDE%
 
