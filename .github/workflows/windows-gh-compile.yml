@@ -13,6 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+      
     - name: Add NuGet to PATH
       uses: nuget/setup-nuget@v1
   
@@ -27,9 +30,6 @@ jobs:
         set INCLUDE=./external/eigen;%INCLUDE%
         echo %INCLUDE% 
  
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-        
     - name: Build
       #run: msbuild /p:IncludePath=./external/libigl/include;./external/eigen
       run: msbuild
