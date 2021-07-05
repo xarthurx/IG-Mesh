@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,9 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>igl_GrassHopper</RootNamespace>
     <AssemblyName>igl_GrassHopper</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -32,6 +35,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.7.21160.5001\lib\net48\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="GH_IO, Version=7.7.21160.5000, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grasshopper.7.7.21160.5001\lib\net48\GH_IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Grasshopper, Version=7.7.21160.5000, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grasshopper.7.7.21160.5001\lib\net48\Grasshopper.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Rhino, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b9a188c8922137c6, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.7.21160.5001\lib\net48\Newtonsoft.Json.Rhino.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.UI, Version=7.7.21160.5000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.7.21160.5001\lib\net48\Rhino.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="RhinoCommon, Version=7.7.21160.5000, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.7.7.21160.5001\lib\net48\RhinoCommon.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -39,21 +60,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="RhinoCommon">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino 6\System\rhinocommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Grasshopper">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino 6\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GH_IO">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Rhino 6\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="iglGH_meshBoundLoop.cs" />
@@ -84,6 +90,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -104,4 +113,13 @@
     </StartArguments>
     <StartAction>Program</StartAction>
   </PropertyGroup>
+  <Import Project="..\packages\RhinoCommon.7.7.21160.5001\build\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.7.7.21160.5001\build\RhinoCommon.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\RhinoCommon.7.7.21160.5001\build\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.7.7.21160.5001\build\RhinoCommon.targets'))" />
+    <Error Condition="!Exists('..\packages\Grasshopper.7.7.21160.5001\build\Grasshopper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grasshopper.7.7.21160.5001\build\Grasshopper.targets'))" />
+  </Target>
+  <Import Project="..\packages\Grasshopper.7.7.21160.5001\build\Grasshopper.targets" Condition="Exists('..\packages\Grasshopper.7.7.21160.5001\build\Grasshopper.targets')" />
 </Project>

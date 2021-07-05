@@ -1,23 +1,22 @@
 #include "geolib.h"
 
 #include <igl/boundary_facets.h>
-#include <igl/unique.h>
-#include <igl/setdiff.h>
 #include <igl/cotmatrix.h>
-#include <igl/slice_into.h>
 #include <igl/edges.h>
-
+#include <igl/setdiff.h>
+#include <igl/slice_into.h>
+#include <igl/unique.h>
 
 void GeoLib::solveScalarField(const MatrixXd& V, const MatrixXi& F,
-  const VectorXi& con_idx, const VectorXd& con_value, VectorXd& meshScalar)
-{
+                              const VectorXi& con_idx,
+                              const VectorXd& con_value, VectorXd& meshScalar) {
   // boundary edges
   Eigen::MatrixXi E;
   igl::boundary_facets(F, E);
 
   // find boundiary vertices
   Eigen::VectorXi b, IA, IC;
-  igl::unique(E, b, IA, IC); // all boundary in b
+  igl::unique(E, b, IA, IC);  // all boundary in b
 
   // List of all vertex indices
   Eigen::VectorXi all, in;
@@ -34,8 +33,8 @@ void GeoLib::solveScalarField(const MatrixXd& V, const MatrixXi& F,
   // slice into meshScalar to assign values
   igl::slice_into(con_value, con_idx, meshScalar);
 
-  //Dirichlet boundary condition from pre-assigned value
-  Eigen::VectorXd bc; // given boundary value 
+  // Dirichlet boundary condition from pre-assigned value
+  Eigen::VectorXd bc;  // given boundary value
   igl::slice(meshScalar, con_idx, bc);
 
   ////Solve PDE
@@ -45,10 +44,9 @@ void GeoLib::solveScalarField(const MatrixXd& V, const MatrixXi& F,
   igl::slice_into(Z_in, in, meshScalar);
 }
 
-
 void GeoLib::computeIsoPts(const MatrixXd& V, const MatrixXi& F,
-  const VectorXd& meshScalar, int divN, map<double, MatrixXd>& isoLinePts, bool sorted)
-{
+                           const VectorXd& meshScalar, int divN,
+                           map<double, MatrixXd>& isoLinePts, bool sorted) {
   double startBnd = 0.0001;
   double endBnd = 0.9999;
 
@@ -61,12 +59,11 @@ void GeoLib::computeIsoPts(const MatrixXd& V, const MatrixXi& F,
 
   // construct set for querying
   std::set<int> boundLoop;
-  for (size_t i = 0; i < B.size(); i++)
-    boundLoop.insert(B[i]);
+  for (size_t i = 0; i < B.size(); i++) boundLoop.insert(B[i]);
 
-
-  //// find & interpolate 
-  VectorXd isoValue = Eigen::VectorXd::LinSpaced(divN, startBnd, endBnd); // interpolate value for each vertical bars
+  //// find & interpolate
+  VectorXd isoValue = Eigen::VectorXd::LinSpaced(
+      divN, startBnd, endBnd);  // interpolate value for each vertical bars
 
   map<double, vector<Vector3d>> isoL;
   for (size_t i = 0; i < isoValue.size(); i++) {
@@ -90,12 +87,14 @@ void GeoLib::computeIsoPts(const MatrixXd& V, const MatrixXi& F,
 
     for (auto& [key, val] : isoL) {
       if (key >= x0 && key <= x1) {
-        //auto tmpVec = (V.row(idx1) - V.row(idx0)).cast<double>();
-        auto tmpVec = V.row(idx0) + ((key - x0) / (x1 - x0)) * (V.row(idx1) - V.row(idx0));
+        // auto tmpVec = (V.row(idx1) - V.row(idx0)).cast<double>();
+        auto tmpVec = V.row(idx0) +
+                      ((key - x0) / (x1 - x0)) * (V.row(idx1) - V.row(idx0));
         val.emplace_back(tmpVec[0], tmpVec[1], tmpVec[2]);
 
         // record if on boundary
-        if (boundLoop.find(idx0) != boundLoop.end() && boundLoop.find(idx1) != boundLoop.end())
+        if (boundLoop.find(idx0) != boundLoop.end() &&
+            boundLoop.find(idx1) != boundLoop.end())
           startPtId[key] = val.size() - 1;
       }
 
@@ -104,15 +103,16 @@ void GeoLib::computeIsoPts(const MatrixXd& V, const MatrixXi& F,
       for_each(val.begin(), val.end(), [&](auto& pts) {
         int id = &pts - &val[0];
         val_mat.row(id) = RowVector3d(pts);
-        });
+      });
 
       isoLinePts[key] = val_mat;
     }
   }
 
   if (sorted) {
-    //helper func to find the closest pt in the set
-    auto closestPt = [&](const MatrixXd& pts, const set<int>& existedIdx, RowVector3d& query_pt) ->int {
+    // helper func to find the closest pt in the set
+    auto closestPt = [&](const MatrixXd& pts, const set<int>& existedIdx,
+                         RowVector3d& query_pt) -> int {
       double minD = std::numeric_limits<double>::max();
 
       int nextId = -1;
@@ -134,7 +134,7 @@ void GeoLib::computeIsoPts(const MatrixXd& V, const MatrixXi& F,
       set<int> addedPtId;
 
       // prepare data
-      vector<RowVector3d> sortedPolyline{ val.row(startPtId[key]) };
+      vector<RowVector3d> sortedPolyline{val.row(startPtId[key])};
       addedPtId.insert(startPtId[key]);
 
       while (addedPtId.size() != val.rows()) {
@@ -154,17 +154,18 @@ void GeoLib::computeIsoPts(const MatrixXd& V, const MatrixXi& F,
     for (auto it = isoLinePts.begin(); cnt < divN - 1; it++) {
       auto next = std::next(it);
 
-      //spdlog::info("original dist: {}", (it->second.row(0) - next->second.row(0)).norm());
-      //spdlog::info("new dist: {}", (it->second.row(0) - next->second.row(next->second.rows() - 1)).norm());
+      // spdlog::info("original dist: {}", (it->second.row(0) -
+      // next->second.row(0)).norm()); spdlog::info("new dist: {}",
+      // (it->second.row(0) - next->second.row(next->second.rows() -
+      // 1)).norm());
 
       if ((it->second.row(0) - next->second.row(0)).norm() >
-        (it->second.row(0) - next->second.row(next->second.rows() - 1)).norm()) {
+          (it->second.row(0) - next->second.row(next->second.rows() - 1))
+              .norm()) {
         next->second.colwise().reverseInPlace();
       }
 
       cnt++;
     };
   }
-
 }
-
