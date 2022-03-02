@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igl-RhinoCommon", "igl_Rhin
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "igl_cppPort", "igl_cppPort\igl_cppPort.vcxproj", "{B0155EDC-0CF5-4994-A073-BE696DB6DF54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igl_GrassHopper", "igl_GrassHopper\igl_GrassHopper.csproj", "{210A633A-A5BB-47F8-A464-821D8525F7FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igl_Grasshopper", "igl_GrassHopper\igl_Grasshopper.csproj", "{210A633A-A5BB-47F8-A464-821D8525F7FD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B0155EDC-0CF5-4994-A073-BE696DB6DF54} = {B0155EDC-0CF5-4994-A073-BE696DB6DF54}
 	EndProjectSection
@@ -35,8 +35,8 @@ Global
 		{FD9F533F-D593-4911-8567-DA682C80E658}.Debug|x86.Build.0 = Debug|Any CPU
 		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|x64.ActiveCfg = Release|Any CPU
-		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|x64.Build.0 = Release|Any CPU
+		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|x64.ActiveCfg = Release|x64
+		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|x64.Build.0 = Release|x64
 		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|x86.ActiveCfg = Release|Any CPU
 		{FD9F533F-D593-4911-8567-DA682C80E658}.Release|x86.Build.0 = Release|Any CPU
 		{B0155EDC-0CF5-4994-A073-BE696DB6DF54}.Debug|Any CPU.ActiveCfg = Debug|x64
