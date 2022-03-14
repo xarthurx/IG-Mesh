@@ -45,7 +45,7 @@ namespace igl_GrassHopper
         {
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             List<int> con_idx = new List<int>();
-            List<double> con_val = new List<double>();
+            List<float> con_val = new List<float>();
             int divN = 1;
 
             if (!DA.GetData(0, ref mesh)) { return; }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using Rhino.Geometry;
+using System;
 
 namespace igl_GrassHopper
 {
-    public class IGL_Barycenter: GH_Component
+    public class IGL_Barycenter : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the IGL_Barycenter class.

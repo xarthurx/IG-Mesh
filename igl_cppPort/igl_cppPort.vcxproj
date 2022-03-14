@@ -120,7 +120,8 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>start xcopy  "$(TargetDir)\$(TargetName).dll"  "$(SolutionDir)\igl_GrassHopper\bin\" /F /Y</Command>
+      <Command>robocopy $(TargetDir) $(SolutionDir)igl_Grasshopper\bin *cppPort.dll
+if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

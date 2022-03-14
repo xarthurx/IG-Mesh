@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
+using System;
 using System.Collections.Generic;
-
-using Grasshopper.Kernel;
-using Rhino.Geometry;
 
 namespace igl_GrassHopper
 {
@@ -45,7 +43,7 @@ namespace igl_GrassHopper
         {
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             List<int> con_idx = new List<int>();
-            List<double> con_val = new List<double>();
+            List<float> con_val = new List<float>();
 
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }

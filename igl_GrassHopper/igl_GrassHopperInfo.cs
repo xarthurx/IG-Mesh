@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
+using System;
 using System.Drawing;
-using Grasshopper.Kernel;
 
 namespace igl_GrassHopper
 {
