@@ -12,6 +12,7 @@
 
 using namespace std;
 using namespace Eigen;
+using RowMajMatXf = Matrix<float, Dynamic, Dynamic, RowMajor>;
 
 // helper function
 void convertArrayToEigenXd(double* inputArray, int sz,
@@ -116,7 +117,25 @@ void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
   igl::barycenter(matV, matF, matBC);
 
   // convert back to arrays
-  Matrix<float, Dynamic, Dynamic, RowMajor>::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+  RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+}
+
+void igl_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
+{
+  // convert mesh
+  MatrixXf matV;
+  MatrixXi matF;
+  convertArrayToEigenXf(V, nV, matV);
+  convertArrayToEigenXi(F, nF, matF);
+
+  // compute normal
+  MatrixXf matFN, matVN;
+  igl::per_vertex_normals(matV, matF, matVN);
+  igl::per_face_normals_stable(matV, matF, matFN);
+
+  // convert back to arrays
+  RowMajMatXf::Map(VN, matVN.rows(), matVN.cols()) = matVN;
+  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
 }
 
 // RH_C_FUNCTION

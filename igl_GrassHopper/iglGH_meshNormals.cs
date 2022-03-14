@@ -3,14 +3,14 @@ using System;
 
 namespace igl_GrassHopper
 {
-    public class IGL_barycenter : GH_Component
+    public class IGL_normals : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_barycenter()
-          : base("IGL_Barycenter", "iBarycenter",
-              "compute the barycenter of each triangle of the given mesh.",
+        public IGL_normals()
+          : base("IGL_Normals", "iNormals",
+              "compute the per vertex / face normals of the given mesh.",
               "IGL+", "mesh")
         {
         }
@@ -30,7 +30,8 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddPointParameter("Barycenters", "BC", "the barycenters of the input mesh's faces", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Vertex Normals", "VN", "the per-vertex normals of the input mesh's faces", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Face Normals", "FN", "the per-face normals of the input mesh's faces", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -45,10 +46,11 @@ namespace igl_GrassHopper
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getBarycenter(ref mesh);
+            var (vn, fn) = IGLRhinoCommon.Utils.getNormals(ref mesh);
 
             // output
-            DA.SetDataList(0, res);
+            DA.SetDataList(0, vn);
+            DA.SetDataList(1, fn);
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("532f1fab-c27e-4795-99d4-efb55cabc1d4"); }
+            get { return new Guid("51a9a99e-207d-4cb7-b49d-f89bab1b446a"); }
         }
     }
 }

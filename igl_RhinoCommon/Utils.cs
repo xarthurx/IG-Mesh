@@ -109,7 +109,6 @@ namespace IGLRhinoCommon
             //initialize the pointer and pass data
             int nV = rhinoMesh.Vertices.Count;
             int nF = rhinoMesh.Faces.Count;
-            int numEle = 3 * rhinoMesh.Vertices.Count * 20;
 
             // copy data into the IntPtr
             float[] V = rhinoMesh.Vertices.ToFloatArray();
@@ -128,6 +127,10 @@ namespace IGLRhinoCommon
             float[] processedBC = new float[nF * 3];
             Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
 
+            Marshal.FreeHGlobal(meshV);
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(BCfromCpp);
+
             // send back to Rhino Common type
             List<Point3d> BC = new List<Point3d>();
             for (int i = 0; i < nF; i++)
@@ -136,6 +139,54 @@ namespace IGLRhinoCommon
             }
 
             return BC;
+        }
+
+        public static (List<Vector3d> VN, List<Vector3d> FN) getNormals(ref Mesh rhinoMesh)
+        {
+            //initialize the pointer and pass data
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+
+            // copy data into the IntPtr
+            float[] V = rhinoMesh.Vertices.ToFloatArray();
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            Marshal.Copy(V, 0, meshV, V.Length);
+
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // call the cpp func
+            IntPtr VN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nV);
+            IntPtr FN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
+            CppIGL.igl_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
+
+            float[] processedVN = new float[nV * 3];
+            float[] processedFN = new float[nF * 3];
+            Marshal.Copy(VN_cpp, processedVN, 0, nV * 3);
+            Marshal.Copy(FN_cpp, processedFN, 0, nF * 3);
+
+            Marshal.FreeHGlobal(meshV);
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(VN_cpp);
+            Marshal.FreeHGlobal(FN_cpp);
+
+            // send back to RhinoCommon type
+            List<Vector3d> VN = new List<Vector3d>();
+            List<Vector3d> FN = new List<Vector3d>();
+
+            for (int i = 0; i < nV; i++)
+            {
+                VN.Add(new Vector3d(processedVN[i * 3], processedVN[i * 3 + 1], processedVN[i * 3 + 2]));
+            }
+
+            for (int i = 0; i < nF; i++)
+            {
+                FN.Add(new Vector3d(processedFN[i * 3], processedFN[i * 3 + 1], processedFN[i * 3 + 2]));
+            }
+
+            return (VN, FN);
+
         }
 
         public static List<List<Point3d>> getIsolinePts(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val, int divN)

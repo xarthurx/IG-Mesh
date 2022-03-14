@@ -42,8 +42,14 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 
+// BC   barycenters of the mesh triangles
 RH_C_FUNCTION
-void igl_barycenter(float* V, int nV, int* F, int nF, float* BC); // BC   barycenters of the mesh triangles
+void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
+
+// VN   vertex normals
+// FN   face normals
+RH_C_FUNCTION
+void igl_normals(float* V, int nV, int* F, int nF, float* VN, float* FN);
 
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,

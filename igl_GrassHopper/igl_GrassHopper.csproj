@@ -44,6 +44,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="iglGH_meshNormals.cs" />
     <Compile Include="iglGH_meshBarycenter.cs" />
     <Compile Include="iglGH_meshBoundLoop.cs" />
     <Compile Include="igl_GrassHopperInfo.cs" />
