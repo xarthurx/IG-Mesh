@@ -4,6 +4,7 @@
 #include <igl/adjacency_list.h>
 #include <igl/boundary_loop.h>
 #include <igl/parula.h>
+#include <igl/barycenter.h>
 
 #include <numeric>
 
@@ -14,7 +15,7 @@ using namespace Eigen;
 
 // helper function
 void convertArrayToEigenXd(float* inputArray, int sz,
-                           Eigen::MatrixXd& outputEigen) {
+  Eigen::MatrixXd& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
@@ -29,13 +30,13 @@ void convertArrayToEigenXd(float* inputArray, int sz,
 }
 
 void convertArrayToEigenXi(int* inputArray, int sz,
-                           Eigen::MatrixXi& outputEigen) {
+  Eigen::MatrixXi& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
   while (cnt != sz) {
     outputEigen.row(cnt) << inputArray[cnt * 3], inputArray[cnt * 3 + 1],
-        inputArray[cnt * 3 + 2];
+      inputArray[cnt * 3 + 2];
     cnt++;
   }
 }
@@ -60,16 +61,16 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
     transferLst.push_back(vec.size());
     // copy all values
     std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-  });
+    });
 
   std::copy(transferLst.begin(), transferLst.end(), adjLst);
 
   // the total # of neighbouring vert + the # of vert (as indicator of each
   // vector's size)
   sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-                                    [&](int res, vector<int>& vec) {
-                                      return res + vec.size();
-                                    });
+    [&](int res, vector<int>& vec) {
+      return res + vec.size();
+    });
 }
 
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
@@ -85,22 +86,38 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
     transferLst.push_back(vec.size());
     // copy all values
     std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-  });
+    });
 
   std::copy(transferLst.begin(), transferLst.end(), adjLst);
 
   // the total # of boundary loops + the # of vert (as indicator of each
   // vector's size)
   sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-                                    [&](int res, vector<int>& vec) {
-                                      return res + vec.size();
-                                    });
+    [&](int res, vector<int>& vec) {
+      return res + vec.size();
+    });
+}
+
+void igl_barycenter(float* V, int nV, int* F, int nF, double* BC, int& sz)
+{
+  // convert mesh
+  MatrixXd matV;
+  MatrixXi matF;
+  convertArrayToEigenXd(V, nV, matV);
+  convertArrayToEigenXi(F, nF, matF);
+
+  // do the igl calculation
+  MatrixXd matBC;
+  igl::barycenter(matV, matF, matBC);
+
+  // convert back to arrays
+  VectorXf::Map(BC, matBC.rows()) = matBC;
 }
 
 // RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-                       double* con_value, int numCon, int divN,
-                       double* isoLnPts, int* numPtsPerLst) {
+  double* con_value, int numCon, int divN,
+  double* isoLnPts, int* numPtsPerLst) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
@@ -145,14 +162,14 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
   }
 
   std::copy(transferIsoLnCollection.begin(), transferIsoLnCollection.end(),
-            isoLnPts);
+    isoLnPts);
   std::copy(transferNumPtPerLst.begin(), transferNumPtPerLst.end(),
-            numPtsPerLst);
+    numPtsPerLst);
 }
 
 // RH_C_FUNCTION
 void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-                      double* con_value, int numCon, float* laplacianValue) {
+  double* con_value, int numCon, float* laplacianValue) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
@@ -178,5 +195,5 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
   // transfer data back
   VectorXf meshScalarFloat = meshScalar.cast<float>();
   Eigen::VectorXf::Map(laplacianValue, meshScalarFloat.rows()) =
-      meshScalarFloat;
+    meshScalarFloat;
 }

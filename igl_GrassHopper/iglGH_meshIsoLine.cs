@@ -13,7 +13,7 @@ namespace igl_GrassHopper
         public iglGH_meshIsoLine()
           : base("mesh isoline", "isoline",
               "extract the isolines of a given mesh",
-              "IGL", "mesh")
+              "IGL+", "utils")
         {
         }
 
@@ -80,7 +80,6 @@ namespace igl_GrassHopper
                     var crv = Curve.CreateInterpolatedCurve(res[i], 2);
                     crvTree.Add(crv, path);
                 }
-
             }
 
             // assign to the output

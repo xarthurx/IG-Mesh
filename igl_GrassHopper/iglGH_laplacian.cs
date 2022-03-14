@@ -12,12 +12,11 @@ namespace igl_GrassHopper
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGL_laplacian()
-          : base("IGL_Laplacian", "laplacian",
+          : base("IGL_Laplacian", "iLaplacian",
               "Solve laplacian equation under given boundary condition.",
-              "IGL", "mesh")
+              "IGL+", "mesh")
         {
         }
-
 
         /// <summary>
         /// Registers all the input parameters for this component.

@@ -12,9 +12,9 @@ namespace igl_GrassHopper
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGL_adjacentList()
-          : base("IGL_AdjacencyList", "iglAdjList",
+          : base("IGL_AdjacencyList", "iAdjList",
               "compute the adjacency list of the given mesh.",
-              "IGL", "mesh")
+              "IGL+", "mesh")
         {
         }
 

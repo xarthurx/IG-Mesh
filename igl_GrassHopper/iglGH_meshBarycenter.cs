@@ -6,14 +6,14 @@ using Rhino.Geometry;
 
 namespace igl_GrassHopper
 {
-    public class IGL_Barycenter: GH_Component
+    public class IGL_barycenter: GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the IGL_Barycenter class.
+        /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_Barycenter()
-          : base("IGL_BoundaryLoop", "iBoundLoop",
-              "compute the boundary loop of the given mesh.",
+        public IGL_barycenter()
+          : base("IGL_Barycenter", "iBarycenter",
+              "compute the barycenter of each triangle of the given mesh.",
               "IGL+", "mesh")
         {
         }
@@ -85,7 +85,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("3A2ADC95-6FDB-41CC-8B5B-A611AE4B08E9"); }
+            get { return new Guid("532f1fab-c27e-4795-99d4-efb55cabc1d4"); }
         }
     }
 }
