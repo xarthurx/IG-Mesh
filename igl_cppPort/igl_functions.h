@@ -23,11 +23,12 @@
 
 #endif
 
-void convertArrayToEigenXd(float* inputArray, int sz,
-                           Eigen::MatrixXd& outputEigen);
+void convertArrayToEigenXd(double* inputArray, int sz,
+  Eigen::MatrixXd& outputEigen);
+void convertArrayToEigenXf(float* inputArray, int sz,
+  Eigen::MatrixXf& outputEigen);
 void convertArrayToEigenXi(int* inputArray, int sz,
-                           Eigen::MatrixXi& outputEigen);
-
+  Eigen::MatrixXi& outputEigen);
 
 // Inputs & Outputs:
 // V    Flattened #V x 3 matrix of vertex cordinates
@@ -36,23 +37,19 @@ void convertArrayToEigenXi(int* inputArray, int sz,
 // nF   face number
 
 RH_C_FUNCTION
-double Add(double a, double b);
-
-RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
-// BC   #F x dim matrix of 3d vertices
-void igl_barycenter(int* V, int nV, int* F, int* nF, int *BC, int& sz);
+void igl_barycenter(float* V, int nV, int* F, int nF, float* BC); // BC   barycenters of the mesh triangles
 
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-                       double* con_value, int numCon, int divN,
-                       double* isoLnPts, int* numPtsPerLst);
+  float* con_value, int numCon, int divN,
+  float* isoLnPts, int* numPtsPerLst);
 
 RH_C_FUNCTION
 void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-                      double* con_value, int numCon, float* laplacianValue);
+  float* con_value, int numCon, float* laplacianValue);

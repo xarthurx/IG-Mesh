@@ -14,7 +14,7 @@ using namespace std;
 using namespace Eigen;
 
 // helper function
-void convertArrayToEigenXd(float* inputArray, int sz,
+void convertArrayToEigenXd(double* inputArray, int sz,
   Eigen::MatrixXd& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
@@ -23,8 +23,19 @@ void convertArrayToEigenXd(float* inputArray, int sz,
     outputEigen(cnt, 0) = inputArray[cnt * 3];
     outputEigen(cnt, 1) = inputArray[cnt * 3 + 1];
     outputEigen(cnt, 2) = inputArray[cnt * 3 + 2];
-    // outputEigen.row(cnt) << inputArray[cnt * 3], inputArray[cnt * 3 + 1],
-    // inputArray[cnt * 3 + 2];
+    cnt++;
+  }
+}
+
+void convertArrayToEigenXf(float* inputArray, int sz,
+  Eigen::MatrixXf& outputEigen) {
+  int cnt = 0;
+  outputEigen.resize(sz, 3);
+
+  while (cnt != sz) {
+    outputEigen(cnt, 0) = inputArray[cnt * 3];
+    outputEigen(cnt, 1) = inputArray[cnt * 3 + 1];
+    outputEigen(cnt, 2) = inputArray[cnt * 3 + 2];
     cnt++;
   }
 }
@@ -39,12 +50,6 @@ void convertArrayToEigenXi(int* inputArray, int sz,
       inputArray[cnt * 3 + 2];
     cnt++;
   }
-}
-
-// RH_C_FUNCTION
-double Add(double a, double b) {
-  double c = a + b;
-  return c;
 }
 
 // RH_C_FUNCTION
@@ -98,38 +103,38 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
     });
 }
 
-void igl_barycenter(float* V, int nV, int* F, int nF, double* BC, int& sz)
+void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
 {
   // convert mesh
-  MatrixXd matV;
+  MatrixXf matV;
   MatrixXi matF;
-  convertArrayToEigenXd(V, nV, matV);
+  convertArrayToEigenXf(V, nV, matV);
   convertArrayToEigenXi(F, nF, matF);
 
   // do the igl calculation
-  MatrixXd matBC;
+  MatrixXf matBC;
   igl::barycenter(matV, matF, matBC);
 
   // convert back to arrays
-  VectorXf::Map(BC, matBC.rows()) = matBC;
+  Matrix<float, Dynamic, Dynamic, RowMajor>::Map(BC, matBC.rows(), matBC.cols()) = matBC;
 }
 
 // RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-  double* con_value, int numCon, int divN,
-  double* isoLnPts, int* numPtsPerLst) {
+  float* con_value, int numCon, int divN,
+  float* isoLnPts, int* numPtsPerLst) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
   // convert mesh
-  MatrixXd eigenV;
+  MatrixXf eigenV;
   MatrixXi eigenF;
-  convertArrayToEigenXd(V, nV, eigenV);
+  convertArrayToEigenXf(V, nV, eigenV);
   convertArrayToEigenXi(F, nF, eigenF);
 
   // convert constraints
   VectorXi conIdx(numCon);
-  VectorXd conVal(numCon);
+  VectorXf conVal(numCon);
 
   for (size_t i = 0; i < numCon; i++) {
     conIdx[i] = *(con_idx + i);
@@ -137,16 +142,16 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
   }
 
   // solve scalar field
-  VectorXd meshScalar(eigenV.rows());
+  VectorXf meshScalar(eigenV.rows());
   GeoLib::solveScalarField(eigenV, eigenF, conIdx, conVal, meshScalar);
 
   // extract isolines
-  map<double, MatrixXd> tmpIsoPts;
+  map<float, MatrixXf> tmpIsoPts;
   GeoLib::computeIsoPts(eigenV, eigenF, meshScalar, divN, tmpIsoPts);
 
   // write data back to the c# pointer arrary
   vector<int> transferNumPtPerLst;
-  vector<double> transferIsoLnCollection(0);
+  vector<float> transferIsoLnCollection(0);
   for (auto const& [key, val] : tmpIsoPts) {
     vector<float> transferIsoLn(val.rows() * 3);
 
@@ -169,19 +174,19 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
 
 // RH_C_FUNCTION
 void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-  double* con_value, int numCon, float* laplacianValue) {
+  float* con_value, int numCon, float* laplacianValue) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
   // convert mesh
-  MatrixXd eigenV;
+  MatrixXf eigenV;
   MatrixXi eigenF;
-  convertArrayToEigenXd(V, nV, eigenV);
+  convertArrayToEigenXf(V, nV, eigenV);
   convertArrayToEigenXi(F, nF, eigenF);
 
   // convert constraints
   VectorXi conIdx(numCon);
-  VectorXd conVal(numCon);
+  VectorXf conVal(numCon);
 
   for (size_t i = 0; i < numCon; i++) {
     conIdx[i] = *(con_idx + i);
@@ -189,7 +194,7 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
   }
 
   // solve scalar field
-  VectorXd meshScalar(eigenV.rows());
+  VectorXf meshScalar(eigenV.rows());
   GeoLib::solveScalarField(eigenV, eigenF, conIdx, conVal, meshScalar);
 
   // transfer data back

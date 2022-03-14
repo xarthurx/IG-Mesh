@@ -8,13 +8,6 @@ namespace IGLRhinoCommon
 {
     public static class Utils
     {
-        /// <summary>
-        /// Sums two numbers
-        /// </summary>
-        public static double Sum(double a, double b)
-        {
-            return CppIGL.Add(a, b);
-        }
         public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -61,6 +54,7 @@ namespace IGLRhinoCommon
             // compute from cpp side.
             return adjLst;
         }
+
         public static List<List<int>> getBoundaryLoop(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -106,9 +100,45 @@ namespace IGLRhinoCommon
 
             // compute from cpp side.
             return boundLoop;
-
         }
-        public static List<List<Point3d>> getIsolinePts(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<double> con_val, int divN)
+
+        public static List<Point3d> getBarycenter(ref Mesh rhinoMesh)
+        {
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+
+            //initialize the pointer and pass data
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+            int numEle = 3 * rhinoMesh.Vertices.Count * 20;
+
+            // copy data into the IntPtr
+            float[] V = rhinoMesh.Vertices.ToFloatArray();
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            Marshal.Copy(V, 0, meshV, V.Length);
+
+
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // call the cpp func
+            IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
+            CppIGL.igl_barycenter(meshV, nV, meshF, nF, BCfromCpp);
+
+            float[] processedBC = new float[nF * 3];
+            Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
+
+            // send back to Rhino Common type
+            List<Point3d> BC = new List<Point3d>();
+            for (int i = 0; i < nF; i++)
+            {
+                BC.Add(new Point3d(processedBC[i * 3], processedBC[i * 3 + 1], processedBC[i * 3 + 2]));
+            }
+
+            return BC;
+        }
+
+        public static List<List<Point3d>> getIsolinePts(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val, int divN)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
             if (con_idx.Count != con_val.Count) throw new OverflowException();
@@ -129,7 +159,7 @@ namespace IGLRhinoCommon
             Marshal.Copy(con_val.ToArray(), 0, conVal, con_val.Count);
 
             // since we don't know the # of pts in a isoLine, let's assme # = V at most
-            int assumedDataNum = Marshal.SizeOf(typeof(double)) * 3 * nV;
+            int assumedDataNum = Marshal.SizeOf(typeof(float)) * 3 * nV;
             IntPtr isoLinePts = Marshal.AllocHGlobal(assumedDataNum);
             IntPtr numPtsEachLst = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * divN);
 
@@ -142,7 +172,7 @@ namespace IGLRhinoCommon
 
             int totalNumPts = 0;
             for (int i = 0; i < divN; i++) totalNumPts += processedNumPtsLst[i];
-            double[] processedIsoLine = new double[Marshal.SizeOf(typeof(double)) * 3 * nV];
+            float[] processedIsoLine = new float[Marshal.SizeOf(typeof(float)) * 3 * nV];
             Marshal.Copy(isoLinePts, processedIsoLine, 0, totalNumPts * 3);
 
             // free memory
@@ -172,7 +202,8 @@ namespace IGLRhinoCommon
 
             return isolst;
         }
-        public static List<float> getLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<double> con_val)
+
+        public static List<float> getLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
 
@@ -203,7 +234,8 @@ namespace IGLRhinoCommon
             Marshal.Copy(laplacianValue, processedScalarValue, 0, nV);
 
             List<float> laplacianV = new List<float>();
-            for (int i = 0; i < nV; i++) {
+            for (int i = 0; i < nV; i++)
+            {
                 laplacianV.Add(processedScalarValue[i]);
             }
 
