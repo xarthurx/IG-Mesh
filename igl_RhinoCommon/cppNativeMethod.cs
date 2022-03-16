@@ -56,5 +56,11 @@ namespace IGLRhinoCommon
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void computeLaplacian(IntPtr V, int nV, IntPtr F, int nF,
             IntPtr con_idx, IntPtr con_val, int numCon, IntPtr laplacianValue);
+
+        /// <summary>
+        /// randomly sample points on meshes.
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_random_point_on_mesh(IntPtr V, int nV, IntPtr F, int nF, int N, IntPtr B, IntPtr FI);
     }
 }

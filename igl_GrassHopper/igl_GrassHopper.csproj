@@ -48,6 +48,7 @@
     <Compile Include="iglGH_meshNormals.cs" />
     <Compile Include="iglGH_meshBarycenter.cs" />
     <Compile Include="iglGH_meshBoundLoop.cs" />
+    <Compile Include="iglGH_randomPointsOnMesh.cs" />
     <Compile Include="igl_GrassHopperInfo.cs" />
     <Compile Include="iglGH_meshAdjacentList.cs" />
     <Compile Include="iglGH_meshIsoLine.cs" />

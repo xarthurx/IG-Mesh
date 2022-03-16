@@ -6,6 +6,7 @@
 #include <igl/parula.h>
 #include <igl/barycenter.h>
 #include <igl/boundary_facets.h>
+#include <igl/random_points_on_mesh.h>
 
 #include <numeric>
 
@@ -239,4 +240,27 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
   VectorXf meshScalarFloat = meshScalar.cast<float>();
   Eigen::VectorXf::Map(laplacianValue, meshScalarFloat.rows()) =
     meshScalarFloat;
+}
+
+void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B, int* FI)
+{
+  MatrixXf matV;
+  MatrixXi matF;
+  convertArrayToEigenXf(V, nV, matV);
+  convertArrayToEigenXi(F, nF, matF);
+
+  MatrixXf matB;
+  VectorXi faceI;
+  igl::random_points_on_mesh(N, matV, matF, matB, faceI);
+
+  MatrixXf samples(matB.rows(), 3);
+  for (int i = 0; i < matB.rows(); i++) {
+    samples.row(i) =
+      matB(i, 0) * matV.row(matF(faceI(i), 0)) +
+      matB(i, 1) * matV.row(matF(faceI(i), 1)) +
+      matB(i, 2) * matV.row(matF(faceI(i), 2));
+  }
+
+  RowMajMatXf::Map(B, samples.rows(), samples.cols()) = samples;
+  VectorXi::Map(FI, faceI.size()) = faceI;
 }

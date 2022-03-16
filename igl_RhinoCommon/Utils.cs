@@ -346,5 +346,45 @@ namespace IGLRhinoCommon
             return laplacianV;
         }
 
+        public static (List<Point3d> BC, List<int> FI) getRandomPointsOnMesh(ref Mesh rhinoMesh, int N)
+        {
+            //initialize the pointer and pass data
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+
+            // copy data into the IntPtr
+            float[] V = rhinoMesh.Vertices.ToFloatArray();
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            Marshal.Copy(V, 0, meshV, V.Length);
+
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // call the cpp func
+            IntPtr B_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * N);
+            IntPtr FI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * N);
+            CppIGL.igl_random_point_on_mesh(meshV, nV, meshF, nF, N, B_cpp, FI_cpp);
+
+            // convert back data
+            float[] resB = new float[N * 3];
+            int[] resFI = new int[N];
+            Marshal.Copy(B_cpp, resB, 0, N * 3);
+            Marshal.Copy(FI_cpp, resFI, 0, N);
+
+            // free memory
+            Marshal.FreeHGlobal(meshV);
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(B_cpp);
+            Marshal.FreeHGlobal(FI_cpp);
+
+            List<Point3d> BC = new List<Point3d>();
+            List<int> FI = new List<int>(resFI);
+            for (int i = 0; i < N; i++)
+            {
+                BC.Add(new Point3d(resB[i * 3], resB[i * 3 + 1], resB[i * 3 + 2]));
+            }
+            return (BC, FI);
+        }
     }
 }

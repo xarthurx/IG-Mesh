@@ -44,7 +44,6 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 
-
 RH_C_FUNCTION
 void igl_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
 
@@ -70,3 +69,7 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
 RH_C_FUNCTION
 void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
   float* con_value, int numCon, float* laplacianValue);
+
+
+RH_C_FUNCTION
+void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B, int* FI);

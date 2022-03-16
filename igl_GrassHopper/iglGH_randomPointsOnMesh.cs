@@ -1,17 +1,17 @@
-﻿using Grasshopper.Kernel;
+﻿
+using Grasshopper.Kernel;
 using System;
-using System.Collections.Generic;
 
 namespace igl_GrassHopper
 {
-    public class IGL_laplacian : GH_Component
+    public class IGL_random_points_on_mesh : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_laplacian()
-          : base("IGL_Laplacian", "iLaplacian",
-              "Solve laplacian equation under given boundary condition.",
+        public IGL_random_points_on_mesh()
+          : base("IGL_RandomPointsOnMesh", "iRandomPtsMesh",
+              "randomly sample N points on the given mesh.",
               "IGL+", "utils")
         {
         }
@@ -22,8 +22,9 @@ namespace igl_GrassHopper
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Constraint Indices", "I", "the indices to be constrained", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Constraint Values", "V", "the values to constrain with", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Number", "N", "number of sampled points.", GH_ParamAccess.item);
+            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
+            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -31,8 +32,8 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            //pManager.AddMeshParameter("Mesh", "M", "output mesh with color info.", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Scalar Value", "D", "scalar value for all vertices.", GH_ParamAccess.item);
+            pManager.AddPointParameter("Sampled Points", "P", "the N sampled points.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Face Index", "FI", "the corresponding face indices of the sampled points.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -41,24 +42,20 @@ namespace igl_GrassHopper
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
-            List<int> con_idx = new List<int>();
-            List<float> con_val = new List<float>();
 
+            Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            if (!DA.GetDataList(1, con_idx)) { return; }
-            if (!DA.GetDataList(2, con_val)) { return; }
-            if (!(con_idx.Count > 0) || !(con_val.Count > 0)) { return; }
-            if (con_idx.Count != con_val.Count) { return; }
-
+            int N = 0;
+            if (!DA.GetData(1, ref N)) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getLapacianScalar(ref mesh, ref con_idx, ref con_val);
+            var (b, fi) = IGLRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N);
 
-
-            DA.SetDataList(0, res);
+            // output
+            DA.SetDataList(0, b);
+            DA.SetDataList(1, fi);
         }
 
         /// <summary>
@@ -79,7 +76,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("9a5af6ef-c8fd-4e0f-9e70-84b709f53be7"); }
+            get { return new Guid("5819dc11-ccff-41eb-b126-96c34911ddc1"); }
         }
     }
 }
