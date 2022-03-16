@@ -24,6 +24,13 @@ namespace IGLRhinoCommon
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void igl_boundary_loop(IntPtr F, int nF, IntPtr bndLoopFromCpp, out int sz);
 
+
+        /// <summary>
+        /// Compute mesh boundary edges, facets
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_boundary_facet(IntPtr F, int nF, IntPtr bndEdge, IntPtr bndTriIdx, out int sz);
+
         /// <summary>
         /// Compute mesh barycenters 
         /// </summary>

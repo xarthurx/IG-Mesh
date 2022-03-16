@@ -102,6 +102,52 @@ namespace IGLRhinoCommon
             return boundLoop;
         }
 
+        public static (List<Line>, List<List<int>>, List<int>) getBoundaryEdge(ref Mesh rhinoMesh)
+        {
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+
+            // initialize the pointer and pass data
+            int nF = rhinoMesh.Faces.Count;
+
+            // copy data into the IntPtr
+            //float[] V = rhino_mesh.Vertices.ToFloatArray();
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // assume each vert has most 10 neighbours
+            IntPtr bndEdge = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 2 * nF);
+            IntPtr bndTriIdx = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nF);
+
+            // call the c++ func
+            int sz;
+            CppIGL.igl_boundary_facet(meshF, nF, bndEdge, bndTriIdx, out sz);
+
+            int[] resBndEdge = new int[nF * 2];
+            Marshal.Copy(bndEdge, resBndEdge, 0, nF * 2);
+            int[] resBndTriIdx = new int[nF];
+            Marshal.Copy(bndTriIdx, resBndTriIdx, 0, nF);
+
+            // free memory
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(bndEdge);
+            Marshal.FreeHGlobal(bndTriIdx);
+
+            // convert back to C# types
+            List<Line> edgeGeo = new List<Line>();
+            List<List<int>> boundEdge = new List<List<int>>();
+            List<int> boundTriIdx = new List<int>();
+            for (int i = 0; i < sz; i++)
+            {
+                int pt0 = resBndEdge[i * 2];
+                int pt1 = resBndEdge[i * 2 + 1];
+                edgeGeo.Add(new Line(rhinoMesh.Vertices[pt0], rhinoMesh.Vertices[pt1]));
+                boundEdge.Add(new List<int> { pt0, pt1 });
+                boundTriIdx.Add(resBndTriIdx[i]);
+            }
+            return (edgeGeo, boundEdge, boundTriIdx);
+        }
+
         public static List<Point3d> getBarycenter(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));

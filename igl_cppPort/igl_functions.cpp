@@ -5,6 +5,7 @@
 #include <igl/boundary_loop.h>
 #include <igl/parula.h>
 #include <igl/barycenter.h>
+#include <igl/boundary_facets.h>
 
 #include <numeric>
 
@@ -13,6 +14,7 @@
 using namespace std;
 using namespace Eigen;
 using RowMajMatXf = Matrix<float, Dynamic, Dynamic, RowMajor>;
+using RowMajMatXi = Matrix<int, Dynamic, Dynamic, RowMajor>;
 
 // helper function
 void convertArrayToEigenXd(double* inputArray, int sz,
@@ -102,6 +104,23 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
     [&](int res, vector<int>& vec) {
       return res + vec.size();
     });
+}
+
+void igl_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz)
+{
+  // convert mesh
+  MatrixXi matF;
+  convertArrayToEigenXi(F, nF, matF);
+
+  // compute
+  MatrixXi bF;
+  VectorXi J, K;
+  igl::boundary_facets(matF, bF, J, K);
+
+  // convert back
+  RowMajMatXi::Map(edge, bF.rows(), bF.cols()) = bF;
+  VectorXi::Map(triIdx, J.size()) = J;
+  sz = J.size();
 }
 
 void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)

@@ -4,14 +4,14 @@ using System;
 
 namespace igl_GrassHopper
 {
-    public class IGL_BoundLoop : GH_Component
+    public class IGL_BoundEdge : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the IGL_Barycenter class.
         /// </summary>
-        public IGL_BoundLoop()
-          : base("IGL_BoundaryLoop", "iBoundLoop",
-              "compute the boundary loop of the given mesh.",
+        public IGL_BoundEdge()
+          : base("IGL_BoundEdge", "iBoundEdge",
+              "compute the boundary edges the given mesh.",
               "IGL+", "mesh")
         {
         }
@@ -29,8 +29,9 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddIntegerParameter("Boundary Idices", "B", "the boundary list of the input mesh", GH_ParamAccess.tree);
-            pManager.AddPointParameter("Boundary Vertices", "P", "the boundary vertices of the input mesh", GH_ParamAccess.tree);
+            pManager.AddLineParameter("Boundary edges.", "E", "the boundary edges.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Vertex Indices of the boundary edges.", "EV", "the vertex indices of the boundary edges.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Boundary Triangle indices.", "T", "the indices of the boundary triangles.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -43,26 +44,22 @@ namespace igl_GrassHopper
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getBoundaryLoop(ref mesh);
+            // call the cpp function 
+            var (bndE_geo, bndE, bndTi) = IGLRhinoCommon.Utils.getBoundaryEdge(ref mesh);
 
-            // construct the index & pt tree from the adjacency list
-            Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();
-            Grasshopper.DataTree<Point3d> ptArray = new Grasshopper.DataTree<Point3d>();
-            for (int i = 0; i < res.Count; i++)
+            // construct the edge tree from the list
+            Grasshopper.DataTree<int> evArray = new Grasshopper.DataTree<int>();
+
+            for (int i = 0; i < bndE.Count; i++)
             {
                 var path = new Grasshopper.Kernel.Data.GH_Path(i);
-                treeArray.AddRange(res[i], path);
-
-                foreach (var id in res[i])
-                {
-                    ptArray.Add(mesh.Vertices[id], path);
-                }
+                evArray.AddRange(bndE[i], path);
             }
 
             // assign to the output
-            DA.SetDataTree(0, treeArray);
-            DA.SetDataTree(1, ptArray);
+            DA.SetDataList(0, bndE_geo);
+            DA.SetDataTree(1, evArray);
+            DA.SetDataList(2, bndTi);
         }
 
         /// <summary>
@@ -83,7 +80,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("3A2ADC95-6FDB-41CC-8B5B-A611AE4B08E9"); }
+            get { return new Guid("f4983646-592d-475a-bce2-f57767095810"); }
         }
     }
 }

@@ -36,21 +36,32 @@ void convertArrayToEigenXi(int* inputArray, int sz,
 // F    Flattened #F x 3 matrix of indices of triangle corners into V
 // nF   face number
 
+
+// ! adjacency funcs
 RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 
+
+RH_C_FUNCTION
+void igl_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
+
+
+// ! property funcs
 // BC   barycenters of the mesh triangles
 RH_C_FUNCTION
 void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
+
 
 // VN   vertex normals
 // FN   face normals
 RH_C_FUNCTION
 void igl_normals(float* V, int nV, int* F, int nF, float* VN, float* FN);
 
+
+// ! advanced
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
   float* con_value, int numCon, int divN,
