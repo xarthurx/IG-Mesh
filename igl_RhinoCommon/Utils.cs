@@ -187,7 +187,7 @@ namespace IGLRhinoCommon
             return BC;
         }
 
-        public static (List<Vector3d> VN, List<Vector3d> FN) getNormals(ref Mesh rhinoMesh)
+        public static (List<Vector3d> VN, List<Vector3d> FN) getNormalsVertAndFace(ref Mesh rhinoMesh)
         {
             //initialize the pointer and pass data
             int nV = rhinoMesh.Vertices.Count;
@@ -205,7 +205,7 @@ namespace IGLRhinoCommon
             // call the cpp func
             IntPtr VN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nV);
             IntPtr FN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
-            CppIGL.igl_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
+            CppIGL.igl_vert_and_face_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
 
             float[] processedVN = new float[nV * 3];
             float[] processedFN = new float[nF * 3];
@@ -232,6 +232,52 @@ namespace IGLRhinoCommon
             }
 
             return (VN, FN);
+
+        }
+
+        public static List<List<Vector3d>> getNormalsCorner(ref Mesh rhinoMesh, float thre_deg)
+        {
+            //initialize the pointer and pass data
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+
+            // copy data into the IntPtr
+            float[] V = rhinoMesh.Vertices.ToFloatArray();
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            Marshal.Copy(V, 0, meshV, V.Length);
+
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // call the cpp func
+            IntPtr CN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * 3 * nF);
+            CppIGL.igl_corner_normals(meshV, nV, meshF, nF, thre_deg, CN_cpp);
+
+            float[] resCN = new float[nF * 3 * 3];
+            Marshal.Copy(CN_cpp, resCN, 0, nF * 3 * 3);
+
+            Marshal.FreeHGlobal(meshV);
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(CN_cpp);
+
+            // send back to RhinoCommon type
+            List<List<Vector3d>> CN = new List<List<Vector3d>>();
+
+            for (int i = 0; i < nF; i++)
+            {
+                List<Vector3d> cornerN = new List<Vector3d>();
+                int fId = i * 3;
+                for (int j = 0; j < 3; j++)
+                {
+                    int nId = fId + j;
+                    cornerN.Add(new Vector3d(resCN[nId * 3], resCN[nId * 3 + 1], resCN[nId * 3 + 2]));
+                }
+                CN.Add(cornerN);
+
+            }
+
+            return CN;
 
         }
 

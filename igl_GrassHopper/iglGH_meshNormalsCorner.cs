@@ -1,17 +1,18 @@
 ﻿using Grasshopper.Kernel;
+using Rhino.Geometry;
 using System;
 
 namespace igl_GrassHopper
 {
-    public class IGL_normals : GH_Component
+    public class IGL_normals_corner : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the MyComponent1 class.
+        /// Initializes the new instance of the corner_normals class.
         /// </summary>
-        public IGL_normals()
-          : base("IGL_Normals", "iNormals",
-              "compute the per vertex / face normals of the given mesh.",
-              "IGL+", "mesh")
+        public IGL_normals_corner()
+          : base("IGL_NormalsCorner", "iNormals_C",
+              "Compute per corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
+              "IGL+", "Normals")
         {
         }
 
@@ -21,8 +22,8 @@ namespace igl_GrassHopper
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
-            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Degree Threshold", "t", "a threshold in degrees on sharp angles.", GH_ParamAccess.item, 10.0);
+            pManager[1].Optional = true;
         }
 
         /// <summary>
@@ -30,8 +31,7 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Vertex Normals", "VN", "the per-vertex normals of the input mesh's faces", GH_ParamAccess.list);
-            pManager.AddVectorParameter("Face Normals", "FN", "the per-face normals of the input mesh's faces", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Corner Normals", "CN", "the per-corner normals of the input mesh's faces.", GH_ParamAccess.tree);
         }
 
         /// <summary>
@@ -45,12 +45,22 @@ namespace igl_GrassHopper
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            // call the cpp function to solve the adjacency list
-            var (vn, fn) = IGLRhinoCommon.Utils.getNormals(ref mesh);
+            // use default threshold if not given by the user
+            double t = 10;
+            if (!DA.GetData(1, ref t)) { }
 
+
+            // call the cpp function to solve the adjacency list
+            var cn = IGLRhinoCommon.Utils.getNormalsCorner(ref mesh, (float)t);
+
+            Grasshopper.DataTree<Vector3d> cnTree = new Grasshopper.DataTree<Vector3d>();
+            for (int i = 0; i < cn.Count; i++)
+            {
+                var path = new Grasshopper.Kernel.Data.GH_Path(i);
+                cnTree.AddRange(cn[i], path);
+            }
             // output
-            DA.SetDataList(0, vn);
-            DA.SetDataList(1, fn);
+            DA.SetDataTree(0, cnTree);
         }
 
         /// <summary>
@@ -71,7 +81,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("51a9a99e-207d-4cb7-b49d-f89bab1b446a"); }
+            get { return new Guid("a393245d-7c44-4437-b808-8c375e5e6ec4"); }
         }
     }
 }

@@ -57,8 +57,10 @@ void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
 // VN   vertex normals
 // FN   face normals
 RH_C_FUNCTION
-void igl_normals(float* V, int nV, int* F, int nF, float* VN, float* FN);
+void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN);
 
+RH_C_FUNCTION
+void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, float* FN);
 
 // ! advanced
 RH_C_FUNCTION

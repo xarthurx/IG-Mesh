@@ -7,6 +7,7 @@
 #include <igl/barycenter.h>
 #include <igl/boundary_facets.h>
 #include <igl/random_points_on_mesh.h>
+#include <igl/per_corner_normals.h>
 
 #include <numeric>
 
@@ -140,7 +141,7 @@ void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
   RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
 }
 
-void igl_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
+void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
 {
   // convert mesh
   MatrixXf matV;
@@ -155,6 +156,22 @@ void igl_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
 
   // convert back to arrays
   RowMajMatXf::Map(VN, matVN.rows(), matVN.cols()) = matVN;
+  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
+}
+
+void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, float* FN)
+{
+  // convert mesh
+  MatrixXf matV;
+  MatrixXi matF;
+  convertArrayToEigenXf(V, nV, matV);
+  convertArrayToEigenXi(F, nF, matF);
+
+  // compute per-corner-normal
+  MatrixXf matFN;
+  igl::per_corner_normals(matV, matF, threshold_deg, matFN);
+
+  // convert back
   RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
 }
 
