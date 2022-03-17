@@ -12,7 +12,7 @@ namespace igl_GrassHopper
         public IGL_BoundLoop()
           : base("IGL_BoundaryLoop", "iBoundLoop",
               "compute the boundary loop of the given mesh.",
-              "IGL+", "mesh")
+              "IGL+", "Boundary")
         {
         }
 

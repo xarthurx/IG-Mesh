@@ -12,7 +12,7 @@ namespace igl_GrassHopper
         public IGL_BoundEdge()
           : base("IGL_BoundEdge", "iBoundEdge",
               "compute the boundary edges the given mesh.",
-              "IGL+", "mesh")
+              "IGL+", "Boundary")
         {
         }
 

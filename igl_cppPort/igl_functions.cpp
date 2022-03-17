@@ -8,6 +8,7 @@
 #include <igl/boundary_facets.h>
 #include <igl/random_points_on_mesh.h>
 #include <igl/per_corner_normals.h>
+#include <igl/per_edge_normals.h>
 
 #include <numeric>
 
@@ -81,6 +82,37 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
     [&](int res, vector<int>& vec) {
       return res + vec.size();
     });
+}
+
+void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjVFI, int& sz)
+{
+  Eigen::MatrixXi matF;
+  convertArrayToEigenXi(F, nF, matF);
+
+  vector<vector<int>> VF, VFI;
+  igl::vertex_triangle_adjacency(nV, matF, VF, VFI);
+
+  vector<int> tmpVF(0), tmpVFI(0);
+  for_each(VF.begin(), VF.end(), [&](vector<int>& vec) {
+    tmpVF.push_back(vec.size()); // size as indicator
+    std::copy(vec.begin(), vec.end(), std::back_inserter(tmpVF)); // copy all values
+    });
+
+  std::copy(tmpVF.begin(), tmpVF.end(), adjVF);
+
+  for_each(VFI.begin(), VFI.end(), [&](vector<int>& vec) {
+    tmpVF.push_back(vec.size()); // size as indicator
+    std::copy(vec.begin(), vec.end(), std::back_inserter(tmpVFI)); // copy all values
+    });
+
+  std::copy(tmpVFI.begin(), tmpVFI.end(), adjVFI);
+
+  // the total # of neighbouring vert + the # of vert (as indicator of each
+  // vector's size)
+  sz = VF.size() + std::accumulate(VF.begin(), VF.end(), (size_t)0,
+    [&](int res, vector<int>& vec) {
+      return res + vec.size();
+    }); // same for VF and VFI
 }
 
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
@@ -173,6 +205,28 @@ void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, f
 
   // convert back
   RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
+}
+
+void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType, float* EN, int* EI, int* EMAP, int& sz)
+{
+  // convert mesh
+  MatrixXf matV;
+  MatrixXi matF;
+  convertArrayToEigenXf(V, nV, matV);
+  convertArrayToEigenXi(F, nF, matF);
+
+  // compute per-edge-normal
+  MatrixXf matEN;
+  MatrixXf matFN;
+  MatrixXi matEI;
+  VectorXi vecEMAP;
+  igl::per_edge_normals(matV, matF, static_cast<igl::PerEdgeNormalsWeightingType>(weightingType), matEN, matEI, vecEMAP);
+
+  // convert back
+  RowMajMatXf::Map(EN, matEN.rows(), matEN.cols()) = matEN;
+  RowMajMatXi::Map(EI, matEI.rows(), matEI.cols()) = matEI;
+  VectorXi::Map(EMAP, vecEMAP.size()) = vecEMAP;
+  sz = matEI.rows();
 }
 
 // RH_C_FUNCTION

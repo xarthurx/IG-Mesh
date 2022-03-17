@@ -3,15 +3,15 @@ using System;
 
 namespace igl_GrassHopper
 {
-    public class IGL_barycenter : GH_Component
+    public class IGL_vert_tri_adjacency : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_barycenter()
-          : base("IGL_Barycenter", "iBarycenter",
-              "compute the barycenter of each triangle of the given mesh.",
-              "IGL+", "Face Property")
+        public IGL_vert_tri_adjacency()
+          : base("Vertex-Triangle Adjacency", "igAdjVT",
+              "compute the vertex-triangle adjacency of the given mesh.",
+              "IGL+", "Adjacency")
         {
         }
 
@@ -30,7 +30,8 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddPointParameter("Barycenters", "BC", "the barycenters of the input mesh's faces", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Adjacency V-T", "VF", "indices of the the ajacent triangles to the corresponding vertex.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency V-T", "VFI", "index of incidence within incident faces listed in VF.", GH_ParamAccess.tree);
         }
 
         /// <summary>
@@ -45,10 +46,19 @@ namespace igl_GrassHopper
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getBarycenter(ref mesh);
+            var (vt, vi) = IGLRhinoCommon.Utils.getAdjacencyVT(ref mesh);
 
+            Grasshopper.DataTree<int> adjVT = new Grasshopper.DataTree<int>();
+            Grasshopper.DataTree<int> adjVTI = new Grasshopper.DataTree<int>();
+            for (int i = 0; i < vt.Count; i++)
+            {
+                var path = new Grasshopper.Kernel.Data.GH_Path(i);
+                adjVT.AddRange(vt[i], path);
+                adjVTI.AddRange(vi[i], path);
+            }
             // output
-            DA.SetDataList(0, res);
+            DA.SetDataTree(0, adjVT);
+            DA.SetDataTree(1, adjVTI);
         }
 
         /// <summary>
@@ -69,7 +79,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("532f1fab-c27e-4795-99d4-efb55cabc1d4"); }
+            get { return new Guid("32c63b12-c43f-40fb-913c-9df607e43305"); }
         }
     }
 }

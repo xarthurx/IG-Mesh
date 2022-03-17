@@ -48,8 +48,8 @@ namespace igl_GrassHopper
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            int N = 0;
-            if (!DA.GetData(1, ref N)) { return; }
+            int N = 1;
+            if (!DA.GetData(1, ref N) || N == 0) { return; }
 
             // call the cpp function to solve the adjacency list
             var (b, fi) = IGLRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N);

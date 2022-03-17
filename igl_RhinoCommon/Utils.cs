@@ -55,6 +55,65 @@ namespace IGLRhinoCommon
             return adjLst;
         }
 
+        public static (List<List<int>>, List<List<int>>) getAdjacencyVT(ref Mesh rhinoMesh)
+        {
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+
+            // initialize the pointer and pass data
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+
+            int nEle = nV * 20; // assume vertex valance at most 20
+
+            // copy data into the IntPtr
+            //float[] V = rhino_mesh.Vertices.ToFloatArray();
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // assume each vert has most 10 neighbours
+            IntPtr adjVT_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
+            IntPtr adjVTI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
+
+            // call the c++ func
+            int sz;
+            CppIGL.igl_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out sz);
+
+            int[] resVT = new int[nEle];
+            int[] resVTI = new int[nEle];
+            Marshal.Copy(adjVT_cpp, resVT, 0, nEle);
+            Marshal.Copy(adjVTI_cpp, resVTI, 0, nEle);
+
+            // free memory
+            Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(adjVT_cpp);
+            Marshal.FreeHGlobal(adjVTI_cpp);
+
+            List<List<int>> adjVT = new List<List<int>>();
+            List<List<int>> adjVTI = new List<List<int>>();
+            int cnt = 0;
+            while (cnt < sz)
+            {
+                int num = resVT[cnt];
+                cnt++;
+
+                List<int> tmpVT = new List<int>();
+                List<int> tmpVTI = new List<int>();
+                for (int i = 0; i < num; i++)
+                {
+                    tmpVT.Add(resVT[cnt]);
+                    tmpVTI.Add(resVTI[cnt]);
+                    cnt++;
+                }
+                adjVT.Add(tmpVT);
+                adjVTI.Add(tmpVTI);
+            }
+
+            // compute from cpp side.
+            return (adjVT, adjVTI);
+
+        }
+
         public static List<List<int>> getBoundaryLoop(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -158,12 +217,12 @@ namespace IGLRhinoCommon
 
             // copy data into the IntPtr
             float[] V = rhinoMesh.Vertices.ToFloatArray();
-            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * V.Length);
             Marshal.Copy(V, 0, meshV, V.Length);
 
 
             int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * F.Length);
             Marshal.Copy(F, 0, meshF, F.Length);
 
             // call the cpp func
@@ -279,6 +338,57 @@ namespace IGLRhinoCommon
 
             return CN;
 
+        }
+
+        public static (List<Vector3d>, List<List<int>>, List<int>) getNormalsEdge(ref Mesh rhinoMesh, int wT)
+        {
+            //initialize the pointer and pass data
+            int nV = rhinoMesh.Vertices.Count;
+            int nF = rhinoMesh.Faces.Count;
+            int nE = rhinoMesh.TopologyEdges.Count * 2;
+
+            // copy data into the IntPtr
+            float[] V = rhinoMesh.Vertices.ToFloatArray();
+            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * V.Length);
+            Marshal.Copy(V, 0, meshV, V.Length);
+
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
+
+            // call the cpp func
+            IntPtr EN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nE);
+            IntPtr EI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 2 * nE);
+            IntPtr EMAP_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nE);
+
+            int sz;
+            CppIGL.igl_edge_normals(meshV, nV, meshF, nF, wT, EN_cpp, EI_cpp, EMAP_cpp, out sz);
+
+            float[] resEN = new float[nE * 3];
+            int[] resEI = new int[nE * 2];
+            int[] resEMAP = new int[nE];
+            Marshal.Copy(EN_cpp, resEN, 0, nE * 3);
+            Marshal.Copy(EI_cpp, resEI, 0, nE * 2);
+            Marshal.Copy(EMAP_cpp, resEMAP, 0, nE);
+
+            if (meshV != IntPtr.Zero) Marshal.FreeHGlobal(meshV);
+            if (meshF != IntPtr.Zero) Marshal.FreeHGlobal(meshF);
+            if (EN_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EN_cpp);
+            if (EI_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EI_cpp);
+            if (EMAP_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EMAP_cpp);
+
+            // send back to RhinoCommon type
+            List<Vector3d> EN = new List<Vector3d>();
+            List<List<int>> EI = new List<List<int>>();
+            List<int> EMAP = new List<int>(resEMAP);
+
+            for (int i = 0; i < sz; i++)
+            {
+                EN.Add(new Vector3d(resEN[i * 3], resEN[i * 3 + 1], resEN[i * 3 + 2]));
+                EI.Add(new List<int> { resEI[i * 2], resEI[i * 2 + 1] });
+            }
+
+            return (EN, EI, EMAP);
         }
 
         public static List<List<Point3d>> getIsolinePts(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val, int divN)

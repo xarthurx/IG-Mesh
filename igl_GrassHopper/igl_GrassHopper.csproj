@@ -49,6 +49,8 @@
     <Compile Include="iglGH_meshNormalsVertFace.cs" />
     <Compile Include="iglGH_meshBarycenter.cs" />
     <Compile Include="iglGH_meshBoundLoop.cs" />
+    <Compile Include="iglGH_meshProperties.cs" />
+    <Compile Include="iglGH_meshVertTriAdjancy.cs" />
     <Compile Include="iglGH_randomPointsOnMesh.cs" />
     <Compile Include="igl_GrassHopperInfo.cs" />
     <Compile Include="iglGH_meshAdjacentList.cs" />

@@ -19,6 +19,12 @@ namespace IGLRhinoCommon
         internal static extern void igl_adjacency_list(IntPtr F, int nF, IntPtr adjLstFromCpp, out int sz);
 
         /// <summary>
+        /// Compute mesh vertex-triangle adjacency list
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_vertex_triangle_adjacency(int nV, IntPtr F, int nF, IntPtr adjVTFromCpp, IntPtr adjVTIFromCpp, out int sz);
+
+        /// <summary>
         /// Compute mesh boundary loop
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
@@ -48,6 +54,12 @@ namespace IGLRhinoCommon
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void igl_corner_normals(IntPtr V, int nV, IntPtr F, int nF, float thre_deg, IntPtr FN);
+
+        /// <summary>
+        /// Compute per_edge normals
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_edge_normals(IntPtr V, int nV, IntPtr F, int nF, int wT, IntPtr EN, IntPtr EI, IntPtr EMAP, out int sz);
 
         /// <summary>
         /// Extract mesh IsoLine Points

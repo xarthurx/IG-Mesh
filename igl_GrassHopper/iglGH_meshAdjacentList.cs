@@ -12,7 +12,7 @@ namespace igl_GrassHopper
         public IGL_adjacentList()
           : base("IGL_AdjacencyList", "iAdjList",
               "compute the adjacency list of the given mesh.",
-              "IGL+", "mesh")
+              "IGL+", "Adjacency")
         {
         }
 

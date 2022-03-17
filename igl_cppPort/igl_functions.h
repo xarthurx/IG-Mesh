@@ -42,6 +42,9 @@ RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
+void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjVFI, int& sz);
+
+RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
@@ -61,6 +64,10 @@ void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, floa
 
 RH_C_FUNCTION
 void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, float* FN);
+
+RH_C_FUNCTION
+void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType, float* EN, int* EI, int* EMAP, int& sz);
+
 
 // ! advanced
 RH_C_FUNCTION
