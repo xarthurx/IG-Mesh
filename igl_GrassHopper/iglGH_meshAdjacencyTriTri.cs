@@ -1,0 +1,85 @@
+﻿using Grasshopper.Kernel;
+using System;
+
+namespace igl_GrassHopper
+{
+    public class IGL_tri_tri_adjacency : GH_Component
+    {
+        /// <summary>
+        /// Initializes a new instance of the MyComponent1 class.
+        /// </summary>
+        public IGL_tri_tri_adjacency()
+          : base("Vertex-Triangle Adjacency", "igAdjTT",
+              "Compute the triangle-triangle adjacency relationship of the given mesh.",
+              "IGL+", "Adjacency")
+        {
+        }
+
+        /// <summary>
+        /// Registers all the input parameters for this component.
+        /// </summary>
+        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        {
+            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
+            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
+        }
+
+        /// <summary>
+        /// Registers all the output parameters for this component.
+        /// </summary>
+        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
+        {
+            pManager.AddIntegerParameter("Adjacency T-T", "TT", "indices of the the ajacent triangles to the corresponding vertex.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency T-T", "TTI", "index of incidence within incident faces listed in VF.", GH_ParamAccess.tree);
+        }
+
+        /// <summary>
+        /// This is the method that actually does the work.
+        /// </summary>
+        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance(IGH_DataAccess DA)
+        {
+
+            Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
+            if (!DA.GetData(0, ref mesh)) { return; }
+            if (!mesh.IsValid) { return; }
+
+            // call the cpp function to solve the adjacency list
+            var (tt, tti) = IGLRhinoCommon.Utils.getAdjacencyTT(ref mesh);
+
+            Grasshopper.DataTree<int> adjTT = new Grasshopper.DataTree<int>();
+            Grasshopper.DataTree<int> adjTTI = new Grasshopper.DataTree<int>();
+            for (int i = 0; i < tt.Count; i++)
+            {
+                var path = new Grasshopper.Kernel.Data.GH_Path(i);
+                adjTT.AddRange(tt[i], path);
+                adjTTI.AddRange(tti[i], path);
+            }
+            // output
+            DA.SetDataTree(0, adjTT);
+            DA.SetDataTree(1, adjTTI);
+        }
+
+        /// <summary>
+        /// Provides an Icon for the component.
+        /// </summary>
+        protected override System.Drawing.Bitmap Icon
+        {
+            get
+            {
+                //You can add image files to your project resources and access them like this:
+                // return Resources.IconForThisComponent;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the unique ID for this component. Do not change this ID after release.
+        /// </summary>
+        public override Guid ComponentGuid
+        {
+            get { return new Guid("f2947234-060d-44de-bd8f-f9601b0e780f"); }
+        }
+    }
+}

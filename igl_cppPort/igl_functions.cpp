@@ -115,6 +115,11 @@ void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjV
     }); // same for VF and VFI
 }
 
+void igl_triangle_triangle_adjacency(ON_Mesh* pMesh, int* adjTT, int* adjTTI, int& sz)
+{
+
+}
+
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
   Eigen::MatrixXi eigenF;
   convertArrayToEigenXi(F, nF, eigenF);
