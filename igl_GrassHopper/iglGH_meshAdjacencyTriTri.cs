@@ -9,7 +9,7 @@ namespace igl_GrassHopper
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGL_tri_tri_adjacency()
-          : base("Vertex-Triangle Adjacency", "igAdjTT",
+          : base("Triangle-Triangle Adjacency", "igAdjTT",
               "Compute the triangle-triangle adjacency relationship of the given mesh.",
               "IGL+", "Adjacency")
         {
@@ -30,8 +30,8 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddIntegerParameter("Adjacency T-T", "TT", "indices of the the ajacent triangles to the corresponding vertex.", GH_ParamAccess.tree);
-            pManager.AddIntegerParameter("Adjacency T-T", "TTI", "index of incidence within incident faces listed in VF.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency T-T", "TT", "The item {i}(j) is the id of the triangle adjacent to the j edge of triangle i.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency T-T", "TTI", "The item{i}(j) is the id of edge of the triangle TT(i,j) that is adjacent with triangle i.", GH_ParamAccess.tree);
         }
 
         /// <summary>

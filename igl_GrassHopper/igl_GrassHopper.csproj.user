@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartWorkingDirectory>C:\Users\xarthur\source\repos\igl-grasshopper\igl_Grasshopper\bin\</StartWorkingDirectory>
+    <StartWorkingDirectory>C:\Users\xarthur\source\repo\igl-grasshopper\igl_Grasshopper\bin\</StartWorkingDirectory>
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">

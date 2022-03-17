@@ -115,9 +115,20 @@ void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjV
     }); // same for VF and VFI
 }
 
-void igl_triangle_triangle_adjacency(ON_Mesh* pMesh, int* adjTT, int* adjTTI, int& sz)
+void igl_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI)
 {
+  //if (pMesh->HasDoublePrecisionVertices()) {
+  //  ON_3dPointArray& V = pMesh->m_dV;
+  //}
 
+  MatrixXi matF;
+  convertArrayToEigenXi(F, nF, matF);
+  MatrixXi matTT, matTTI;
+
+  igl::triangle_triangle_adjacency(matF, matTT, matTTI);
+
+  RowMajMatXi::Map(adjTT, matTT.rows(), matTT.cols()) = matTT;
+  RowMajMatXi::Map(adjTTI, matTTI.rows(), matTTI.cols()) = matTTI;
 }
 
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {

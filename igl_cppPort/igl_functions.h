@@ -1,8 +1,8 @@
 #pragma once
 
+#include "stdafx.h"
 #include <Eigen/Core>
 //#include "opennurbs_public.h"
-#include "opennurbs.h"
 
 #if defined(RH_DLL_EXPORTS)
 
@@ -47,7 +47,7 @@ RH_C_FUNCTION
 void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjVFI, int& sz);
 
 RH_C_FUNCTION
-void igl_triangle_triangle_adjacency(ON_Mesh* pMesh, int* adjTT, int* adjTTI, int& sz);
+void igl_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI);
 
 RH_C_FUNCTION
 void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);

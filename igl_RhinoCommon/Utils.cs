@@ -63,13 +63,11 @@ namespace IGLRhinoCommon
             //int nV = rhinoMesh.Vertices.Count;
             int nF = rhinoMesh.Faces.Count;
 
-            //int nEle = nV * 20; // assume vertex valance at most 20
-
             //// copy data into the IntPtr
             ////float[] V = rhino_mesh.Vertices.ToFloatArray();
-            //int[] F = rhinoMesh.Faces.ToIntArray(true);
-            //IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            //Marshal.Copy(F, 0, meshF, F.Length);
+            int[] F = rhinoMesh.Faces.ToIntArray(true);
+            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            Marshal.Copy(F, 0, meshF, F.Length);
 
             // assume each vert has most 10 neighbours
             IntPtr adjTT_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 3 * nF);
@@ -77,8 +75,7 @@ namespace IGLRhinoCommon
 
             // call the c++ func
             int sz;
-            CppIGL.igl_triangle_triangle_adjacency(p_mesh, adjTT_cpp, adjTTI_cpp, out sz);
-            //CppIGL.igl_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out sz);
+            CppIGL.igl_triangle_triangle_adjacency(meshF, nF, adjTT_cpp, adjTTI_cpp);
 
             int[] resTT = new int[nF * 3];
             int[] resTTI = new int[nF * 3];
@@ -86,33 +83,21 @@ namespace IGLRhinoCommon
             Marshal.Copy(adjTTI_cpp, resTTI, 0, nF * 3);
 
             // free memory
-            //Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(meshF);
             Marshal.FreeHGlobal(adjTT_cpp);
             Marshal.FreeHGlobal(adjTTI_cpp);
 
-            List<List<int>> adjVT = new List<List<int>>();
-            List<List<int>> adjVTI = new List<List<int>>();
-            int cnt = 0;
-            while (cnt < sz)
-            {
-                int num = resTT[cnt];
-                cnt++;
+            List<List<int>> adjTT = new List<List<int>>();
+            List<List<int>> adjTTI = new List<List<int>>();
 
-                List<int> tmpVT = new List<int>();
-                List<int> tmpVTI = new List<int>();
-                for (int i = 0; i < num; i++)
-                {
-                    tmpVT.Add(resTT[cnt]);
-                    tmpVTI.Add(resTTI[cnt]);
-                    cnt++;
-                }
-                adjVT.Add(tmpVT);
-                adjVTI.Add(tmpVTI);
+            for (int i = 0; i < nF; i++)
+            {
+                adjTT.Add(new List<int> { resTT[i * 3], resTT[i * 3 + 1], resTT[i * 3 + 2] });
+                adjTTI.Add(new List<int> { resTTI[i * 3], resTTI[i * 3 + 1], resTTI[i * 3 + 2] });
             }
 
             // compute from cpp side.
-            return (adjVT, adjVTI);
-
+            return (adjTT, adjTTI);
         }
 
         public static (List<List<int>>, List<List<int>>) getAdjacencyVT(ref Mesh rhinoMesh)

@@ -25,6 +25,12 @@ namespace IGLRhinoCommon
         internal static extern void igl_vertex_triangle_adjacency(int nV, IntPtr F, int nF, IntPtr adjVTFromCpp, IntPtr adjVTIFromCpp, out int sz);
 
         /// <summary>
+        /// Compute mesh triangle-triangle adjacency list
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_triangle_triangle_adjacency(IntPtr F, int nF, IntPtr adjTTFromCpp, IntPtr adjTTIFromCpp);
+
+        /// <summary>
         /// Compute mesh boundary loop
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
