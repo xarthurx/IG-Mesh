@@ -1,17 +1,16 @@
 ﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
 using System;
 
 namespace igl_GrassHopper
 {
-    public class IGL_adjacentList : GH_Component
+    public class IGL_vert_tri_adjacency : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_adjacentList()
-          : base("IGL_AdjacencyList", "iAdjList",
-              "compute the adjacency list of the given mesh.",
+        public IGL_vert_tri_adjacency()
+          : base("Vertex-Triangle Adjacency", "igAdjVT",
+              "Compute the vertex-triangle adjacency relationship of the given mesh.",
               "IGL+", "Adjacency")
         {
         }
@@ -29,8 +28,8 @@ namespace igl_GrassHopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddIntegerParameter("Adjacency Idices", "A", "the adjacency list of the input mesh", GH_ParamAccess.tree);
-            pManager.AddPointParameter("Adjacency Vertices", "P", "the adjacency vertices of the input mesh", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency V-T", "VT", "indices of the the ajacent triangles to the corresponding vertex.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency V-T", "VTI", "index of incidence within incident faces listed in VF.", GH_ParamAccess.tree);
         }
 
         /// <summary>
@@ -39,30 +38,25 @@ namespace igl_GrassHopper
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getAdjacencyLst(ref mesh);
+            var (vt, vi) = IGLRhinoCommon.Utils.getAdjacencyVT(ref mesh);
 
-            // construct the index & pt tree from the adjacency list
-            Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();
-            Grasshopper.DataTree<Point3d> ptArray = new Grasshopper.DataTree<Point3d>();
-            for (int i = 0; i < res.Count; i++)
+            Grasshopper.DataTree<int> adjVT = new Grasshopper.DataTree<int>();
+            Grasshopper.DataTree<int> adjVTI = new Grasshopper.DataTree<int>();
+            for (int i = 0; i < vt.Count; i++)
             {
                 var path = new Grasshopper.Kernel.Data.GH_Path(i);
-                treeArray.AddRange(res[i], path);
-
-                foreach (var id in res[i])
-                {
-                    ptArray.Add(mesh.Vertices[id], path);
-                }
+                adjVT.AddRange(vt[i], path);
+                adjVTI.AddRange(vi[i], path);
             }
-
-            // assign to the output
-            DA.SetDataTree(0, treeArray);
-            DA.SetDataTree(1, ptArray);
+            // output
+            DA.SetDataTree(0, adjVT);
+            DA.SetDataTree(1, adjVTI);
         }
 
         /// <summary>
@@ -83,7 +77,7 @@ namespace igl_GrassHopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("911ef079-7033-43b6-ad57-1d385c5b8406"); }
+            get { return new Guid("32c63b12-c43f-40fb-913c-9df607e43305"); }
         }
     }
 }
