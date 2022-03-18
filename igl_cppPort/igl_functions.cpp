@@ -1,18 +1,18 @@
-
 #include "igl_functions.h"
 
 #include <igl/adjacency_list.h>
-#include <igl/boundary_loop.h>
-#include <igl/parula.h>
 #include <igl/barycenter.h>
 #include <igl/boundary_facets.h>
-#include <igl/random_points_on_mesh.h>
-#include <igl/per_corner_normals.h>
+#include <igl/boundary_loop.h>
+#include <igl/centroid.h>
+#include <igl/parula.h>
 #include <igl/per_edge_normals.h>
-
-#include <numeric>
+#include <igl/per_corner_normals.h>
+#include <igl/random_points_on_mesh.h>
 
 #include "geolib.h"
+
+#include <numeric>
 
 using namespace std;
 using namespace Eigen;
@@ -56,6 +56,28 @@ void convertArrayToEigenXi(int* inputArray, int sz,
     outputEigen.row(cnt) << inputArray[cnt * 3], inputArray[cnt * 3 + 1],
       inputArray[cnt * 3 + 2];
     cnt++;
+  }
+}
+
+void convertONstructToEigen(ON_3dPointArray& mV, ON_SimpleArray<ON_MeshFace>& mF, MatrixXd& matV, MatrixXi& matF) {
+
+  matV.resize(mV.Count(), 3);
+  for (size_t i = 0; i < mV.Count(); i++)
+  {
+    matV.row(i) << mV[i].x, mV[i].y, mV[i].z;
+  }
+
+  matF.resize(mF.Count(), 3);
+  for (size_t i = 0; i < mF.Count(); i++)
+  {
+    matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
+  }
+}
+void convertEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P) {
+
+  for (size_t i = 0; i < matP.rows(); i++)
+  {
+    P->Append(ON_3dPoint(matP(i, 0), matP(i, 1), matP(i, 2)));
   }
 }
 
@@ -174,49 +196,52 @@ void igl_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz)
   sz = J.size();
 }
 
-void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
+//void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
+//{
+//  // convert mesh
+//  MatrixXf matV;
+//  MatrixXi matF;
+//  convertArrayToEigenXf(V, nV, matV);
+//  convertArrayToEigenXi(F, nF, matF);
+//
+//  // do the igl calculation
+//  MatrixXf matBC;
+//  igl::barycenter(matV, matF, matBC);
+//
+//  // convert back to arrays
+//  RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+//}
+
+void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c)
 {
   // convert mesh
-  MatrixXf matV;
+  MatrixXd matV;
   MatrixXi matF;
-  convertArrayToEigenXf(V, nV, matV);
-  convertArrayToEigenXi(F, nF, matF);
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
-  // do the igl calculation
-  MatrixXf matBC;
-  igl::barycenter(matV, matF, matBC);
+  Vector3d cen;
 
-  // convert back to arrays
-  RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+  // compute
+  igl::centroid(matV, matF, cen);
+
+  // one-item array due to limitation of wrappers
+  convertEigenToON_Points(cen.transpose(), c);
 }
 
-void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC)
+void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC)
 {
-  auto& mV = pMesh->m_dV;
-  auto& mF = pMesh->m_F;
-
+  // convert mesh
   MatrixXd matV;
   MatrixXi matF;
 
-  matV.resize(mV.Count(), 3);
-  for (size_t i = 0; i < mV.Count(); i++)
-  {
-    matV.row(i) << mV[i].x, mV[i].y, mV[i].z;
-  }
-  matF.resize(mF.Count(), 3);
-  for (size_t i = 0; i < mF.Count(); i++)
-  {
-    matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
-  }
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
+  // call func
   MatrixXd matBC;
   igl::barycenter(matV, matF, matBC);
-  //RowMajMatXd::Map(BC, matBC.rows(), matBC.cols()) = matBC;
-  BC->Reserve(matBC.rows());
-  for (size_t i = 0; i < matBC.rows(); i++)
-  {
-    BC->At(i)->Set(matBC(i, 0), matBC(i, 1), matBC(i, 2));
-  }
+
+  // convert back
+  convertEigenToON_Points(matBC, BC);
 }
 
 void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)

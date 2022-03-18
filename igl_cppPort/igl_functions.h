@@ -57,13 +57,18 @@ void igl_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
 
 // ! property funcs
 // BC   barycenters of the mesh triangles
-RH_C_FUNCTION
-void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
+//RH_C_FUNCTION
+//void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
 
 RH_C_FUNCTION
-void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC);
+void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c);
+
+
+RH_C_FUNCTION
+void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC);
 //void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC);
 
+// ! normals
 // VN   vertex normals
 // FN   face normals
 RH_C_FUNCTION

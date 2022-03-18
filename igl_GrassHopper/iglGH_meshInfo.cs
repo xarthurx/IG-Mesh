@@ -4,15 +4,15 @@ using System;
 
 namespace igl_Grasshopper
 {
-    public class IGL_mesh_properties: GH_Component
+    public class IGL_mesh_properties : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGL_mesh_properties()
-          : base("IGL_NormalsVertexAndFace", "iNormals_VF",
-              "compute the per vertex / face normals of the given mesh.",
-              "IGL+", "Normals")
+          : base("Mesh Info", "igMeshInfo",
+              "Provide various mesh info: V, F, etc.",
+              "IGL+", "01|Info")
         {
         }
 
@@ -22,8 +22,6 @@ namespace igl_Grasshopper
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
-            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -31,8 +29,10 @@ namespace igl_Grasshopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Vertex Normals", "VN", "the per-vertex normals of the input mesh's faces", GH_ParamAccess.list);
-            pManager.AddVectorParameter("Face Normals", "FN", "the per-face normals of the input mesh's faces", GH_ParamAccess.list);
+            pManager.AddPointParameter("Vertex", "V", "The vertices of the input mesh.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Face", "F", "The face of the input mesh as three indices into V.", GH_ParamAccess.tree);
+            pManager.AddPointParameter("Centroid", "cen", "The centroid using surface integral if the input mesh is closed.", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Volume", "vol", "The volume of the mesh if the input mesh is closed.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -47,11 +47,19 @@ namespace igl_Grasshopper
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (vn, fn) = IGLRhinoCommon.Utils.getNormalsVertAndFace(ref mesh);
+            var (V, F, cen, vol) = IGLRhinoCommon.Utils.getMeshInfo(ref mesh);
 
+            Grasshopper.DataTree<int> fTree = new Grasshopper.DataTree<int>();
+            for (int i = 0; i < F.Count; i++)
+            {
+                var path = new Grasshopper.Kernel.Data.GH_Path(i);
+                fTree.AddRange(F[i], path);
+            }
             // output
-            DA.SetDataList(0, vn);
-            DA.SetDataList(1, fn);
+            DA.SetDataList(0, V);
+            DA.SetDataTree(1, fTree);
+            DA.SetData(2, cen);
+            DA.SetData(3, vol);
         }
 
         /// <summary>

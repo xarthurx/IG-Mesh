@@ -27,6 +27,30 @@ namespace IGLRhinoCommon
     }
     public static class Utils
     {
+        public static (List<Point3d>, List<List<int>>, Point3d, double) getMeshInfo(ref Mesh rhinoMesh)
+        {
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
+
+            // mesh V, F
+            var V = new List<Point3d>(rhinoMesh.Vertices.ToPoint3dArray());
+            var mF = rhinoMesh.Faces.ToIntArray(true);
+            List<List<int>> F = new List<List<int>>();
+            for (int i = 0; i < mF.Length / 3; i++)
+            {
+                F.Add(new List<int> { mF[i * 3], mF[i * 3 + 1], mF[i * 3 + 2] });
+            }
+
+            var cen = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            // igl for mesh centroid
+            CppIGL.igl_centroid(pMesh, cen.NonConstPointer());
+
+            // use native methods for volume
+            double vol = rhinoMesh.Volume();
+
+            return (V, F, cen.ToArray()[0], vol);
+        }
+
         public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -271,67 +295,61 @@ namespace IGLRhinoCommon
             return (edgeGeo, boundEdge, boundTriIdx);
         }
 
+        //public static List<Point3d> getBarycenter(ref Mesh rhinoMesh)
+        //{
+        //    if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+
+        //    //initialize the pointer and pass data
+        //    int nV = rhinoMesh.Vertices.Count;
+        //    int nF = rhinoMesh.Faces.Count;
+
+        //    // copy data into the IntPtr
+        //    float[] V = rhinoMesh.Vertices.ToFloatArray();
+        //    IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * V.Length);
+        //    Marshal.Copy(V, 0, meshV, V.Length);
+
+
+        //    int[] F = rhinoMesh.Faces.ToIntArray(true);
+        //    IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * F.Length);
+        //    Marshal.Copy(F, 0, meshF, F.Length);
+
+        //    // call the cpp func
+        //    IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
+        //    CppIGL.igl_barycenter(meshV, nV, meshF, nF, BCfromCpp);
+
+        //    float[] processedBC = new float[nF * 3];
+        //    Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
+
+        //    Marshal.FreeHGlobal(meshV);
+        //    Marshal.FreeHGlobal(meshF);
+        //    Marshal.FreeHGlobal(BCfromCpp);
+
+        //    // send back to Rhino Common type
+        //    List<Point3d> BC = new List<Point3d>();
+        //    for (int i = 0; i < nF; i++)
+        //    {
+        //        BC.Add(new Point3d(processedBC[i * 3], processedBC[i * 3 + 1], processedBC[i * 3 + 2]));
+        //    }
+
+        //    return BC;
+        //}
+
         public static List<Point3d> getBarycenter(ref Mesh rhinoMesh)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
-
             //initialize the pointer and pass data
-            int nV = rhinoMesh.Vertices.Count;
-            int nF = rhinoMesh.Faces.Count;
-
-            // copy data into the IntPtr
-            float[] V = rhinoMesh.Vertices.ToFloatArray();
-            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * V.Length);
-            Marshal.Copy(V, 0, meshV, V.Length);
-
-
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
-
-            // call the cpp func
-            IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
-            CppIGL.igl_barycenter(meshV, nV, meshF, nF, BCfromCpp);
-
-            float[] processedBC = new float[nF * 3];
-            Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
-
-            Marshal.FreeHGlobal(meshV);
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(BCfromCpp);
-
-            // send back to Rhino Common type
-            List<Point3d> BC = new List<Point3d>();
-            for (int i = 0; i < nF; i++)
-            {
-                BC.Add(new Point3d(processedBC[i * 3], processedBC[i * 3 + 1], processedBC[i * 3 + 2]));
-            }
-
-            return BC;
-        }
-
-        public static List<Point3d> getBarycenterMesh(ref Mesh rhinoMesh)
-        {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
-            //initialize the pointer and pass data
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
-            int nF = rhinoMesh.Faces.Count;
-            IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(double)) * 3 * nF);
+            var BCcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            CppIGL.igl_barycenter(pMesh, BCcpp.NonConstPointer());
 
-            CppIGL.igl_barycenterMesh(pMesh, BCfromCpp);
-
-            double[] processedBC = new double[nF * 3];
-            Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
-
-            Marshal.FreeHGlobal(BCfromCpp);
-
+            // conversion to C# type
+            var arrayPt = BCcpp.ToArray();
             List<Point3d> BC = new List<Point3d>();
-            // send back to Rhino Common type
-            for (int i = 0; i < nF; i++)
+            foreach (var item in arrayPt)
             {
-                BC.Add(new Point3d(processedBC[i * 3], processedBC[i * 3 + 1], processedBC[i * 3 + 2]));
+                BC.Add(item);
             }
 
             return BC;

@@ -45,7 +45,7 @@ namespace igl_Grasshopper
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getBarycenterMesh(ref mesh);
+            var res = IGLRhinoCommon.Utils.getBarycenter(ref mesh);
 
             // output
             DA.SetDataList(0, res);
