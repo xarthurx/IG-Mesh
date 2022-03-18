@@ -5,8 +5,10 @@ namespace IGLRhinoCommon
 {
     internal static class Import
     {
-        //public const string cppLib = @"C:\Users\xarthur\source\repos\igl-grasshopper\x64\Release\igl_cppPort.dll";
-        // use relative path
+        // absolute path
+        //public const string cppLib = @"C:/Users/xarthur/source/repo/igl-grasshopper/x64/Release/igl_cppPort.dll";
+
+        // relative path
         public const string cppLib = @"igl_cppPort.dll";
     }
 
@@ -51,7 +53,6 @@ namespace IGLRhinoCommon
 
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void igl_barycenterMesh(IntPtr pMesh, IntPtr BC);
-
 
         /// <summary>
         /// Compute per_vertex and per_face normals

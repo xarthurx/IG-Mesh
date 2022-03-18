@@ -313,22 +313,22 @@ namespace IGLRhinoCommon
         public static List<Point3d> getBarycenterMesh(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
-            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rhinoMesh);
             //initialize the pointer and pass data
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
-
             int nF = rhinoMesh.Faces.Count;
-            IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
+            IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(double)) * 3 * nF);
+
             CppIGL.igl_barycenterMesh(pMesh, BCfromCpp);
 
-            float[] processedBC = new float[nF * 3];
+            double[] processedBC = new double[nF * 3];
             Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
 
             Marshal.FreeHGlobal(BCfromCpp);
 
-            // send back to Rhino Common type
             List<Point3d> BC = new List<Point3d>();
+            // send back to Rhino Common type
             for (int i = 0; i < nF; i++)
             {
                 BC.Add(new Point3d(processedBC[i * 3], processedBC[i * 3 + 1], processedBC[i * 3 + 2]));

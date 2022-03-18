@@ -16,6 +16,7 @@
 
 using namespace std;
 using namespace Eigen;
+using RowMajMatXd = Matrix<double, Dynamic, Dynamic, RowMajor>;
 using RowMajMatXf = Matrix<float, Dynamic, Dynamic, RowMajor>;
 using RowMajMatXi = Matrix<int, Dynamic, Dynamic, RowMajor>;
 
@@ -189,12 +190,12 @@ void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
   RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
 }
 
-void igl_barycenterMesh(ON_Mesh* pMesh, float* BC)
+void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC)
 {
-  auto& mV = pMesh->m_V;
+  auto& mV = pMesh->m_dV;
   auto& mF = pMesh->m_F;
 
-  MatrixXf matV;
+  MatrixXd matV;
   MatrixXi matF;
 
   matV.resize(mV.Count(), 3);
@@ -208,9 +209,14 @@ void igl_barycenterMesh(ON_Mesh* pMesh, float* BC)
     matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
   }
 
-  MatrixXf matBC;
+  MatrixXd matBC;
   igl::barycenter(matV, matF, matBC);
-  RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+  //RowMajMatXd::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+  BC->Reserve(matBC.rows());
+  for (size_t i = 0; i < matBC.rows(); i++)
+  {
+    BC->At(i)->Set(matBC(i, 0), matBC(i, 1), matBC(i, 2));
+  }
 }
 
 void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)

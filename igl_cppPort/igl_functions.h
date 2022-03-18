@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 #include <Eigen/Core>
-//#include "opennurbs_public.h"
 
 #if defined(RH_DLL_EXPORTS)
 
@@ -62,7 +61,8 @@ RH_C_FUNCTION
 void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
 
 RH_C_FUNCTION
-void igl_barycenterMesh(ON_Mesh *pMesh, float* BC);
+void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC);
+//void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC);
 
 // VN   vertex normals
 // FN   face normals
