@@ -10,8 +10,8 @@ namespace igl_Grasshopper
         /// </summary>
         public IGL_vert_face_normals()
           : base("IGL_NormalsVertexAndFace", "iNormals_VF",
-              "compute the per vertex / face normals of the given mesh.",
-              "IGL+", "Normals")
+              "Compute the per vertex / face normals of the given mesh.",
+              "IGL+", "02 | Basic Property")
         {
         }
 

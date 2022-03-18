@@ -12,7 +12,7 @@ namespace igl_Grasshopper
         public IGL_normals_corner()
           : base("IGL_NormalsCorner", "iNormals_C",
               "Compute per corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
-              "IGL+", "Normals")
+              "IGL+", "02 | Basic Property")
         {
         }
 

@@ -12,7 +12,7 @@ namespace igl_Grasshopper
         public IGL_BoundLoop()
           : base("IGL_BoundaryLoop", "iBoundLoop",
               "compute the boundary loop of the given mesh.",
-              "IGL+", "Boundary")
+              "IGL+", "03 | Adjacency & Boundary")
         {
         }
 

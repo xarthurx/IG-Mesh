@@ -11,7 +11,7 @@ namespace igl_Grasshopper
         public IGL_barycenter()
           : base("IGL_Barycenter", "iBarycenter",
               "compute the barycenter of each triangle of the given mesh.",
-              "IGL+", "Face Property")
+              "IGL+", "02 | Basic Property")
         {
         }
 
