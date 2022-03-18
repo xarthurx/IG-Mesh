@@ -189,6 +189,30 @@ void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
   RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
 }
 
+void igl_barycenterMesh(ON_Mesh* pMesh, float* BC)
+{
+  auto& mV = pMesh->m_V;
+  auto& mF = pMesh->m_F;
+
+  MatrixXf matV;
+  MatrixXi matF;
+
+  matV.resize(mV.Count(), 3);
+  for (size_t i = 0; i < mV.Count(); i++)
+  {
+    matV.row(i) << mV[i].x, mV[i].y, mV[i].z;
+  }
+  matF.resize(mF.Count(), 3);
+  for (size_t i = 0; i < mF.Count(); i++)
+  {
+    matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
+  }
+
+  MatrixXf matBC;
+  igl::barycenter(matV, matF, matBC);
+  RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
+}
+
 void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
 {
   // convert mesh

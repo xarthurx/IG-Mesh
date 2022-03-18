@@ -61,6 +61,8 @@ void igl_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
 RH_C_FUNCTION
 void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
 
+RH_C_FUNCTION
+void igl_barycenterMesh(ON_Mesh *pMesh, float* BC);
 
 // VN   vertex normals
 // FN   face normals

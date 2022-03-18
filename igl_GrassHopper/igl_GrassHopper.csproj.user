@@ -6,7 +6,8 @@
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartAction>Project</StartAction>
-    <StartWorkingDirectory>C:\Users\xarthur\source\repos\igl-grasshopper\igl_Grasshopper\bin\</StartWorkingDirectory>
+    <StartAction>Program</StartAction>
+    <StartWorkingDirectory>C:\Users\xarthur\source\repo\igl-grasshopper\igl_Grasshopper\bin\</StartWorkingDirectory>
+    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
   </PropertyGroup>
 </Project>

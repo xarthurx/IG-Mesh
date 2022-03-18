@@ -6,6 +6,25 @@ using Rhino.Geometry;
 
 namespace IGLRhinoCommon
 {
+    public static class MeshExtensions
+    {
+        public static double[] ToDoubleArray(this Mesh mesh)
+        {
+            if (!mesh.Vertices.UseDoublePrecisionVertices)
+                return new double[0];
+
+            var rc = new double[mesh.Vertices.Count * 3];
+            int index = 0;
+            for (var i = 0; i < mesh.Vertices.Count; i++)
+            {
+                var pt = mesh.Vertices.Point3dAt(i);
+                rc[index++] = pt.X;
+                rc[index++] = pt.Y;
+                rc[index++] = pt.Z;
+            }
+            return rc;
+        }
+    }
     public static class Utils
     {
         public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)
@@ -57,7 +76,7 @@ namespace IGLRhinoCommon
         public static (List<List<int>>, List<List<int>>) getAdjacencyTT(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
-            IntPtr p_mesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rhinoMesh);
+            //IntPtr p_mesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rhinoMesh);
 
             //// initialize the pointer and pass data
             //int nV = rhinoMesh.Vertices.Count;
@@ -279,6 +298,33 @@ namespace IGLRhinoCommon
 
             Marshal.FreeHGlobal(meshV);
             Marshal.FreeHGlobal(meshF);
+            Marshal.FreeHGlobal(BCfromCpp);
+
+            // send back to Rhino Common type
+            List<Point3d> BC = new List<Point3d>();
+            for (int i = 0; i < nF; i++)
+            {
+                BC.Add(new Point3d(processedBC[i * 3], processedBC[i * 3 + 1], processedBC[i * 3 + 2]));
+            }
+
+            return BC;
+        }
+
+        public static List<Point3d> getBarycenterMesh(ref Mesh rhinoMesh)
+        {
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rhinoMesh);
+            //initialize the pointer and pass data
+
+            // call the cpp func
+
+            int nF = rhinoMesh.Faces.Count;
+            IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
+            CppIGL.igl_barycenterMesh(pMesh, BCfromCpp);
+
+            float[] processedBC = new float[nF * 3];
+            Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
+
             Marshal.FreeHGlobal(BCfromCpp);
 
             // send back to Rhino Common type

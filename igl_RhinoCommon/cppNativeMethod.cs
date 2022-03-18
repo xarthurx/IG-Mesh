@@ -49,6 +49,10 @@ namespace IGLRhinoCommon
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void igl_barycenter(IntPtr V, int nV, IntPtr F, int nF, IntPtr BC);
 
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_barycenterMesh(IntPtr pMesh, IntPtr BC);
+
+
         /// <summary>
         /// Compute per_vertex and per_face normals
         /// </summary>
