@@ -8,8 +8,8 @@
     <ProjectGuid>{210A633A-A5BB-47F8-A464-821D8525F7FD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>igl_GrassHopper</RootNamespace>
-    <AssemblyName>igl_GrassHopper</AssemblyName>
+    <RootNamespace>igl_Grasshopper</RootNamespace>
+    <AssemblyName>igl_Grasshopper</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -33,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,7 +54,8 @@
     <Compile Include="iglGH_meshAdjacencyTriTri.cs" />
     <Compile Include="iglGH_meshAdjacencyVertTri.cs" />
     <Compile Include="iglGH_randomPointsOnMesh.cs" />
-    <Compile Include="igl_GrassHopperInfo.cs" />
+    <Compile Include="iglGH_tmpFunc.cs" />
+    <Compile Include="igl_GrasshopperInfo.cs" />
     <Compile Include="iglGH_meshAdjacentVertVert.cs" />
     <Compile Include="iglGH_meshIsoLine.cs" />
     <Compile Include="iglGH_laplacian.cs" />
@@ -81,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grasshopper">
-      <Version>7.15.22039.13001</Version>
+      <Version>7.16.22067.13001</Version>
     </PackageReference>
     <PackageReference Include="System.Collections">
       <Version>4.3.0</Version>

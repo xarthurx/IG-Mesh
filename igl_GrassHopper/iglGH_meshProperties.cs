@@ -2,7 +2,7 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace igl_GrassHopper
+namespace igl_Grasshopper
 {
     public class IGL_mesh_properties: GH_Component
     {

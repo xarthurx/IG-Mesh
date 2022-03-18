@@ -2,9 +2,9 @@
 using System;
 using System.Drawing;
 
-namespace igl_GrassHopper
+namespace igl_Grasshopper
 {
-    public class igl_GrassHopperInfo : GH_AssemblyInfo
+    public class igl_GrasshopperInfo : GH_AssemblyInfo
     {
         public override string Name
         {

@@ -1,7 +1,7 @@
 ﻿using Grasshopper.Kernel;
 using System;
 
-namespace igl_GrassHopper
+namespace igl_Grasshopper
 {
     public class IGL_tri_tri_adjacency : GH_Component
     {

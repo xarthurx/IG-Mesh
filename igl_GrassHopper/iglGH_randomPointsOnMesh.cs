@@ -2,7 +2,7 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace igl_GrassHopper
+namespace igl_Grasshopper
 {
     public class IGL_random_points_on_mesh : GH_Component
     {

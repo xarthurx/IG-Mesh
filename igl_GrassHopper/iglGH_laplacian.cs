@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace igl_GrassHopper
+namespace igl_Grasshopper
 {
     public class IGL_laplacian : GH_Component
     {

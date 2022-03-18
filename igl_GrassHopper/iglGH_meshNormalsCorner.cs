@@ -2,7 +2,7 @@
 using Rhino.Geometry;
 using System;
 
-namespace igl_GrassHopper
+namespace igl_Grasshopper
 {
     public class IGL_normals_corner : GH_Component
     {
