@@ -12,7 +12,7 @@ namespace igl_Grasshopper
         public IGL_mesh_properties()
           : base("Mesh Info", "igMeshInfo",
               "Provide various mesh info: V, F, etc.",
-              "IGL+", "01 | IO & Info")
+              "IGM", "01 | IO & Info")
         {
         }
 

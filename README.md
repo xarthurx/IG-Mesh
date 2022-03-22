@@ -5,11 +5,11 @@
 
 `IG-Mesh`, standing for either `igl-grasshopper mesh` or `intelligent and geometric mesh`, is a grasshopper plugin targeting at triangular surface mesh processing.
 
-The library is developed for the general architecture, design, and fabrication community, hoping to provide a one-stop solution to resolve the long-lasting pain in mesh processing and operation in the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) eco-system.
+The library is developed for the general architecture, design, and fabrication community, hoping to provide an one-stop solution to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
-## Download & Installation 
+## Download & Installation (TODO)
 The most recent release version can be found in the release section.
-The [project page](_blank) on [Food4Rhino](https://www.food4rhino.com/en) also holds major version of this library.
+The [project page](_blank) on [Food4Rhino](https://www.food4rhino.com/en) also holds major release version of this library.
 
 
 ## Library credit
@@ -24,9 +24,9 @@ The name of this library is also partially inspired by the [libigl](https://libi
 ## Alpha phase and Use case collection
 **This library is currently under the alpha phase for initial public test. To improve it one-step further, your contribution is needed.**
 
-Please submit an issue and tell me what your mesh processing task is and what functions are missing.
+Please submit an issue and tell me what your mesh processing task requires and what type of functions are missing.
 
-I will add the corresponding functions to the library after evaluation.
+I will add the corresponding functions to the library after evaluation, ASAP.
 
 
 ## Licence

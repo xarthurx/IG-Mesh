@@ -9,9 +9,9 @@ namespace igl_Grasshopper
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGL_vert_face_normals()
-          : base("IGL_NormalsVertexAndFace", "iNormals_VF",
-              "Compute the per vertex / face normals of the given mesh.",
-              "IGL+", "02 | Basic Property")
+          : base("Face Normal", "iNormals_F",
+              "Compute the per face normals of the given mesh.",
+              "IGM", "02 | Basic Property")
         {
         }
 
@@ -30,7 +30,6 @@ namespace igl_Grasshopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Vertex Normals", "VN", "the per-vertex normals of the input mesh's faces", GH_ParamAccess.list);
             pManager.AddVectorParameter("Face Normals", "FN", "the per-face normals of the input mesh's faces", GH_ParamAccess.list);
         }
 
@@ -46,11 +45,10 @@ namespace igl_Grasshopper
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (vn, fn) = IGLRhinoCommon.Utils.getNormalsVertAndFace(ref mesh);
+            var fn = IGLRhinoCommon.Utils.getNormalsFace(ref mesh);
 
             // output
-            DA.SetDataList(0, vn);
-            DA.SetDataList(1, fn);
+            DA.SetDataList(0, fn);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace igl_Grasshopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("51a9a99e-207d-4cb7-b49d-f89bab1b446a"); }
+            get { return new Guid("3b03e8b2-ffd3-4679-b94e-3582f485a877"); }
         }
     }
 }

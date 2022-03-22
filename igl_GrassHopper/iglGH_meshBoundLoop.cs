@@ -10,9 +10,9 @@ namespace igl_Grasshopper
         /// Initializes a new instance of the IGL_Barycenter class.
         /// </summary>
         public IGL_BoundLoop()
-          : base("IGL_BoundaryLoop", "iBoundLoop",
+          : base("Boundary Loop", "iBoundLoop",
               "compute the boundary loop of the given mesh.",
-              "IGL+", "03 | Adjacency & Boundary")
+              "IGM", "03 | Adjacency & Boundary")
         {
         }
 

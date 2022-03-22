@@ -12,7 +12,7 @@ namespace igl_Grasshopper
         public IGL_random_points_on_mesh()
           : base("IGL_RandomPointsOnMesh", "iRandomPtsMesh",
               "Randomly sample N points on the given mesh.",
-              "IGL+", "07 | Utils")
+              "IGM", "07 | Utils")
         {
         }
 

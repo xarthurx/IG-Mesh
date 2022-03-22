@@ -81,7 +81,15 @@ void convertEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P) {
   }
 }
 
-// RH_C_FUNCTION
+void convertEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V) {
+
+  for (size_t i = 0; i < matV.rows(); i++)
+  {
+    V->Append(ON_3dVector(matV(i, 0), matV(i, 1), matV(i, 2)));
+  }
+}
+
+
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
   Eigen::MatrixXi eigenF;
   convertArrayToEigenXi(F, nF, eigenF);
@@ -233,7 +241,6 @@ void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC)
   // convert mesh
   MatrixXd matV;
   MatrixXi matF;
-
   convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
   // call func
@@ -244,23 +251,46 @@ void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC)
   convertEigenToON_Points(matBC, BC);
 }
 
-void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
-{
-  // convert mesh
-  MatrixXf matV;
+void igl_vert_normals(ON_Mesh* pMesh, ON_3dPointArray* VN) {
+  MatrixXd matV;
   MatrixXi matF;
-  convertArrayToEigenXf(V, nV, matV);
-  convertArrayToEigenXi(F, nF, matF);
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
-  // compute normal
-  MatrixXf matFN, matVN;
+  MatrixXd matVN;
   igl::per_vertex_normals(matV, matF, matVN);
-  igl::per_face_normals_stable(matV, matF, matFN);
 
-  // convert back to arrays
-  RowMajMatXf::Map(VN, matVN.rows(), matVN.cols()) = matVN;
-  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
+  convertEigenToON_Points(matVN, VN);
 }
+
+void igl_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN) {
+  MatrixXd matV;
+  MatrixXi matF;
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+
+  MatrixXd matFN;
+  igl::per_face_normals(matV, matF, matFN);
+
+  convertEigenToON_Points(matFN, FN);
+}
+
+
+//void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
+//{
+//  // convert mesh
+//  MatrixXf matV;
+//  MatrixXi matF;
+//  convertArrayToEigenXf(V, nV, matV);
+//  convertArrayToEigenXi(F, nF, matF);
+//
+//  // compute normal
+//  MatrixXf matFN, matVN;
+//  igl::per_vertex_normals(matV, matF, matVN);
+//  igl::per_face_normals_stable(matV, matF, matFN);
+//
+//  // convert back to arrays
+//  RowMajMatXf::Map(VN, matVN.rows(), matVN.cols()) = matVN;
+//  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
+//}
 
 void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, float* FN)
 {

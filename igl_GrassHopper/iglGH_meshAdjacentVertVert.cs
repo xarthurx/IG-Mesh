@@ -12,7 +12,7 @@ namespace igl_Grasshopper
         public IGL_adjacentList()
           : base("Vertex-Vertex Adjacency", "iAdjVV",
               "Compute the vertex-vertex adjacency relationship of the given mesh.",
-              "IGL+", "03 | Adjacency & Boundary")
+              "IGM", "03 | Adjacency & Boundary")
         {
         }
 

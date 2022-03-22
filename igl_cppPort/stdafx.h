@@ -8,16 +8,4 @@
 //// uncomment the next line if you want to use opennurbs as a DLL
 ////#define OPENNURBS_IMPORTS
 #include "C:/Libraries/opennurbs/opennurbs_public.h"
-
-
-// -------------------------------------
-// Rhino SDK
-// -------------------------------------
-//#define RHINO_V6_READY
-//#include "RhinoSdkStdafxPreamble.h"
-//
-//#define WIN64
-//
-//// Rhino SDK classes
-//#include "RhinoSdk.h" 
-//
+//#include "C:/Program Files/Rhino 7 SDK/openNURBS/opennurbs.h"

@@ -9,9 +9,9 @@ namespace igl_Grasshopper
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGL_barycenter()
-          : base("IGL_Barycenter", "iBarycenter",
+          : base("Barycenter", "iBarycenter",
               "compute the barycenter of each triangle of the given mesh.",
-              "IGL+", "02 | Basic Property")
+              "IGM", "02 | Basic Property")
         {
         }
 

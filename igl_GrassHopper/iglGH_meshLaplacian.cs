@@ -12,7 +12,7 @@ namespace igl_Grasshopper
         public IGL_laplacian()
           : base("IGL_Laplacian", "igLaplacian",
               "Solve laplacian equation under given boundary condition.",
-              "IGL+", "07 | Utils")
+              "IGM", "07 | Utils")
         {
         }
 

@@ -11,7 +11,7 @@ namespace igl_Grasshopper
         public IGL_vert_tri_adjacency()
           : base("Vertex-Triangle Adjacency", "igAdjVT",
               "Compute the vertex-triangle adjacency relationship of the given mesh.",
-              "IGL+", "03 | Adjacency & Boundary")
+              "IGM", "03 | Adjacency & Boundary")
         {
         }
 

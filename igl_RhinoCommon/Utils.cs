@@ -355,53 +355,95 @@ namespace IGLRhinoCommon
             return BC;
         }
 
-        public static (List<Vector3d> VN, List<Vector3d> FN) getNormalsVertAndFace(ref Mesh rhinoMesh)
+        public static List<Vector3d> getNormalsVert(ref Mesh rhinoMesh)
         {
-            //initialize the pointer and pass data
-            int nV = rhinoMesh.Vertices.Count;
-            int nF = rhinoMesh.Faces.Count;
 
-            // copy data into the IntPtr
-            float[] V = rhinoMesh.Vertices.ToFloatArray();
-            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
-            Marshal.Copy(V, 0, meshV, V.Length);
-
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
-            IntPtr VN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nV);
-            IntPtr FN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
-            CppIGL.igl_vert_and_face_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
+            var VNcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            CppIGL.igl_vert_normals(pMesh, VNcpp.NonConstPointer());
 
-            float[] processedVN = new float[nV * 3];
-            float[] processedFN = new float[nF * 3];
-            Marshal.Copy(VN_cpp, processedVN, 0, nV * 3);
-            Marshal.Copy(FN_cpp, processedFN, 0, nF * 3);
-
-            Marshal.FreeHGlobal(meshV);
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(VN_cpp);
-            Marshal.FreeHGlobal(FN_cpp);
-
-            // send back to RhinoCommon type
+            // conversion to C# type
+            var arrayPt = VNcpp.ToArray();
             List<Vector3d> VN = new List<Vector3d>();
-            List<Vector3d> FN = new List<Vector3d>();
-
-            for (int i = 0; i < nV; i++)
+            foreach (var item in arrayPt)
             {
-                VN.Add(new Vector3d(processedVN[i * 3], processedVN[i * 3 + 1], processedVN[i * 3 + 2]));
+                VN.Add(new Vector3d(item));
             }
 
-            for (int i = 0; i < nF; i++)
-            {
-                FN.Add(new Vector3d(processedFN[i * 3], processedFN[i * 3 + 1], processedFN[i * 3 + 2]));
-            }
-
-            return (VN, FN);
-
+            return VN;
         }
+
+        public static List<Vector3d> getNormalsFace(ref Mesh rhinoMesh)
+        {
+
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
+
+            // call the cpp func
+            var FNcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            CppIGL.igl_face_normals(pMesh, FNcpp.NonConstPointer());
+
+            // conversion to C# type
+            var arrayPt = FNcpp.ToArray();
+            List<Vector3d> FN = new List<Vector3d>();
+            foreach (var item in arrayPt)
+            {
+                FN.Add(new Vector3d(item));
+            }
+
+            return FN;
+        }
+
+        //public static (List<Vector3d> VN, List<Vector3d> FN) getNormalsVertAndFace(ref Mesh rhinoMesh)
+        //{
+        //    //initialize the pointer and pass data
+        //    int nV = rhinoMesh.Vertices.Count;
+        //    int nF = rhinoMesh.Faces.Count;
+
+        //    // copy data into the IntPtr
+        //    float[] V = rhinoMesh.Vertices.ToFloatArray();
+        //    IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+        //    Marshal.Copy(V, 0, meshV, V.Length);
+
+        //    int[] F = rhinoMesh.Faces.ToIntArray(true);
+        //    IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+        //    Marshal.Copy(F, 0, meshF, F.Length);
+
+        //    // call the cpp func
+        //    IntPtr VN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nV);
+        //    IntPtr FN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
+        //    CppIGL.igl_vert_and_face_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
+
+        //    float[] processedVN = new float[nV * 3];
+        //    float[] processedFN = new float[nF * 3];
+        //    Marshal.Copy(VN_cpp, processedVN, 0, nV * 3);
+        //    Marshal.Copy(FN_cpp, processedFN, 0, nF * 3);
+
+        //    Marshal.FreeHGlobal(meshV);
+        //    Marshal.FreeHGlobal(meshF);
+        //    Marshal.FreeHGlobal(VN_cpp);
+        //    Marshal.FreeHGlobal(FN_cpp);
+
+        //    // send back to RhinoCommon type
+        //    List<Vector3d> VN = new List<Vector3d>();
+        //    List<Vector3d> FN = new List<Vector3d>();
+
+        //    for (int i = 0; i < nV; i++)
+        //    {
+        //        VN.Add(new Vector3d(processedVN[i * 3], processedVN[i * 3 + 1], processedVN[i * 3 + 2]));
+        //    }
+
+        //    for (int i = 0; i < nF; i++)
+        //    {
+        //        FN.Add(new Vector3d(processedFN[i * 3], processedFN[i * 3 + 1], processedFN[i * 3 + 2]));
+        //    }
+
+        //    return (VN, FN);
+
+        //}
 
         public static List<List<Vector3d>> getNormalsCorner(ref Mesh rhinoMesh, float thre_deg)
         {

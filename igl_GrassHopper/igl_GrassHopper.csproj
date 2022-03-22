@@ -47,14 +47,14 @@
   <ItemGroup>
     <Compile Include="iglGH_meshBoundEdge.cs" />
     <Compile Include="iglGH_meshInfo.cs" />
+    <Compile Include="iglGH_meshNormalFace.cs" />
     <Compile Include="iglGH_meshNormalsCorner.cs" />
-    <Compile Include="iglGH_meshNormalsVertFace.cs" />
+    <Compile Include="iglGH_meshNormalsVertex.cs" />
     <Compile Include="iglGH_meshBarycenter.cs" />
     <Compile Include="iglGH_meshBoundLoop.cs" />
     <Compile Include="iglGH_meshAdjacencyTriTri.cs" />
     <Compile Include="iglGH_meshAdjacencyVertTri.cs" />
     <Compile Include="iglGH_meshRandomPointsOnMesh.cs" />
-    <Compile Include="iglGH_tmpFunc.cs" />
     <Compile Include="igl_GrasshopperInfo.cs" />
     <Compile Include="iglGH_meshAdjacentVertVert.cs" />
     <Compile Include="iglGH_meshIsoLine.cs" />

@@ -1,18 +1,17 @@
 ﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
 using System;
 
 namespace igl_Grasshopper
 {
-    public class IGL_BoundEdge : GH_Component
+    public class IGL_vert_normals : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the IGL_Barycenter class.
+        /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_BoundEdge()
-          : base("Boundary Edge", "iBoundEdge",
-              "compute the boundary edges the given mesh.",
-              "IGM", "03 | Adjacency & Boundary")
+        public IGL_vert_normals()
+          : base("Vertex Normal", "iNormals_V",
+              "Compute the per vertex normals of the given mesh.",
+              "IGM", "02 | Basic Property")
         {
         }
 
@@ -22,6 +21,8 @@ namespace igl_Grasshopper
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
+            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -29,9 +30,7 @@ namespace igl_Grasshopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddLineParameter("Boundary edges.", "E", "the boundary edges.", GH_ParamAccess.tree);
-            pManager.AddIntegerParameter("Vertex Indices of the boundary edges.", "EV", "the vertex indices of the boundary edges.", GH_ParamAccess.tree);
-            pManager.AddIntegerParameter("Boundary Triangle indices.", "T", "the indices of the boundary triangles.", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Vertex Normals", "VN", "the per-vertex normals of the input mesh's faces", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -40,26 +39,16 @@ namespace igl_Grasshopper
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            // call the cpp function 
-            var (bndE_geo, bndE, bndTi) = IGLRhinoCommon.Utils.getBoundaryEdge(ref mesh);
+            // call the cpp function to solve the adjacency list
+            var vn = IGLRhinoCommon.Utils.getNormalsVert(ref mesh);
 
-            // construct the edge tree from the list
-            Grasshopper.DataTree<int> evArray = new Grasshopper.DataTree<int>();
-
-            for (int i = 0; i < bndE.Count; i++)
-            {
-                var path = new Grasshopper.Kernel.Data.GH_Path(i);
-                evArray.AddRange(bndE[i], path);
-            }
-
-            // assign to the output
-            DA.SetDataList(0, bndE_geo);
-            DA.SetDataTree(1, evArray);
-            DA.SetDataList(2, bndTi);
+            // output
+            DA.SetDataList(0, vn);
         }
 
         /// <summary>
@@ -80,7 +69,7 @@ namespace igl_Grasshopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("f4983646-592d-475a-bce2-f57767095810"); }
+            get { return new Guid("51a9a99e-207d-4cb7-b49d-f89bab1b446a"); }
         }
     }
 }

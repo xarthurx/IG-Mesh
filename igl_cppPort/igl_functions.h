@@ -1,7 +1,8 @@
 #pragma once
 
-#include "stdafx.h"
 #include <Eigen/Core>
+
+#include "stdafx.h"
 
 #if defined(RH_DLL_EXPORTS)
 
@@ -24,12 +25,18 @@
 
 #endif
 
-void convertArrayToEigenXd(double* inputArray, int sz,
-  Eigen::MatrixXd& outputEigen);
-void convertArrayToEigenXf(float* inputArray, int sz,
-  Eigen::MatrixXf& outputEigen);
-void convertArrayToEigenXi(int* inputArray, int sz,
-  Eigen::MatrixXi& outputEigen);
+// void convertArrayToEigenXd(double* inputArray, int sz,
+//                           Eigen::MatrixXd& outputEigen);
+// void convertArrayToEigenXf(float* inputArray, int sz,
+//                           Eigen::MatrixXf& outputEigen);
+// void convertArrayToEigenXi(int* inputArray, int sz,
+//                           Eigen::MatrixXi& outputEigen);
+
+// void convertONstructToEigen(const ON_3dPointArray& mV,
+//                            const ON_SimpleArray<ON_MeshFace>& mF,
+//                            MatrixXd& matV, MatrixXi& matF);
+// void convertEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P);
+// void convertEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V);
 
 // Inputs & Outputs:
 // V    Flattened #V x 3 matrix of vertex cordinates
@@ -37,13 +44,13 @@ void convertArrayToEigenXi(int* inputArray, int sz,
 // F    Flattened #F x 3 matrix of indices of triangle corners into V
 // nF   face number
 
-
 // ! adjacency funcs
 RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
-void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjVFI, int& sz);
+void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
+                                   int* adjVFI, int& sz);
 
 RH_C_FUNCTION
 void igl_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI);
@@ -54,43 +61,47 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 RH_C_FUNCTION
 void igl_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
 
-
 // ! property funcs
 // BC   barycenters of the mesh triangles
-//RH_C_FUNCTION
-//void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
+// RH_C_FUNCTION
+// void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
 
 RH_C_FUNCTION
 void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c);
 
-
 RH_C_FUNCTION
 void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC);
-//void igl_barycenterMesh(ON_Mesh* pMesh, ON_3dPointArray* BC);
 
-// ! normals
-// VN   vertex normals
-// FN   face normals
+/*
+  due to the incomplete of Rhino.Runtime.InteropWrappers,
+  we use pointarray to handle vectors
+*/
+// ! VN   vertex normals
 RH_C_FUNCTION
-void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN);
+void igl_vert_normals(ON_Mesh* pMesh, ON_3dPointArray* VN);
+
+// ! FN   face normals
+RH_C_FUNCTION
+void igl_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN);
 
 RH_C_FUNCTION
-void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, float* FN);
+void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg,
+                        float* FN);
 
 RH_C_FUNCTION
-void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType, float* EN, int* EI, int* EMAP, int& sz);
-
+void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
+                      float* EN, int* EI, int* EMAP, int& sz);
 
 // ! advanced
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-  float* con_value, int numCon, int divN,
-  float* isoLnPts, int* numPtsPerLst);
+                       float* con_value, int numCon, int divN, float* isoLnPts,
+                       int* numPtsPerLst);
 
 RH_C_FUNCTION
 void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-  float* con_value, int numCon, float* laplacianValue);
-
+                      float* con_value, int numCon, float* laplacianValue);
 
 RH_C_FUNCTION
-void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B, int* FI);
+void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
+                              int* FI);

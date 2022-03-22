@@ -13,7 +13,7 @@ namespace igl_Grasshopper
         public iglGH_meshIsoLine()
           : base("mesh isoline", "isoline",
               "extract the isolines of a given mesh",
-              "IGL+", "07 | Utils")
+              "IGM", "07 | Utils")
         {
         }
 
