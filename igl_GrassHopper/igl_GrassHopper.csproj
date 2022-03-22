@@ -54,6 +54,7 @@
     <Compile Include="iglGH_meshBoundLoop.cs" />
     <Compile Include="iglGH_meshAdjacencyTriTri.cs" />
     <Compile Include="iglGH_meshAdjacencyVertTri.cs" />
+    <Compile Include="iglGH_meshPrincipalCurvature.cs" />
     <Compile Include="iglGH_meshRandomPointsOnMesh.cs" />
     <Compile Include="igl_GrasshopperInfo.cs" />
     <Compile Include="iglGH_meshAdjacentVertVert.cs" />

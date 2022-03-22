@@ -44,7 +44,9 @@
 // F    Flattened #F x 3 matrix of indices of triangle corners into V
 // nF   face number
 
+// ! --------------------------------
 // ! adjacency funcs
+// ! --------------------------------
 RH_C_FUNCTION
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
@@ -61,7 +63,9 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz);
 RH_C_FUNCTION
 void igl_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
 
+// ! --------------------------------
 // ! property funcs
+// ! --------------------------------
 // BC   barycenters of the mesh triangles
 // RH_C_FUNCTION
 // void igl_barycenter(float* V, int nV, int* F, int nF, float* BC);
@@ -72,6 +76,9 @@ void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c);
 RH_C_FUNCTION
 void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC);
 
+// ! --------------------------------
+// ! normal funcs
+// ! --------------------------------
 /*
   due to the incomplete of Rhino.Runtime.InteropWrappers,
   we use pointarray to handle vectors
@@ -92,7 +99,9 @@ RH_C_FUNCTION
 void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
                       float* EN, int* EI, int* EMAP, int& sz);
 
+// ! --------------------------------
 // ! advanced
+// ! --------------------------------
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
                        float* con_value, int numCon, int divN, float* isoLnPts,
@@ -105,3 +114,8 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
 RH_C_FUNCTION
 void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
                               int* FI);
+
+RH_C_FUNCTION
+void igl_principal_curvature(ON_Mesh* pMesh, double r, ON_3dPointArray* PD1,
+                             ON_3dPointArray* PD2, ON_SimpleArray<double>* PV1,
+                             ON_SimpleArray<double>* PV2);

@@ -30,8 +30,8 @@ namespace igl_Grasshopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddIntegerParameter("Adjacency T-T", "TT", "The item {i}(j) is the id of the triangle adjacent to the j edge of triangle i.", GH_ParamAccess.tree);
-            pManager.AddIntegerParameter("Adjacency T-T", "TTI", "The item{i}(j) is the id of edge of the triangle TT(i,j) that is adjacent with triangle i.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency T-T index", "TT", "The item {i}(j) is the id of the triangle adjacent to the j edge of triangle i.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Adjacency T-T edge index", "TTI", "The item{i}(j) is the id of edge of the triangle TT(i,j) that is adjacent with triangle i.", GH_ParamAccess.tree);
         }
 
         /// <summary>

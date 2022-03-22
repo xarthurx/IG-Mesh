@@ -103,5 +103,11 @@ namespace IGLRhinoCommon
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void igl_random_point_on_mesh(IntPtr V, int nV, IntPtr F, int nF, int N, IntPtr B, IntPtr FI);
+
+        /// <summary>
+        /// principal curvatures.
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void igl_principal_curvature(IntPtr pMesh, double r, IntPtr PD1, IntPtr PD2, IntPtr PV1, IntPtr PV2);
     }
 }

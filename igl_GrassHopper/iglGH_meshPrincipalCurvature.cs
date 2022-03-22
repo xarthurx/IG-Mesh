@@ -1,17 +1,17 @@
-﻿
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
+using Rhino.Geometry;
 using System;
 
 namespace igl_Grasshopper
 {
-    public class IGL_random_points_on_mesh : GH_Component
+    public class IGL_principal_curvature : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the MyComponent1 class.
+        /// Initializes the new instance of the corner_normals class.
         /// </summary>
-        public IGL_random_points_on_mesh()
-          : base("Random Points On Mesh", "iRandomPtsMesh",
-              "Randomly sample N points on surface of the given mesh.",
+        public IGL_principal_curvature()
+          : base("Principal Curvature", "iPrincipalCurvature",
+              "Compute the principal curvature directions and magnitude of the given triangle mesh.",
               "IGM", "07 | Utils")
         {
         }
@@ -22,9 +22,7 @@ namespace igl_Grasshopper
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Number", "N", "number of sampled points.", GH_ParamAccess.item, 0);
-            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
-            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("radius", "r", "controls the size of the neighbourhood used, 1 = average edge length.", GH_ParamAccess.item, 5);
             pManager[1].Optional = true;
         }
 
@@ -33,8 +31,10 @@ namespace igl_Grasshopper
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddPointParameter("Sampled Points", "P", "the N sampled points.", GH_ParamAccess.list);
-            pManager.AddIntegerParameter("Face Index", "FI", "the corresponding face indices of the sampled points.", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Principal Dir 1", "PD1", "Maximal curvature direction for each vertex.", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Principal Dir 2", "PD2", "Minimal curvature direction for each vertex.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Principal Value 1", "PV1", "Maximal curvature value for each vertex.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Principal Value 2", "PV2", "Minimal curvature value for each vertex.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -48,15 +48,18 @@ namespace igl_Grasshopper
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            int N = 1;
-            if (!DA.GetData(1, ref N) || N == 0) { return; }
+            // use default threshold if not given by the user
+            double r = 5;
+            if (!DA.GetData(1, ref r)) { }
 
             // call the cpp function to solve the adjacency list
-            var (b, fi) = IGLRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N);
+            var (PD1, PD2, PV1, PV2) = IGLRhinoCommon.Utils.getPrincipalCurvature(ref mesh, r);
 
             // output
-            DA.SetDataList(0, b);
-            DA.SetDataList(1, fi);
+            DA.SetDataList(0, PD1);
+            DA.SetDataList(1, PD2);
+            DA.SetDataList(2, PV1);
+            DA.SetDataList(3, PV2);
         }
 
         /// <summary>
@@ -77,7 +80,7 @@ namespace igl_Grasshopper
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("5819dc11-ccff-41eb-b126-96c34911ddc1"); }
+            get { return new Guid("ab67cd8c-b15b-40b4-b052-e8d39ccc1ea5"); }
         }
     }
 }

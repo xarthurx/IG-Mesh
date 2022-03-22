@@ -6,13 +6,14 @@
 #include <igl/boundary_loop.h>
 #include <igl/centroid.h>
 #include <igl/parula.h>
-#include <igl/per_edge_normals.h>
 #include <igl/per_corner_normals.h>
+#include <igl/per_edge_normals.h>
+#include <igl/principal_curvature.h>
 #include <igl/random_points_on_mesh.h>
 
-#include "geolib.h"
-
 #include <numeric>
+
+#include "geolib.h"
 
 using namespace std;
 using namespace Eigen;
@@ -22,7 +23,7 @@ using RowMajMatXi = Matrix<int, Dynamic, Dynamic, RowMajor>;
 
 // helper function
 void convertArrayToEigenXd(double* inputArray, int sz,
-  Eigen::MatrixXd& outputEigen) {
+                           Eigen::MatrixXd& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
@@ -35,7 +36,7 @@ void convertArrayToEigenXd(double* inputArray, int sz,
 }
 
 void convertArrayToEigenXf(float* inputArray, int sz,
-  Eigen::MatrixXf& outputEigen) {
+                           Eigen::MatrixXf& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
@@ -48,47 +49,46 @@ void convertArrayToEigenXf(float* inputArray, int sz,
 }
 
 void convertArrayToEigenXi(int* inputArray, int sz,
-  Eigen::MatrixXi& outputEigen) {
+                           Eigen::MatrixXi& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
   while (cnt != sz) {
     outputEigen.row(cnt) << inputArray[cnt * 3], inputArray[cnt * 3 + 1],
-      inputArray[cnt * 3 + 2];
+        inputArray[cnt * 3 + 2];
     cnt++;
   }
 }
 
-void convertONstructToEigen(ON_3dPointArray& mV, ON_SimpleArray<ON_MeshFace>& mF, MatrixXd& matV, MatrixXi& matF) {
-
+void convertONstructToEigen(ON_3dPointArray& mV,
+                            ON_SimpleArray<ON_MeshFace>& mF, MatrixXd& matV,
+                            MatrixXi& matF) {
   matV.resize(mV.Count(), 3);
-  for (size_t i = 0; i < mV.Count(); i++)
-  {
+  for (size_t i = 0; i < mV.Count(); i++) {
     matV.row(i) << mV[i].x, mV[i].y, mV[i].z;
   }
 
   matF.resize(mF.Count(), 3);
-  for (size_t i = 0; i < mF.Count(); i++)
-  {
+  for (size_t i = 0; i < mF.Count(); i++) {
     matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
   }
 }
 void convertEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P) {
-
-  for (size_t i = 0; i < matP.rows(); i++)
-  {
+  for (size_t i = 0; i < matP.rows(); i++) {
     P->Append(ON_3dPoint(matP(i, 0), matP(i, 1), matP(i, 2)));
   }
 }
 
 void convertEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V) {
-
-  for (size_t i = 0; i < matV.rows(); i++)
-  {
+  for (size_t i = 0; i < matV.rows(); i++) {
     V->Append(ON_3dVector(matV(i, 0), matV(i, 1), matV(i, 2)));
   }
 }
 
+void convertEigenVecToON_Array(const VectorXd& vecV,
+                               ON_SimpleArray<double>* P) {
+  P->SetArray(const_cast<double&>(vecV.data()));
+}
 
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
   Eigen::MatrixXi eigenF;
@@ -103,20 +103,20 @@ void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
     transferLst.push_back(vec.size());
     // copy all values
     std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-    });
+  });
 
   std::copy(transferLst.begin(), transferLst.end(), adjLst);
 
   // the total # of neighbouring vert + the # of vert (as indicator of each
   // vector's size)
   sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-    [&](int res, vector<int>& vec) {
-      return res + vec.size();
-    });
+                                    [&](int res, vector<int>& vec) {
+                                      return res + vec.size();
+                                    });
 }
 
-void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjVFI, int& sz)
-{
+void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
+                                   int* adjVFI, int& sz) {
   Eigen::MatrixXi matF;
   convertArrayToEigenXi(F, nF, matF);
 
@@ -125,30 +125,31 @@ void igl_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF, int* adjV
 
   vector<int> tmpVF(0), tmpVFI(0);
   for_each(VF.begin(), VF.end(), [&](vector<int>& vec) {
-    tmpVF.push_back(vec.size()); // size as indicator
-    std::copy(vec.begin(), vec.end(), std::back_inserter(tmpVF)); // copy all values
-    });
+    tmpVF.push_back(vec.size());  // size as indicator
+    std::copy(vec.begin(), vec.end(),
+              std::back_inserter(tmpVF));  // copy all values
+  });
 
   std::copy(tmpVF.begin(), tmpVF.end(), adjVF);
 
   for_each(VFI.begin(), VFI.end(), [&](vector<int>& vec) {
-    tmpVF.push_back(vec.size()); // size as indicator
-    std::copy(vec.begin(), vec.end(), std::back_inserter(tmpVFI)); // copy all values
-    });
+    tmpVF.push_back(vec.size());  // size as indicator
+    std::copy(vec.begin(), vec.end(),
+              std::back_inserter(tmpVFI));  // copy all values
+  });
 
   std::copy(tmpVFI.begin(), tmpVFI.end(), adjVFI);
 
   // the total # of neighbouring vert + the # of vert (as indicator of each
   // vector's size)
   sz = VF.size() + std::accumulate(VF.begin(), VF.end(), (size_t)0,
-    [&](int res, vector<int>& vec) {
-      return res + vec.size();
-    }); // same for VF and VFI
+                                   [&](int res, vector<int>& vec) {
+                                     return res + vec.size();
+                                   });  // same for VF and VFI
 }
 
-void igl_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI)
-{
-  //if (pMesh->HasDoublePrecisionVertices()) {
+void igl_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
+  // if (pMesh->HasDoublePrecisionVertices()) {
   //  ON_3dPointArray& V = pMesh->m_dV;
   //}
 
@@ -175,20 +176,19 @@ void igl_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
     transferLst.push_back(vec.size());
     // copy all values
     std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-    });
+  });
 
   std::copy(transferLst.begin(), transferLst.end(), adjLst);
 
   // the total # of boundary loops + the # of vert (as indicator of each
   // vector's size)
   sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-    [&](int res, vector<int>& vec) {
-      return res + vec.size();
-    });
+                                    [&](int res, vector<int>& vec) {
+                                      return res + vec.size();
+                                    });
 }
 
-void igl_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz)
-{
+void igl_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz) {
   // convert mesh
   MatrixXi matF;
   convertArrayToEigenXi(F, nF, matF);
@@ -204,7 +204,7 @@ void igl_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz)
   sz = J.size();
 }
 
-//void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
+// void igl_barycenter(float* V, int nV, int* F, int nF, float* BC)
 //{
 //  // convert mesh
 //  MatrixXf matV;
@@ -220,8 +220,7 @@ void igl_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz)
 //  RowMajMatXf::Map(BC, matBC.rows(), matBC.cols()) = matBC;
 //}
 
-void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c)
-{
+void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c) {
   // convert mesh
   MatrixXd matV;
   MatrixXi matF;
@@ -236,8 +235,7 @@ void igl_centroid(ON_Mesh* pMesh, ON_3dPointArray* c)
   convertEigenToON_Points(cen.transpose(), c);
 }
 
-void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC)
-{
+void igl_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
   // convert mesh
   MatrixXd matV;
   MatrixXi matF;
@@ -273,8 +271,8 @@ void igl_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN) {
   convertEigenToON_Points(matFN, FN);
 }
 
-
-//void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN, float* FN)
+// void igl_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN,
+// float* FN)
 //{
 //  // convert mesh
 //  MatrixXf matV;
@@ -292,8 +290,8 @@ void igl_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN) {
 //  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
 //}
 
-void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, float* FN)
-{
+void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg,
+                        float* FN) {
   // convert mesh
   MatrixXf matV;
   MatrixXi matF;
@@ -308,8 +306,8 @@ void igl_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg, f
   RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
 }
 
-void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType, float* EN, int* EI, int* EMAP, int& sz)
-{
+void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
+                      float* EN, int* EI, int* EMAP, int& sz) {
   // convert mesh
   MatrixXf matV;
   MatrixXi matF;
@@ -321,7 +319,9 @@ void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType, float
   MatrixXf matFN;
   MatrixXi matEI;
   VectorXi vecEMAP;
-  igl::per_edge_normals(matV, matF, static_cast<igl::PerEdgeNormalsWeightingType>(weightingType), matEN, matEI, vecEMAP);
+  igl::per_edge_normals(
+      matV, matF, static_cast<igl::PerEdgeNormalsWeightingType>(weightingType),
+      matEN, matEI, vecEMAP);
 
   // convert back
   RowMajMatXf::Map(EN, matEN.rows(), matEN.cols()) = matEN;
@@ -332,8 +332,8 @@ void igl_edge_normals(float* V, int nV, int* F, int nF, int weightingType, float
 
 // RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-  float* con_value, int numCon, int divN,
-  float* isoLnPts, int* numPtsPerLst) {
+                       float* con_value, int numCon, int divN, float* isoLnPts,
+                       int* numPtsPerLst) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
@@ -378,14 +378,14 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
   }
 
   std::copy(transferIsoLnCollection.begin(), transferIsoLnCollection.end(),
-    isoLnPts);
+            isoLnPts);
   std::copy(transferNumPtPerLst.begin(), transferNumPtPerLst.end(),
-    numPtsPerLst);
+            numPtsPerLst);
 }
 
 // RH_C_FUNCTION
 void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-  float* con_value, int numCon, float* laplacianValue) {
+                      float* con_value, int numCon, float* laplacianValue) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
@@ -411,11 +411,11 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
   // transfer data back
   VectorXf meshScalarFloat = meshScalar.cast<float>();
   Eigen::VectorXf::Map(laplacianValue, meshScalarFloat.rows()) =
-    meshScalarFloat;
+      meshScalarFloat;
 }
 
-void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B, int* FI)
-{
+void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
+                              int* FI) {
   MatrixXf matV;
   MatrixXi matF;
   convertArrayToEigenXf(V, nV, matV);
@@ -427,12 +427,29 @@ void igl_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
 
   MatrixXf samples(matB.rows(), 3);
   for (int i = 0; i < matB.rows(); i++) {
-    samples.row(i) =
-      matB(i, 0) * matV.row(matF(faceI(i), 0)) +
-      matB(i, 1) * matV.row(matF(faceI(i), 1)) +
-      matB(i, 2) * matV.row(matF(faceI(i), 2));
+    samples.row(i) = matB(i, 0) * matV.row(matF(faceI(i), 0)) +
+                     matB(i, 1) * matV.row(matF(faceI(i), 1)) +
+                     matB(i, 2) * matV.row(matF(faceI(i), 2));
   }
 
   RowMajMatXf::Map(B, samples.rows(), samples.cols()) = samples;
   VectorXi::Map(FI, faceI.size()) = faceI;
+}
+
+void igl_principal_curvature(ON_Mesh* pMesh, double r, ON_3dPointArray* PD1,
+                             ON_3dPointArray* PD2, ON_SimpleArray<double>* PV1,
+                             ON_SimpleArray<double>* PV2) {
+  MatrixXd matV;
+  MatrixXi matF;
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+
+  MatrixXd mPD1, mPD2;
+  VectorXd mPV1, mPV2;
+  igl::principal_curvature(matV, matF, mPD1, mPD2, mPV1, mPV2, r);
+
+  convertEigenToON_Points(mPD1, PD1);
+  convertEigenToON_Points(mPD2, PD2);
+
+  convertEigenVecToON_Array(mPV1, PV1);
+  convertEigenVecToON_Array(mPV2, PV2);
 }
