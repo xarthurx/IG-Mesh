@@ -46,8 +46,27 @@ If `IG-Mesh` contributes to an academic publication, cite it as:
   year = {2022}
 }
 ```
-<!-- ## Compilation and Contribution -->
-<!-- To compile, one need to download the [libigl](https://libigl.github.io) library, and compile this `.NET`-based library to generate the corresponding `.gha` and `.dll` file. -->
+## Compilation and Contribution
+
+### `openNURBS`
+1. Download the [openNURBS](https://github.com/mcneel/opennurbs) library to your local desk, compile it (both `debug` and `Release`).
+
+2. Modify the corresponding dir in the `stdafx.h` file under project `igm_cppPort`.
+
+### `libigl`
+
+1. Download the [libigl](https://libigl.github.io) library to your local desk. 
+2. Add the `include` dir in the Property Page of `igm_cppPort`.
+
+### nuget packages
+In the `NuGet` package manager, you should install the following packages for the solution:
+- Grasshopper
+- RhinoCommon
+- System.Collections
+- System.Runtime
+
+### Build this library
+After the above two steps, you should now be able to build the whole solution and generate the `.gha` and `.dll` file.
 
 
 

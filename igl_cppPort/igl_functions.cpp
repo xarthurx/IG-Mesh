@@ -87,7 +87,7 @@ void convertEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V) {
 
 void convertEigenVecToON_Array(const VectorXd& vecV,
                                ON_SimpleArray<double>* P) {
-  P->SetArray(const_cast<double&>(vecV.data()));
+  P->Append(vecV.size(), vecV.data());
 }
 
 void igl_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
