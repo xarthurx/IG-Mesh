@@ -12,8 +12,17 @@ namespace IGLRhinoCommon
         public const string cppLib = @"igmCppPort.dll";
     }
 
-    internal static class CppIGL
+    internal static class CppIGM
     {
+        /// <summary>
+        /// Read triangle mesh
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool IGM_read_triangle_mesh(string fName, IntPtr pMesh);
+
+        //[DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        //internal static extern bool IGM_read_triangle_mesh(string fName, IntPtr V, IntPtr F);
+
         /// <summary>
         /// Compute mesh adjacency list
         /// </summary>

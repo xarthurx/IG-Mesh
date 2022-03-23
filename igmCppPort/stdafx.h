@@ -24,6 +24,7 @@
 #include <igl/principal_curvature.h>
 #include <igl/random_points_on_mesh.h>
 #include <igl/triangle_triangle_adjacency.h>
+#include <igl/read_triangle_mesh.h>
 
 // -------------------------------------
 // common headers and namespace
