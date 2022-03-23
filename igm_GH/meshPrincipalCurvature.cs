@@ -2,14 +2,14 @@
 using Rhino.Geometry;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_principal_curvature : GH_Component
+    public class IGM_principal_curvature : GH_Component
     {
         /// <summary>
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
-        public IGL_principal_curvature()
+        public IGM_principal_curvature()
           : base("Principal Curvature", "iPrincipalCurvature",
               "Compute the principal curvature directions and magnitude of the given triangle mesh.",
               "IGM", "07 | Utils")

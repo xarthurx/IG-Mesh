@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_laplacian : GH_Component
+    public class IGM_laplacian : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_laplacian()
-          : base("IGL_Laplacian", "igLaplacian",
+        public IGM_laplacian()
+          : base("IGM_Laplacian", "igLaplacian",
               "Solve laplacian equation under given boundary condition.",
               "IGM", "07 | Utils")
         {

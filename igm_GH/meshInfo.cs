@@ -2,14 +2,14 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_mesh_properties : GH_Component
+    public class IGM_mesh_properties : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_mesh_properties()
+        public IGM_mesh_properties()
           : base("Mesh Info", "igMeshInfo",
               "Provide various mesh info: V, F, etc.",
               "IGM", "01 | IO & Info")

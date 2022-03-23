@@ -1,14 +1,14 @@
 ﻿using Grasshopper.Kernel;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_vert_tri_adjacency : GH_Component
+    public class IGM_vert_tri_adjacency : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_vert_tri_adjacency()
+        public IGM_vert_tri_adjacency()
           : base("Vertex-Triangle Adjacency", "igAdjVT",
               "Compute the vertex-triangle adjacency relationship of the given mesh.",
               "IGM", "03 | Adjacency & Boundary")

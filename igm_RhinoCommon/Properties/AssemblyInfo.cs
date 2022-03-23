@@ -6,15 +6,15 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("igl_RhinoCommon")]
+[assembly: AssemblyTitle("igmRhinoCommon")]
 
 // This will be used also for the plug-in description.
-[assembly: AssemblyDescription("igl_RhinoCommon utility for cppPort Function")]
+[assembly: AssemblyDescription("igmRhinoCommon utility for cppPort Function")]
 
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("igl_RhinoCommon")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyProduct("igmRhinoCommon")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

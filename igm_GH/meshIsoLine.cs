@@ -3,7 +3,7 @@ using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
     public class meshIsoLine : GH_Component
     {

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "e4e0IRZSpaEBenr/Tt3j7b3uPz2kslNY2UONFYioCF3wMJpN7KJul5yTuwGwA2d/ecdmTgZc74ck8syWoQgtTQ==",
+  "dgSpecHash": "hMTjjRfqYgeNYLGWnDMrRndyMjUzEpyBQnoYADIScp/sfnO900puc5gL6B/5IWemkfzOlcVeLHHvPpv154yMcA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\igm-GH.csproj",
+  "projectFilePath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\igmGH.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\xarthur\\.nuget\\packages\\grasshopper\\7.16.22067.13001\\grasshopper.7.16.22067.13001.nupkg.sha512",
     "C:\\Users\\xarthur\\.nuget\\packages\\rhinocommon\\7.16.22067.13001\\rhinocommon.7.16.22067.13001.nupkg.sha512",

@@ -1,14 +1,14 @@
 ﻿using Grasshopper.Kernel;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_vert_face_normals : GH_Component
+    public class IGM_vert_face_normals : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_vert_face_normals()
+        public IGM_vert_face_normals()
           : base("Face Normal", "iNormals_F",
               "Compute the per face normals of the given mesh.",
               "IGM", "02 | Basic Property")

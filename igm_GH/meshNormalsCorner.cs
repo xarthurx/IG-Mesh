@@ -2,14 +2,14 @@
 using Rhino.Geometry;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_normals_corner : GH_Component
+    public class IGM_normals_corner : GH_Component
     {
         /// <summary>
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
-        public IGL_normals_corner()
+        public IGM_normals_corner()
           : base("Corner Normal", "iNormals_C",
               "Compute per corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
               "IGM", "02 | Basic Property")

@@ -43,7 +43,7 @@ namespace IGLRhinoCommon
 
             var cen = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
             // igl for mesh centroid
-            CppIGL.igl_centroid(pMesh, cen.NonConstPointer());
+            CppIGL.IGM_centroid(pMesh, cen.NonConstPointer());
 
             // use native methods for volume
             double vol = rhinoMesh.Volume();
@@ -70,7 +70,7 @@ namespace IGLRhinoCommon
 
             // call the c++ func
             int sz;
-            CppIGL.igl_adjacency_list(meshF, nF, adjLstFromCpp, out sz);
+            CppIGL.IGM_adjacency_list(meshF, nF, adjLstFromCpp, out sz);
 
             int[] processedAdjLst = new int[numEle];
             Marshal.Copy(adjLstFromCpp, processedAdjLst, 0, numEle);
@@ -118,7 +118,7 @@ namespace IGLRhinoCommon
 
             // call the c++ func
             int sz;
-            CppIGL.igl_triangle_triangle_adjacency(meshF, nF, adjTT_cpp, adjTTI_cpp);
+            CppIGL.IGM_triangle_triangle_adjacency(meshF, nF, adjTT_cpp, adjTTI_cpp);
 
             int[] resTT = new int[nF * 3];
             int[] resTTI = new int[nF * 3];
@@ -165,7 +165,7 @@ namespace IGLRhinoCommon
 
             // call the c++ func
             int sz;
-            CppIGL.igl_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out sz);
+            CppIGL.IGM_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out sz);
 
             int[] resVT = new int[nEle];
             int[] resVTI = new int[nEle];
@@ -221,7 +221,7 @@ namespace IGLRhinoCommon
 
             // call the c++ func
             int sz;
-            CppIGL.igl_boundary_loop(meshF, nF, boundLoopFromCpp, out sz);
+            CppIGL.IGM_boundary_loop(meshF, nF, boundLoopFromCpp, out sz);
 
             int[] processedBoundLoop = new int[numEle];
             Marshal.Copy(boundLoopFromCpp, processedBoundLoop, 0, numEle);
@@ -268,7 +268,7 @@ namespace IGLRhinoCommon
 
             // call the c++ func
             int sz;
-            CppIGL.igl_boundary_facet(meshF, nF, bndEdge, bndTriIdx, out sz);
+            CppIGL.IGM_boundary_facet(meshF, nF, bndEdge, bndTriIdx, out sz);
 
             int[] resBndEdge = new int[nF * 2];
             Marshal.Copy(bndEdge, resBndEdge, 0, nF * 2);
@@ -315,7 +315,7 @@ namespace IGLRhinoCommon
 
         //    // call the cpp func
         //    IntPtr BCfromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
-        //    CppIGL.igl_barycenter(meshV, nV, meshF, nF, BCfromCpp);
+        //    CppIGL.IGM_barycenter(meshV, nV, meshF, nF, BCfromCpp);
 
         //    float[] processedBC = new float[nF * 3];
         //    Marshal.Copy(BCfromCpp, processedBC, 0, nF * 3);
@@ -342,7 +342,7 @@ namespace IGLRhinoCommon
 
             // call the cpp func
             var BCcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
-            CppIGL.igl_barycenter(pMesh, BCcpp.NonConstPointer());
+            CppIGL.IGM_barycenter(pMesh, BCcpp.NonConstPointer());
 
             // conversion to C# type
             var arrayPt = BCcpp.ToArray();
@@ -363,7 +363,7 @@ namespace IGLRhinoCommon
 
             // call the cpp func
             var VNcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
-            CppIGL.igl_vert_normals(pMesh, VNcpp.NonConstPointer());
+            CppIGL.IGM_vert_normals(pMesh, VNcpp.NonConstPointer());
 
             // conversion to C# type
             var arrayPt = VNcpp.ToArray();
@@ -384,7 +384,7 @@ namespace IGLRhinoCommon
 
             // call the cpp func
             var FNcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
-            CppIGL.igl_face_normals(pMesh, FNcpp.NonConstPointer());
+            CppIGL.IGM_face_normals(pMesh, FNcpp.NonConstPointer());
 
             // conversion to C# type
             var arrayPt = FNcpp.ToArray();
@@ -415,7 +415,7 @@ namespace IGLRhinoCommon
         //    // call the cpp func
         //    IntPtr VN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nV);
         //    IntPtr FN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nF);
-        //    CppIGL.igl_vert_and_face_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
+        //    CppIGL.IGM_vert_and_face_normals(meshV, nV, meshF, nF, VN_cpp, FN_cpp);
 
         //    float[] processedVN = new float[nV * 3];
         //    float[] processedFN = new float[nF * 3];
@@ -462,7 +462,7 @@ namespace IGLRhinoCommon
 
             // call the cpp func
             IntPtr CN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * 3 * nF);
-            CppIGL.igl_corner_normals(meshV, nV, meshF, nF, thre_deg, CN_cpp);
+            CppIGL.IGM_corner_normals(meshV, nV, meshF, nF, thre_deg, CN_cpp);
 
             float[] resCN = new float[nF * 3 * 3];
             Marshal.Copy(CN_cpp, resCN, 0, nF * 3 * 3);
@@ -513,7 +513,7 @@ namespace IGLRhinoCommon
             IntPtr EMAP_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nE);
 
             int sz;
-            CppIGL.igl_edge_normals(meshV, nV, meshF, nF, wT, EN_cpp, EI_cpp, EMAP_cpp, out sz);
+            CppIGL.IGM_edge_normals(meshV, nV, meshF, nF, wT, EN_cpp, EI_cpp, EMAP_cpp, out sz);
 
             float[] resEN = new float[nE * 3];
             int[] resEI = new int[nE * 2];
@@ -671,7 +671,7 @@ namespace IGLRhinoCommon
             // call the cpp func
             IntPtr B_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * N);
             IntPtr FI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * N);
-            CppIGL.igl_random_point_on_mesh(meshV, nV, meshF, nF, N, B_cpp, FI_cpp);
+            CppIGL.IGM_random_point_on_mesh(meshV, nV, meshF, nF, N, B_cpp, FI_cpp);
 
             // convert back data
             float[] resB = new float[N * 3];
@@ -706,7 +706,7 @@ namespace IGLRhinoCommon
             var PV1cpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
             var PV2cpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
 
-            CppIGL.igl_principal_curvature(pMesh, r, PD1cpp.NonConstPointer(), PD2cpp.NonConstPointer(), PV1cpp.NonConstPointer(), PV2cpp.NonConstPointer());
+            CppIGL.IGM_principal_curvature(pMesh, r, PD1cpp.NonConstPointer(), PD2cpp.NonConstPointer(), PV1cpp.NonConstPointer(), PV2cpp.NonConstPointer());
 
             // conversion to C# type
             var arrayPD1 = PD1cpp.ToArray();

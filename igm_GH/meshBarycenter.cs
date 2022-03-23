@@ -1,14 +1,14 @@
 ﻿using Grasshopper.Kernel;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_barycenter : GH_Component
+    public class IGM_barycenter : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_barycenter()
+        public IGM_barycenter()
           : base("Barycenter", "iBarycenter",
               "compute the barycenter of each triangle of the given mesh.",
               "IGM", "02 | Basic Property")

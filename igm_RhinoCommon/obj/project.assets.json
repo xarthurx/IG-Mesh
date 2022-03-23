@@ -380,9 +380,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igm-RhinoCommon.csproj",
-      "projectName": "igm-RhinoCommon",
-      "projectPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igm-RhinoCommon.csproj",
+      "projectUniqueName": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igmRhinoCommon.csproj",
+      "projectName": "igmRhinoCommon",
+      "projectPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igmRhinoCommon.csproj",
       "packagesPath": "C:\\Users\\xarthur\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\obj\\",
       "projectStyle": "PackageReference",

@@ -63,7 +63,7 @@
           "lib/net462/System.Runtime.dll": {}
         }
       },
-      "igm-RhinoCommon/1.0.0": {
+      "igmRhinoCommon/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.8",
         "dependencies": {
@@ -72,10 +72,10 @@
           "System.Runtime": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         },
         "runtime": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         }
       }
     },
@@ -141,7 +141,7 @@
           "lib/net462/System.Runtime.dll": {}
         }
       },
-      "igm-RhinoCommon/1.0.0": {
+      "igmRhinoCommon/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.8",
         "dependencies": {
@@ -150,10 +150,10 @@
           "System.Runtime": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         },
         "runtime": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         }
       }
     },
@@ -219,7 +219,7 @@
           "lib/net462/System.Runtime.dll": {}
         }
       },
-      "igm-RhinoCommon/1.0.0": {
+      "igmRhinoCommon/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.8",
         "dependencies": {
@@ -228,10 +228,10 @@
           "System.Runtime": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         },
         "runtime": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         }
       }
     },
@@ -297,7 +297,7 @@
           "lib/net462/System.Runtime.dll": {}
         }
       },
-      "igm-RhinoCommon/1.0.0": {
+      "igmRhinoCommon/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.8",
         "dependencies": {
@@ -306,10 +306,10 @@
           "System.Runtime": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         },
         "runtime": {
-          "bin/placeholder/igm-RhinoCommon.dll": {}
+          "bin/placeholder/igmRhinoCommon.dll": {}
         }
       }
     }
@@ -511,10 +511,10 @@
         "system.runtime.nuspec"
       ]
     },
-    "igm-RhinoCommon/1.0.0": {
+    "igmRhinoCommon/1.0.0": {
       "type": "project",
-      "path": "../igm_RhinoCommon/igm-RhinoCommon.csproj",
-      "msbuildProject": "../igm_RhinoCommon/igm-RhinoCommon.csproj"
+      "path": "../igm_RhinoCommon/igmRhinoCommon.csproj",
+      "msbuildProject": "../igm_RhinoCommon/igmRhinoCommon.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -522,7 +522,7 @@
       "Grasshopper >= 7.16.22067.13001",
       "System.Collections >= 4.3.0",
       "System.Runtime >= 4.3.1",
-      "igm-RhinoCommon >= 1.0.0"
+      "igmRhinoCommon >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -531,9 +531,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\igm-GH.csproj",
-      "projectName": "igm-GH",
-      "projectPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\igm-GH.csproj",
+      "projectUniqueName": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\igmGH.csproj",
+      "projectName": "igmGH",
+      "projectPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\igmGH.csproj",
       "packagesPath": "C:\\Users\\xarthur\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_GH\\obj\\",
       "projectStyle": "PackageReference",
@@ -552,8 +552,8 @@
       "frameworks": {
         "net48": {
           "projectReferences": {
-            "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igm-RhinoCommon.csproj": {
-              "projectPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igm-RhinoCommon.csproj"
+            "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igmRhinoCommon.csproj": {
+              "projectPath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igmRhinoCommon.csproj"
             }
           }
         }

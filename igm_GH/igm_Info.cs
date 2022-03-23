@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
     public class igm_Info : GH_AssemblyInfo
     {

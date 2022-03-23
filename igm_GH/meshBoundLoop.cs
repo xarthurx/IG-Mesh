@@ -2,14 +2,14 @@
 using Rhino.Geometry;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_BoundLoop : GH_Component
+    public class IGM_BoundLoop : GH_Component
     {
         /// <summary>
-        /// Initializes a new instance of the IGL_Barycenter class.
+        /// Initializes a new instance of the IGM_Barycenter class.
         /// </summary>
-        public IGL_BoundLoop()
+        public IGM_BoundLoop()
           : base("Boundary Loop", "iBoundLoop",
               "compute the boundary loop of the given mesh.",
               "IGM", "03 | Adjacency & Boundary")

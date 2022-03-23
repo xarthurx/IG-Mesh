@@ -2,14 +2,14 @@
 using Rhino.Geometry;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_adjacentList : GH_Component
+    public class IGM_adjacentList : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_adjacentList()
+        public IGM_adjacentList()
           : base("Vertex-Vertex Adjacency", "iAdjVV",
               "Compute the vertex-vertex adjacency relationship of the given mesh.",
               "IGM", "03 | Adjacency & Boundary")

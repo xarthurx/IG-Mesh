@@ -2,14 +2,14 @@
 using Grasshopper.Kernel;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_random_points_on_mesh : GH_Component
+    public class IGM_random_points_on_mesh : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_random_points_on_mesh()
+        public IGM_random_points_on_mesh()
           : base("Random Points On Mesh", "iRandomPtsMesh",
               "Randomly sample N points on surface of the given mesh.",
               "IGM", "07 | Utils")

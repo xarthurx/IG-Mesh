@@ -1,14 +1,14 @@
 ﻿using Grasshopper.Kernel;
 using System;
 
-namespace igl_Grasshopper
+namespace igmGH
 {
-    public class IGL_vert_normals : GH_Component
+    public class IGM_vert_normals : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_vert_normals()
+        public IGM_vert_normals()
           : base("Vertex Normal", "iNormals_V",
               "Compute the per vertex normals of the given mesh.",
               "IGM", "02 | Basic Property")
