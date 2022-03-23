@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_random_points_on_mesh()
-          : base("Random Points On Mesh", "iRandomPtsMesh",
+          : base("Random Points On Mesh", "iRndPtsMesh",
               "Randomly sample N points on surface of the given mesh.",
               "IGM", "07 | Utils")
         {

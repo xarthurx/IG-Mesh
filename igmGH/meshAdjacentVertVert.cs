@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_adjacentList()
           : base("Vertex-Vertex Adjacency", "iAdjVV",
               "Compute the vertex-vertex adjacency relationship of the given mesh.",
-              "IGM", "03 | Adjacency & Boundary")
+              "IGM", "03 | Adjacency+Bound")
         {
         }
 

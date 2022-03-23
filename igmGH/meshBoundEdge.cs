@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_BoundEdge()
           : base("Boundary Edge", "iBoundEdge",
               "compute the boundary edges the given mesh.",
-              "IGM", "03 | Adjacency & Boundary")
+              "IGM", "03 | Adjacency+Bound")
         {
         }
 

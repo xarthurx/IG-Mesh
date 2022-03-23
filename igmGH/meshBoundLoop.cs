@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_BoundLoop()
           : base("Boundary Loop", "iBoundLoop",
               "compute the boundary loop of the given mesh.",
-              "IGM", "03 | Adjacency & Boundary")
+              "IGM", "03 | Adjacency+Bound")
         {
         }
 
