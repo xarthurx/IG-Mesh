@@ -12,6 +12,7 @@
 // IGL includes
 // -------------------------------------
 #include <igl/adjacency_list.h>
+#include <igl/average_onto_vertices.h>
 #include <igl/barycenter.h>
 #include <igl/boundary_facets.h>
 #include <igl/boundary_loop.h>
@@ -23,8 +24,8 @@
 #include <igl/per_vertex_normals.h>
 #include <igl/principal_curvature.h>
 #include <igl/random_points_on_mesh.h>
-#include <igl/triangle_triangle_adjacency.h>
 #include <igl/read_triangle_mesh.h>
+#include <igl/triangle_triangle_adjacency.h>
 
 // -------------------------------------
 // common headers and namespace

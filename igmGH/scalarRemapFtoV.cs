@@ -3,15 +3,15 @@ using System;
 
 namespace igmGH
 {
-    public class IGM_principal_curvature : GH_Component
+    public class IGM_remap_FtoV : GH_Component
     {
         /// <summary>
-        /// Initializes the new instance of the corner_normals class.
+        /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_principal_curvature()
-          : base("Principal Curvature", "iPrincipalCurvature",
-              "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-              "IGM", "07 | Utils")
+        public IGM_remap_FtoV()
+          : base("Remap Data from Face To Vertex", "iRemapFV",
+              "Move a scalar field defined on faces to vertices by averaging.",
+              "IGM", "04 | Scalar")
         {
         }
 
@@ -20,9 +20,8 @@ namespace igmGH
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("radius", "r", "controls the size of the neighbourhood used, 1 = average edge length.", GH_ParamAccess.item, 5);
-            pManager[1].Optional = true;
+            pManager.AddMeshParameter("Mesh", "M", "Base mesh.", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Scalar", "S", "Scalar defined on faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -30,10 +29,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Principal Dir 1", "PD1", "Maximal curvature direction for each vertex.", GH_ParamAccess.list);
-            pManager.AddVectorParameter("Principal Dir 2", "PD2", "Minimal curvature direction for each vertex.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Principal Value 1", "PV1", "Maximal curvature value for each vertex.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Principal Value 2", "PV2", "Minimal curvature value for each vertex.", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Remaped Scalar", "SV", "The remapped valuse on vertices.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -42,24 +38,19 @@ namespace igmGH
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            // use default threshold if not given by the user
-            int r = 5;
-            if (!DA.GetData(1, ref r)) { }
-            if (r < 1) { r = 1; } // make sure the value is unit
+            List<double> scalarV = new List<double>();
+            if (!DA.GetData(1, ref scalarV)) { return; }
+            if (scalarV.Length != mesh.Faces.Count) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (PD1, PD2, PV1, PV2) = IGLRhinoCommon.Utils.getPrincipalCurvature(ref mesh, (uint)r);
+            var sv = IGLRhinoCommon.Utils.remapFtoV(ref mesh, scalarV);
 
             // output
-            DA.SetDataList(0, PD1);
-            DA.SetDataList(1, PD2);
-            DA.SetDataList(2, PV1);
-            DA.SetDataList(3, PV2);
+            DA.SetDataList(0, sv);
         }
 
         /// <summary>
@@ -80,7 +71,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("ab67cd8c-b15b-40b4-b052-e8d39ccc1ea5"); }
+            get { return new Guid("a0ee589c-082d-4ca1-bdfe-f5e3a3ddd6c8"); }
         }
     }
 }

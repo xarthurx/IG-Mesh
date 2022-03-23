@@ -81,6 +81,11 @@ namespace IGLRhinoCommon
             return (V, F, cen.ToArray()[0], vol);
         }
 
+        public static List<double> remapFtoV(ref Mesh mesh, List<double> scalarV)
+        {
+            throw new NotImplementedException();
+        }
+
         public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));

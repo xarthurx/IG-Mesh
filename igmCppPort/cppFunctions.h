@@ -92,7 +92,7 @@ RH_C_FUNCTION
 void IGM_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN);
 
 RH_C_FUNCTION
-void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
+void IGM_corner_normals(ON_Mesh* pMesh, const double threshold_deg,
                         ON_3dPointArray* CN);
 // void IGM_corner_normals(float* V, int nV, int* F, int nF, float
 // threshold_deg,
@@ -101,6 +101,14 @@ void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
 RH_C_FUNCTION
 void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
                       float* EN, int* EI, int* EMAP, int& sz);
+
+// ! --------------------------------
+// ! mapping
+// ! --------------------------------
+
+RH_C_FUNCTION
+void IGM_remap_FtoV(ON_Mesh* pMesh, const ON_SimpleArray<double>* val,
+                    ON_SimpleArray<double>* res);
 
 // ! --------------------------------
 // ! advanced

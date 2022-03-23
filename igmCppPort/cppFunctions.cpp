@@ -35,6 +35,12 @@ void cvtONstructToEigen(ON_3dPointArray& mV, ON_SimpleArray<ON_MeshFace>& mF,
 }
 
 template <typename T>
+void cvtON_ArrayToEigenV(ON_SimpleArray<T>* onArray, Vector<T, -1>& vec) {
+  // vec = Vector<T, -1>(onArray->Array());
+  vec = Vector<T, -1>::Map(onArray->Array(), onArray->Count());
+}
+
+template <typename T>
 void cvtEigenToON_Points(const Matrix<T, Dynamic, Dynamic>& matP,
                          ON_3dPointArray* P) {
   for (size_t i = 0; i < matP.rows(); i++) {
@@ -292,6 +298,24 @@ void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
   RowMajMatXi::Map(EI, matEI.rows(), matEI.cols()) = matEI;
   VectorXi::Map(EMAP, vecEMAP.size()) = vecEMAP;
   sz = matEI.rows();
+}
+
+void IGM_remap_FtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
+                    ON_SimpleArray<double>* res) {
+  // cvt mesh
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+
+  VectorXd scalarVal;
+  cvtON_ArrayToEigenV(val, scalarVal);
+
+  // compute data
+  VectorXd vecSV;
+  igl::average_onto_vertices(matV, matF, scalarVal, vecSV);
+
+  // send back
+  cvtEigenVecToON_Array(vecSV, res);
 }
 
 // RH_C_FUNCTION

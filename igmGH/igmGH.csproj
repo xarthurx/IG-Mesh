@@ -67,6 +67,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="scalarRemapFtoV.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\igmRhinoCommon\igmRhinoCommon.csproj">
