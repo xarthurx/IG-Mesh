@@ -1,0 +1,11 @@
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\bin\igl_GrassHopper.dll
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\bin\igl_GrassHopper.pdb
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\bin\igl_RhinoCommon.dll
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\bin\igl_RhinoCommon.pdb
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_Grasshopper.csproj.AssemblyReference.cache
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_GrassHopper.Properties.Resources.resources
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_Grasshopper.csproj.GenerateResource.cache
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_Grasshopper.csproj.CoreCompileInputs.cache
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_Grasshopper.csproj.CopyComplete
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_GrassHopper.dll
+C:\Users\xarthur\source\repos\igl-grasshopper\igl_GrassHopper\obj\Debug\igl_GrassHopper.pdb

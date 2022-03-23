@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "LxzGm1h+WFVJwrvR0SBSUd3LsHS90cjvpxHhR9KpsAVvulLJmOO2tuy69NvpCNHpHKtdz7BDrjz6vbc1qr1vNg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\xarthur\\source\\repo\\IG-Mesh\\igm_RhinoCommon\\igm-RhinoCommon.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\xarthur\\.nuget\\packages\\rhinocommon\\7.16.22067.13001\\rhinocommon.7.16.22067.13001.nupkg.sha512",
+    "C:\\Users\\xarthur\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
+    "C:\\Users\\xarthur\\.nuget\\packages\\system.runtime\\4.3.1\\system.runtime.4.3.1.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,126 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_GrassHopper\\igl_Grasshopper.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_GrassHopper\\igl_Grasshopper.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_GrassHopper\\igl_Grasshopper.csproj",
+        "projectName": "igl_Grasshopper",
+        "projectPath": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_GrassHopper\\igl_Grasshopper.csproj",
+        "packagesPath": "C:\\Users\\xarthur\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_GrassHopper\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\xarthur\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "projectReferences": {
+              "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_RhinoCommon\\igl-RhinoCommon.csproj": {
+                "projectPath": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_RhinoCommon\\igl-RhinoCommon.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "dependencies": {
+            "Grasshopper": {
+              "target": "Package",
+              "version": "[7.16.22067.13001, )"
+            },
+            "System.Collections": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.Runtime": {
+              "target": "Package",
+              "version": "[4.3.1, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    },
+    "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_RhinoCommon\\igl-RhinoCommon.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_RhinoCommon\\igl-RhinoCommon.csproj",
+        "projectName": "igl-RhinoCommon",
+        "projectPath": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_RhinoCommon\\igl-RhinoCommon.csproj",
+        "packagesPath": "C:\\Users\\xarthur\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\xarthur\\source\\repos\\igl-grasshopper\\igl_RhinoCommon\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\xarthur\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "dependencies": {
+            "RhinoCommon": {
+              "target": "Package",
+              "version": "[7.16.22067.13001, )"
+            },
+            "System.Collections": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.Runtime": {
+              "target": "Package",
+              "version": "[4.3.1, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
