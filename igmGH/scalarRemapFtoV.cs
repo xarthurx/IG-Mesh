@@ -1,5 +1,6 @@
 ﻿using Grasshopper.Kernel;
 using System;
+using System.Collections.Generic;
 
 namespace igmGH
 {
@@ -29,7 +30,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Remaped Scalar", "SV", "The remapped valuse on vertices.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Remaped Scalar", "SV", "The remapped valuse on vertices.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -43,8 +44,8 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             List<double> scalarV = new List<double>();
-            if (!DA.GetData(1, ref scalarV)) { return; }
-            if (scalarV.Length != mesh.Faces.Count) { return; }
+            if (!DA.GetDataList<double>(1, scalarV)) { return; }
+            if (scalarV.Count != mesh.Faces.Count) { return; }
 
             // call the cpp function to solve the adjacency list
             var sv = IGLRhinoCommon.Utils.remapFtoV(ref mesh, scalarV);

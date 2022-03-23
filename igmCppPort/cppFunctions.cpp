@@ -300,7 +300,7 @@ void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
   sz = matEI.rows();
 }
 
-void IGM_remap_FtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
+void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                     ON_SimpleArray<double>* res) {
   // cvt mesh
   MatrixXd matV;

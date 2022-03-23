@@ -81,9 +81,22 @@ namespace IGLRhinoCommon
             return (V, F, cen.ToArray()[0], vol);
         }
 
-        public static List<double> remapFtoV(ref Mesh mesh, List<double> scalarV)
+        public static List<double> remapFtoV(ref Mesh rMesh, List<double> scalarV)
         {
-            throw new NotImplementedException();
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            var valCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(scalarV);
+            var resCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+
+            // call the cpp func
+            CppIGM.IGM_remapFtoV(pMesh, valCpp.ConstPointer(), resCpp.NonConstPointer());
+
+            // conversion to C# type
+            var arrayDbl = resCpp.ToArray();
+            List<double> mappedV = new List<double>(arrayDbl);
+
+            return mappedV;
         }
 
         public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)

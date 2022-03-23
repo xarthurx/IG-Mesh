@@ -107,8 +107,8 @@ void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
 // ! --------------------------------
 
 RH_C_FUNCTION
-void IGM_remap_FtoV(ON_Mesh* pMesh, const ON_SimpleArray<double>* val,
-                    ON_SimpleArray<double>* res);
+void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
+                   ON_SimpleArray<double>* res);
 
 // ! --------------------------------
 // ! advanced
