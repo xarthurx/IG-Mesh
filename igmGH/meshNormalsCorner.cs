@@ -51,7 +51,7 @@ namespace igmGH
 
 
             // call the cpp function to solve the adjacency list
-            var cn = IGLRhinoCommon.Utils.getNormalsCorner(ref mesh, (float)t);
+            var cn = IGLRhinoCommon.Utils.getNormalsCorner(ref mesh, t);
 
             Grasshopper.DataTree<Vector3d> cnTree = new Grasshopper.DataTree<Vector3d>();
             for (int i = 0; i < cn.Count; i++)

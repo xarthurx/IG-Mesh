@@ -76,7 +76,8 @@ namespace IGLRhinoCommon
         /// Compute per_corner normals
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_corner_normals(IntPtr V, int nV, IntPtr F, int nF, float thre_deg, IntPtr FN);
+        internal static extern void IGM_corner_normals(IntPtr pMesh, double thre_deg, IntPtr CN);
+        //internal static extern void IGM_corner_normals(IntPtr V, int nV, IntPtr F, int nF, float thre_deg, IntPtr FN);
 
         /// <summary>
         /// Compute per_edge normals
@@ -102,7 +103,7 @@ namespace IGLRhinoCommon
         /// randomly sample points on meshes.
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_random_point_on_mesh(IntPtr V, int nV, IntPtr F, int nF, int N, IntPtr B, IntPtr FI);
+        internal static extern void IGM_random_point_on_mesh(IntPtr pMesh, int N, IntPtr B, IntPtr FI);
 
         /// <summary>
         /// principal curvatures.

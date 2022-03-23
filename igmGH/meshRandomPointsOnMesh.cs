@@ -23,8 +23,6 @@ namespace igmGH
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Number", "N", "number of sampled points.", GH_ParamAccess.item, 0);
-            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
-            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
             pManager[1].Optional = true;
         }
 
@@ -33,8 +31,8 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddPointParameter("Sampled Points", "P", "the N sampled points.", GH_ParamAccess.list);
-            pManager.AddIntegerParameter("Face Index", "FI", "the corresponding face indices of the sampled points.", GH_ParamAccess.list);
+            pManager.AddPointParameter("Sampled Points", "P", "The N sampled points.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Face Index", "FI", "The corresponding face indices of the sampled points.", GH_ParamAccess.list);
         }
 
         /// <summary>

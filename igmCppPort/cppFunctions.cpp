@@ -7,8 +7,9 @@ using RowMajMatXf = Matrix<float, Dynamic, Dynamic, RowMajor>;
 using RowMajMatXi = Matrix<int, Dynamic, Dynamic, RowMajor>;
 
 // helper function
-void convertArrayToEigenXd(double* inputArray, int sz,
-                           Eigen::MatrixXd& outputEigen) {
+template <typename T>
+void convertArrayToEigenXt(T* inputArray, int sz,
+                           Eigen::Matrix<T, Dynamic, Dynamic>& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
@@ -20,30 +21,30 @@ void convertArrayToEigenXd(double* inputArray, int sz,
   }
 }
 
-void convertArrayToEigenXf(float* inputArray, int sz,
-                           Eigen::MatrixXf& outputEigen) {
-  int cnt = 0;
-  outputEigen.resize(sz, 3);
+// void convertArrayToEigenXf(float* inputArray, int sz,
+//                           Eigen::MatrixXf& outputEigen) {
+//  int cnt = 0;
+//  outputEigen.resize(sz, 3);
+//
+//  while (cnt != sz) {
+//    outputEigen(cnt, 0) = inputArray[cnt * 3];
+//    outputEigen(cnt, 1) = inputArray[cnt * 3 + 1];
+//    outputEigen(cnt, 2) = inputArray[cnt * 3 + 2];
+//    cnt++;
+//  }
+//}
 
-  while (cnt != sz) {
-    outputEigen(cnt, 0) = inputArray[cnt * 3];
-    outputEigen(cnt, 1) = inputArray[cnt * 3 + 1];
-    outputEigen(cnt, 2) = inputArray[cnt * 3 + 2];
-    cnt++;
-  }
-}
-
-void convertArrayToEigenXi(int* inputArray, int sz,
-                           Eigen::MatrixXi& outputEigen) {
-  int cnt = 0;
-  outputEigen.resize(sz, 3);
-
-  while (cnt != sz) {
-    outputEigen.row(cnt) << inputArray[cnt * 3], inputArray[cnt * 3 + 1],
-        inputArray[cnt * 3 + 2];
-    cnt++;
-  }
-}
+// void convertArrayToEigenXi(int* inputArray, int sz,
+//                           Eigen::MatrixXi& outputEigen) {
+//  int cnt = 0;
+//  outputEigen.resize(sz, 3);
+//
+//  while (cnt != sz) {
+//    outputEigen.row(cnt) << inputArray[cnt * 3], inputArray[cnt * 3 + 1],
+//        inputArray[cnt * 3 + 2];
+//    cnt++;
+//  }
+//}
 
 void convertONstructToEigen(ON_3dPointArray& mV,
                             ON_SimpleArray<ON_MeshFace>& mF, MatrixXd& matV,
@@ -58,27 +59,39 @@ void convertONstructToEigen(ON_3dPointArray& mV,
     matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
   }
 }
-void convertEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P) {
+
+template <typename T>
+void convertEigenToON_Points(const Matrix<T, Dynamic, Dynamic>& matP,
+                             ON_3dPointArray* P) {
   for (size_t i = 0; i < matP.rows(); i++) {
     P->Append(ON_3dPoint(matP(i, 0), matP(i, 1), matP(i, 2)));
   }
 }
 
-void convertEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V) {
+// void convertEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P) {
+//  for (size_t i = 0; i < matP.rows(); i++) {
+//    P->Append(ON_3dPoint(matP(i, 0), matP(i, 1), matP(i, 2)));
+//  }
+//}
+//
+
+template <typename T>
+void convertEigenToON_Vectors(const Matrix<T, Dynamic, Dynamic>& matV,
+                              ON_3dVectorArray* V) {
   for (size_t i = 0; i < matV.rows(); i++) {
     V->Append(ON_3dVector(matV(i, 0), matV(i, 1), matV(i, 2)));
   }
 }
 
-void convertEigenVecToON_Array(const VectorXd& vecV,
-                               ON_SimpleArray<double>* P) {
+template <typename T>
+void convertEigenVecToON_Array(const Vector<T, Dynamic>& vecV,
+                               ON_SimpleArray<T>* P) {
   P->Append(vecV.size(), vecV.data());
-
 }
 
 void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
   Eigen::MatrixXi eigenF;
-  convertArrayToEigenXi(F, nF, eigenF);
+  convertArrayToEigenXt(F, nF, eigenF);
 
   vector<vector<int>> lst;
   igl::adjacency_list(eigenF, lst);
@@ -104,7 +117,7 @@ void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
 void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
                                    int* adjVFI, int& sz) {
   Eigen::MatrixXi matF;
-  convertArrayToEigenXi(F, nF, matF);
+  convertArrayToEigenXt(F, nF, matF);
 
   vector<vector<int>> VF, VFI;
   igl::vertex_triangle_adjacency(nV, matF, VF, VFI);
@@ -140,7 +153,7 @@ void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
   //}
 
   MatrixXi matF;
-  convertArrayToEigenXi(F, nF, matF);
+  convertArrayToEigenXt(F, nF, matF);
   MatrixXi matTT, matTTI;
 
   igl::triangle_triangle_adjacency(matF, matTT, matTTI);
@@ -151,7 +164,7 @@ void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
 
 void IGM_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
   Eigen::MatrixXi eigenF;
-  convertArrayToEigenXi(F, nF, eigenF);
+  convertArrayToEigenXt(F, nF, eigenF);
 
   vector<vector<int>> lst;
   igl::boundary_loop(eigenF, lst);
@@ -177,7 +190,7 @@ void IGM_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
 void IGM_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz) {
   // convert mesh
   MatrixXi matF;
-  convertArrayToEigenXi(F, nF, matF);
+  convertArrayToEigenXt(F, nF, matF);
 
   // compute
   MatrixXi bF;
@@ -218,7 +231,7 @@ void IGM_centroid(ON_Mesh* pMesh, ON_3dPointArray* c) {
   igl::centroid(matV, matF, cen);
 
   // one-item array due to limitation of wrappers
-  convertEigenToON_Points(cen.transpose(), c);
+  convertEigenToON_Points(MatrixXd(cen.transpose()), c);
 }
 
 void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
@@ -257,39 +270,19 @@ void IGM_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN) {
   convertEigenToON_Points(matFN, FN);
 }
 
-// void IGM_vert_and_face_normals(float* V, int nV, int* F, int nF, float* VN,
-// float* FN)
-//{
-//  // convert mesh
-//  MatrixXf matV;
-//  MatrixXi matF;
-//  convertArrayToEigenXf(V, nV, matV);
-//  convertArrayToEigenXi(F, nF, matF);
-//
-//  // compute normal
-//  MatrixXf matFN, matVN;
-//  igl::per_vertex_normals(matV, matF, matVN);
-//  igl::per_face_normals_stable(matV, matF, matFN);
-//
-//  // convert back to arrays
-//  RowMajMatXf::Map(VN, matVN.rows(), matVN.cols()) = matVN;
-//  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
-//}
-
-void IGM_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg,
-                        float* FN) {
+void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
+                        ON_3dPointArray* CN) {
   // convert mesh
-  MatrixXf matV;
+  MatrixXd matV;
   MatrixXi matF;
-  convertArrayToEigenXf(V, nV, matV);
-  convertArrayToEigenXi(F, nF, matF);
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
   // compute per-corner-normal
-  MatrixXf matFN;
-  igl::per_corner_normals(matV, matF, threshold_deg, matFN);
+  MatrixXd matCN;
+  igl::per_corner_normals(matV, matF, threshold_deg, matCN);
 
   // convert back
-  RowMajMatXf::Map(FN, matFN.rows(), matFN.cols()) = matFN;
+  convertEigenToON_Points(matCN, CN);
 }
 
 void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
@@ -297,8 +290,8 @@ void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
   // convert mesh
   MatrixXf matV;
   MatrixXi matF;
-  convertArrayToEigenXf(V, nV, matV);
-  convertArrayToEigenXi(F, nF, matF);
+  convertArrayToEigenXt(V, nV, matV);
+  convertArrayToEigenXt(F, nF, matF);
 
   // compute per-edge-normal
   MatrixXf matEN;
@@ -326,8 +319,8 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
   // convert mesh
   MatrixXf eigenV;
   MatrixXi eigenF;
-  convertArrayToEigenXf(V, nV, eigenV);
-  convertArrayToEigenXi(F, nF, eigenF);
+  convertArrayToEigenXt(V, nV, eigenV);
+  convertArrayToEigenXt(F, nF, eigenF);
 
   // convert constraints
   VectorXi conIdx(numCon);
@@ -378,8 +371,8 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
   // convert mesh
   MatrixXf eigenV;
   MatrixXi eigenF;
-  convertArrayToEigenXf(V, nV, eigenV);
-  convertArrayToEigenXi(F, nF, eigenF);
+  convertArrayToEigenXt(V, nV, eigenV);
+  convertArrayToEigenXt(F, nF, eigenF);
 
   // convert constraints
   VectorXi conIdx(numCon);
@@ -400,26 +393,26 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
       meshScalarFloat;
 }
 
-void IGM_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
-                              int* FI) {
-  MatrixXf matV;
+void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
+                              ON_SimpleArray<int>* FI) {
+  MatrixXd matV;
   MatrixXi matF;
-  convertArrayToEigenXf(V, nV, matV);
-  convertArrayToEigenXi(F, nF, matF);
+  convertONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
-  MatrixXf matB;
+  MatrixXd matP;
   VectorXi faceI;
-  igl::random_points_on_mesh(N, matV, matF, matB, faceI);
+  igl::random_points_on_mesh(N, matV, matF, matP, faceI);
 
-  MatrixXf samples(matB.rows(), 3);
-  for (int i = 0; i < matB.rows(); i++) {
-    samples.row(i) = matB(i, 0) * matV.row(matF(faceI(i), 0)) +
-                     matB(i, 1) * matV.row(matF(faceI(i), 1)) +
-                     matB(i, 2) * matV.row(matF(faceI(i), 2));
+  // convert from P on a plane into Euclidian space
+  MatrixXd samples(matP.rows(), 3);
+  for (int i = 0; i < matP.rows(); i++) {
+    samples.row(i) = matP(i, 0) * matV.row(matF(faceI(i), 0)) +
+                     matP(i, 1) * matV.row(matF(faceI(i), 1)) +
+                     matP(i, 2) * matV.row(matF(faceI(i), 2));
   }
 
-  RowMajMatXf::Map(B, samples.rows(), samples.cols()) = samples;
-  VectorXi::Map(FI, faceI.size()) = faceI;
+  convertEigenToON_Points(samples, B);
+  convertEigenVecToON_Array(faceI, FI);
 }
 
 void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
@@ -439,4 +432,3 @@ void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
   convertEigenVecToON_Array(mPV1, PV1);
   convertEigenVecToON_Array(mPV2, PV2);
 }
-

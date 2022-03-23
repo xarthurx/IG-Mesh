@@ -89,8 +89,10 @@ RH_C_FUNCTION
 void IGM_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN);
 
 RH_C_FUNCTION
-void IGM_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg,
-                        float* FN);
+void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
+                        ON_3dPointArray* CN);
+//void IGM_corner_normals(float* V, int nV, int* F, int nF, float threshold_deg,
+//                        float* FN);
 
 RH_C_FUNCTION
 void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
@@ -109,8 +111,11 @@ void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
                       float* con_value, int numCon, float* laplacianValue);
 
 RH_C_FUNCTION
-void IGM_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
-                              int* FI);
+void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
+                              ON_SimpleArray<int>* FI);
+// void IGM_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float*
+// B,
+//                              int* FI);
 
 RH_C_FUNCTION
 void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
