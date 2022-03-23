@@ -694,7 +694,7 @@ namespace IGLRhinoCommon
             return (BC, FI);
         }
 
-        public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2) getPrincipalCurvature(ref Mesh rMesh, double r)
+        public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2) getPrincipalCurvature(ref Mesh rMesh, uint r)
         {
 
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
@@ -710,7 +710,7 @@ namespace IGLRhinoCommon
 
             // conversion to C# type
             var arrayPD1 = PD1cpp.ToArray();
-            var arrayPD2 = PD1cpp.ToArray();
+            var arrayPD2 = PD2cpp.ToArray();
 
             List<Vector3d> PD1 = new List<Vector3d>();
             List<Vector3d> PD2 = new List<Vector3d>();
@@ -727,7 +727,6 @@ namespace IGLRhinoCommon
 
             List<double> PV1 = new List<double>(PV1cpp.ToArray());
             List<double> PV2 = new List<double>(PV2cpp.ToArray());
-
 
             return (PD1, PD2, PV1, PV2);
         }

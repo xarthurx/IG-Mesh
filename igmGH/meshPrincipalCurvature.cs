@@ -49,11 +49,12 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // use default threshold if not given by the user
-            double r = 5;
+            int r = 5;
             if (!DA.GetData(1, ref r)) { }
+            if (r < 1) { r = 1; } // make sure the value is unit
 
             // call the cpp function to solve the adjacency list
-            var (PD1, PD2, PV1, PV2) = IGLRhinoCommon.Utils.getPrincipalCurvature(ref mesh, r);
+            var (PD1, PD2, PV1, PV2) = IGLRhinoCommon.Utils.getPrincipalCurvature(ref mesh, (uint)r);
 
             // output
             DA.SetDataList(0, PD1);

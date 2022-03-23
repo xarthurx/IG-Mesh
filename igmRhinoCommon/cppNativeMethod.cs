@@ -108,6 +108,6 @@ namespace IGLRhinoCommon
         /// principal curvatures.
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_principal_curvature(IntPtr pMesh, double r, IntPtr PD1, IntPtr PD2, IntPtr PV1, IntPtr PV2);
+        internal static extern void IGM_principal_curvature(IntPtr pMesh, uint r, IntPtr PD1, IntPtr PD2, IntPtr PV1, IntPtr PV2);
     }
 }

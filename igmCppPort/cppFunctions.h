@@ -113,6 +113,6 @@ void IGM_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
                               int* FI);
 
 RH_C_FUNCTION
-void IGM_principal_curvature(ON_Mesh* pMesh, double r, ON_3dPointArray* PD1,
+void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
                              ON_3dPointArray* PD2, ON_SimpleArray<double>* PV1,
                              ON_SimpleArray<double>* PV2);

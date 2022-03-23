@@ -3,15 +3,15 @@ using System;
 
 namespace igl_Grasshopper
 {
-    public class IGL_TestFunc : GH_Component
+    public class IGM_TestFunc : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGL_TestFunc()
+        public IGM_TestFunc()
           : base("IGL_TestFunc", "iTestFunc",
               "Testing functions temporarily.",
-              "IGL+", "Test")
+              "IGM+", "Test")
         {
         }
 

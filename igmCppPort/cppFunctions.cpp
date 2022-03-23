@@ -73,6 +73,7 @@ void convertEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V) {
 void convertEigenVecToON_Array(const VectorXd& vecV,
                                ON_SimpleArray<double>* P) {
   P->Append(vecV.size(), vecV.data());
+
 }
 
 void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
@@ -421,7 +422,7 @@ void IGM_random_point_on_mesh(float* V, int nV, int* F, int nF, int N, float* B,
   VectorXi::Map(FI, faceI.size()) = faceI;
 }
 
-void IGM_principal_curvature(ON_Mesh* pMesh, double r, ON_3dPointArray* PD1,
+void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
                              ON_3dPointArray* PD2, ON_SimpleArray<double>* PV1,
                              ON_SimpleArray<double>* PV2) {
   MatrixXd matV;
@@ -438,3 +439,4 @@ void IGM_principal_curvature(ON_Mesh* pMesh, double r, ON_3dPointArray* PD1,
   convertEigenVecToON_Array(mPV1, PV1);
   convertEigenVecToON_Array(mPV2, PV2);
 }
+

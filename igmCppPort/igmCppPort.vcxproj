@@ -14,7 +14,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{B0155EDC-0CF5-4994-A073-BE696DB6DF54}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ghigl</RootNamespace>
+    <RootNamespace>IGM</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>igmCppPort</ProjectName>
   </PropertyGroup>
