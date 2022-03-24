@@ -92,7 +92,124 @@ void solveScalarField(const Matrix<T, -1, -1>& V, const MatrixXi& F,
   igl::slice_into(Z_in, in, meshScalar);
 };
 
-void computeIsoPts(const MatrixXf& V, const MatrixXi& F,
-                   const VectorXf& meshScalar, int divN,
-                   map<float, MatrixXf>& isoLinePts, bool sorted = true);
+template <typename T>
+void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
+                   const Vector<T, -1>& meshScalar, int divN,
+                   map<T, Matrix<T, -1, -1>>& isoLinePts, bool sorted = true) {
+  float startBnd{0.0001}, endBnd{0.9999};
+
+  isoLinePts.clear();
+
+  Eigen::MatrixXi E;
+  Eigen::VectorXi B;
+  igl::edges(F, E);
+  igl::boundary_loop(F, B);
+
+  // construct set for querying
+  std::set<int> boundLoop;
+  for (size_t i = 0; i < B.size(); i++) boundLoop.insert(B[i]);
+
+  //// find & interpolate
+  Vector<T, -1> isoValue = Vector<T, -1>::LinSpaced(
+      divN, startBnd, endBnd);  // interpolate value for each vertical bars
+
+  map<T, vector<Vector<T, 3>>> isoL;
+  for (size_t i = 0; i < isoValue.size(); i++) {
+    isoL.insert(make_pair(isoValue[i], vector<Vector<T, 3>>(0)));
+  }
+
+  // to record the starting pos of each isoline
+  map<T, int> startPtId;
+
+  // extract the points where isoline and mesh edges intersect
+  for (size_t i = 0; i < E.rows(); i++) {
+    auto idx0 = E.row(i)[0];
+    auto idx1 = E.row(i)[1];
+    auto x0 = meshScalar[idx0];
+    auto x1 = meshScalar[idx1];
+
+    if (x0 > x1) {
+      std::swap(x0, x1);
+      std::swap(idx0, idx1);
+    }
+
+    for (auto& [key, val] : isoL) {
+      if (key >= x0 && key <= x1) {
+        auto tmpVec = V.row(idx0) +
+                      ((key - x0) / (x1 - x0)) * (V.row(idx1) - V.row(idx0));
+        val.emplace_back(tmpVec[0], tmpVec[1], tmpVec[2]);
+
+        // record if on boundary
+        if (boundLoop.find(idx0) != boundLoop.end() &&
+            boundLoop.find(idx1) != boundLoop.end())
+          startPtId[key] = val.size() - 1;
+      }
+
+      // transform into MatrixXd and export
+      Matrix<T, -1, -1> val_mat(val.size(), 3);
+      for_each(val.begin(), val.end(), [&](auto& pts) {
+        int id = &pts - &val[0];
+        val_mat.row(id) = RowVector<T, 3>(pts);
+      });
+
+      isoLinePts[key] = val_mat;
+    }
+  }
+
+  if (sorted) {
+    // helper func to find the closest pt in the set
+    auto closestPt = [&](const Matrix<T, -1, -1>& pts,
+                         const set<int>& existedIdx,
+                         RowVector<T, 3>& query_pt) -> int {
+      float minD = std::numeric_limits<float>::max();
+
+      int nextId = -1;
+      for (size_t i = 0; i < pts.rows(); i++) {
+        if (existedIdx.find(i) == existedIdx.end()) {
+          float dist = (query_pt - pts.row(i)).norm();
+          if (dist < minD) {
+            minD = dist;
+            nextId = i;
+          }
+        }
+      }
+
+      return nextId;
+    };
+
+    // process each isoline
+    for (auto& [key, val] : isoLinePts) {
+      set<int> addedPtId;
+
+      // prepare data
+      vector<RowVector<T, 3>> sortedPolyline{val.row(startPtId[key])};
+      addedPtId.insert(startPtId[key]);
+
+      while (addedPtId.size() != val.rows()) {
+        int nextPt = closestPt(val, addedPtId, sortedPolyline.back());
+        sortedPolyline.push_back(val.row(nextPt));
+        addedPtId.insert(nextPt);
+      }
+
+      // transfer the sorted list back
+      for (size_t i = 0; i < val.rows(); i++) {
+        val.row(i) = sortedPolyline.at(i);
+      }
+    };
+
+    // reverse isolines if needed
+    int cnt = 0;
+    for (auto it = isoLinePts.begin(); cnt < divN - 1; it++) {
+      auto next = std::next(it);
+
+      if ((it->second.row(0) - next->second.row(0)).norm() >
+          (it->second.row(0) - next->second.row(next->second.rows() - 1))
+              .norm()) {
+        next->second.colwise().reverseInPlace();
+      }
+
+      cnt++;
+    };
+  }
+}
 }  // namespace GeoLib

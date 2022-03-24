@@ -35,26 +35,14 @@ namespace IGLRhinoCommon
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rMesh);
             var res = CppIGM.IGM_read_triangle_mesh(fileName, pMesh);
 
-            //var Vcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
-            //var Fcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
-            //var res = CppIGM.IGM_read_triangle_mesh(fileName, Vcpp.NonConstPointer(), Fcpp.NonConstPointer());
-
-            //if (res)
-            //{
-            //    var arrayV = Vcpp.ToArray();
-            //    foreach (var v in arrayV)
-            //    {
-            //        rMesh.Vertices.Add(v);
-
-            //    }
-            //    var arrayF = Fcpp.ToArray();
-            //    for (int i = 0; i < arrayF.Length / 3; i++)
-            //    {
-            //        rMesh.Faces.AddFace(arrayF[i * 3], arrayF[i * 3 + 1], arrayF[i * 3 + 2]);
-            //    }
-            //}
-
             return res;
+        }
+
+        public static bool saveMesh(ref Mesh rMesh, string fileName)
+        {
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rMesh);
+            return CppIGM.IGM_write_triangle_mesh(fileName, pMesh);
+
         }
 
         public static (List<Point3d>, List<List<int>>, Point3d, double) getMeshInfo(ref Mesh rhinoMesh)
@@ -542,69 +530,93 @@ namespace IGLRhinoCommon
             return (EN, EI, EMAP);
         }
 
-        public static List<List<Point3d>> getIsolinePts(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val, int divN)
+        public static List<List<Point3d>> getIsolinePts(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val, int divN)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             if (con_idx.Count != con_val.Count) throw new OverflowException();
 
-            float[] V = rhinoMesh.Vertices.ToFloatArray();
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            int nV = rhinoMesh.Vertices.Count;
-            int nF = rhinoMesh.Faces.Count;
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+            var conIcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt(con_idx);
+            var conVcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(con_val);
+            var isoPcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayArrayPoint3d();
 
-            // data transformation and memory allocation
-            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            IntPtr conIdx = Marshal.AllocHGlobal(Marshal.SizeOf(con_idx[0]) * con_idx.Count);
-            IntPtr conVal = Marshal.AllocHGlobal(Marshal.SizeOf(con_val[0]) * con_val.Count);
-            Marshal.Copy(V, 0, meshV, V.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
-            Marshal.Copy(con_idx.ToArray(), 0, conIdx, con_idx.Count);
-            Marshal.Copy(con_val.ToArray(), 0, conVal, con_val.Count);
+            var signal = CppIGM.IGM_extract_isoline(pMesh, divN, conIcpp.ConstPointer(), conVcpp.ConstPointer(), isoPcpp.NonConstPointer());
 
-            // since we don't know the # of pts in a isoLine, let's assme # = V at most
-            int assumedDataNum = Marshal.SizeOf(typeof(float)) * 3 * nV;
-            IntPtr isoLinePts = Marshal.AllocHGlobal(assumedDataNum);
-            IntPtr numPtsEachLst = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * divN);
+            // conversion to C# type
+            List<List<Point3d>> isoP = new List<List<Point3d>>();
 
-            //CppIGM
-            CppIGM.extractIsoLinePts(meshV, nV, meshF, nF, conIdx, conVal, con_idx.Count, divN, isoLinePts, numPtsEachLst);
-
-            // process returned data
-            int[] processedNumPtsLst = new int[divN];
-            Marshal.Copy(numPtsEachLst, processedNumPtsLst, 0, divN);
-
-            int totalNumPts = 0;
-            for (int i = 0; i < divN; i++) totalNumPts += processedNumPtsLst[i];
-            float[] processedIsoLine = new float[Marshal.SizeOf(typeof(float)) * 3 * nV];
-            Marshal.Copy(isoLinePts, processedIsoLine, 0, totalNumPts * 3);
-
-            // free memory
-            Marshal.FreeHGlobal(meshV);
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(conIdx);
-            Marshal.FreeHGlobal(conVal);
-            Marshal.FreeHGlobal(numPtsEachLst);
-            Marshal.FreeHGlobal(isoLinePts);
-
-            List<List<Point3d>> isolst = new List<List<Point3d>>();
-
-            int ptCnt = 0;
-            for (int i = 0; i < divN; i++)
+            if (signal == 0)
             {
-                int sz = processedNumPtsLst[i];
-                List<Point3d> ptLst = new List<Point3d>();
-                for (int j = 0; j < sz; j++)
+                for (int i = 0; i < isoPcpp.Count; i++)
                 {
-                    ptLst.Add(new Point3d(processedIsoLine[ptCnt * 3],
-                           processedIsoLine[ptCnt * 3 + 1],
-                           processedIsoLine[ptCnt * 3 + 2]));
-                    ptCnt++;
+                    isoP.Add(new List<Point3d>());
+
+                    for (int j = 0; j < isoPcpp.PointCountAt(i); j++)
+                    {
+                        isoP[i].Add(isoPcpp[i, j]);
+                    }
                 }
-                isolst.Add(ptLst);
             }
 
-            return isolst;
+            return isoP;
+            //float[] V = rhinoMesh.Vertices.ToFloatArray();
+            //int[] F = rhinoMesh.Faces.ToIntArray(true);
+            //int nV = rhinoMesh.Vertices.Count;
+            //int nF = rhinoMesh.Faces.Count;
+
+            //// data transformation and memory allocation
+            //IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
+            //IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            //IntPtr conIdx = Marshal.AllocHGlobal(Marshal.SizeOf(con_idx[0]) * con_idx.Count);
+            //IntPtr conVal = Marshal.AllocHGlobal(Marshal.SizeOf(con_val[0]) * con_val.Count);
+            //Marshal.Copy(V, 0, meshV, V.Length);
+            //Marshal.Copy(F, 0, meshF, F.Length);
+            //Marshal.Copy(con_idx.ToArray(), 0, conIdx, con_idx.Count);
+            //Marshal.Copy(con_val.ToArray(), 0, conVal, con_val.Count);
+
+            //// since we don't know the # of pts in a isoLine, let's assme # = V at most
+            //int assumedDataNum = Marshal.SizeOf(typeof(float)) * 3 * nV;
+            //IntPtr isoLinePts = Marshal.AllocHGlobal(assumedDataNum);
+            //IntPtr numPtsEachLst = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * divN);
+
+            ////CppIGM
+            //CppIGM.extractIsoLinePts(meshV, nV, meshF, nF, conIdx, conVal, con_idx.Count, divN, isoLinePts, numPtsEachLst);
+
+            //// process returned data
+            //int[] processedNumPtsLst = new int[divN];
+            //Marshal.Copy(numPtsEachLst, processedNumPtsLst, 0, divN);
+
+            //int totalNumPts = 0;
+            //for (int i = 0; i < divN; i++) totalNumPts += processedNumPtsLst[i];
+            //float[] processedIsoLine = new float[Marshal.SizeOf(typeof(float)) * 3 * nV];
+            //Marshal.Copy(isoLinePts, processedIsoLine, 0, totalNumPts * 3);
+
+            //// free memory
+            //Marshal.FreeHGlobal(meshV);
+            //Marshal.FreeHGlobal(meshF);
+            //Marshal.FreeHGlobal(conIdx);
+            //Marshal.FreeHGlobal(conVal);
+            //Marshal.FreeHGlobal(numPtsEachLst);
+            //Marshal.FreeHGlobal(isoLinePts);
+
+            //List<List<Point3d>> isolst = new List<List<Point3d>>();
+
+            //int ptCnt = 0;
+            //for (int i = 0; i < divN; i++)
+            //{
+            //    int sz = processedNumPtsLst[i];
+            //    List<Point3d> ptLst = new List<Point3d>();
+            //    for (int j = 0; j < sz; j++)
+            //    {
+            //        ptLst.Add(new Point3d(processedIsoLine[ptCnt * 3],
+            //               processedIsoLine[ptCnt * 3 + 1],
+            //               processedIsoLine[ptCnt * 3 + 2]));
+            //        ptCnt++;
+            //    }
+            //    isolst.Add(ptLst);
+            //}
+
+            //return isolst;
         }
 
         public static List<float> getLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val)

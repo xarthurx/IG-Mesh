@@ -45,6 +45,9 @@
 RH_C_FUNCTION
 void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh);
 
+RH_C_FUNCTION
+bool IGM_write_triangle_mesh(char* filename, ON_Mesh* pMesh);
+
 // ! --------------------------------
 // ! property funcs
 // ! --------------------------------
@@ -118,13 +121,17 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
 // ! querying
 // ! --------------------------------
 RH_C_FUNCTION
-void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-                       float* con_value, int numCon, int divN, float* isoLnPts,
-                       int* numPtsPerLst);
+int IGM_extract_isoline(ON_Mesh* pMesh, int divN, ON_SimpleArray<int>* con_idx,
+                         ON_SimpleArray<double>* con_val,
+                         ON_SimpleArray<ON_3dPointArray>* isoP);
+// void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
+//                       float* con_value, int numCon, int divN, float*
+//                       isoLnPts, int* numPtsPerLst);
 
 RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
-                      ON_SimpleArray<double>* con_val, ON_SimpleArray<double>* laplacianValue);
+                   ON_SimpleArray<double>* con_val,
+                   ON_SimpleArray<double>* laplacianValue);
 
 RH_C_FUNCTION
 void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,

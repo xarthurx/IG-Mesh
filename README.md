@@ -1,5 +1,6 @@
 # IG-Mesh
 
+![](./graphics/title_img.png)
 
 ## A mesh processing library for Grasshopper (Rhino)
 
@@ -8,7 +9,7 @@
 The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level mesh operation to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 ## Download & Installation (TODO)
-Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh):
+Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
 
 1. Download the `.zip` file for your OS from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
 2. Unzip the `.zip` file and put the folder into you "Grasshopper Component Folder".

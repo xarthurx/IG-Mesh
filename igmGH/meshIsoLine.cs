@@ -26,6 +26,7 @@ namespace igmGH
             pManager.AddIntegerParameter("Constraint Index", "I", "the indices to be constrained", GH_ParamAccess.list);
             pManager.AddNumberParameter("Constraint Value", "val", "the values to constrain with", GH_ParamAccess.list);
             pManager.AddIntegerParameter("Isoline Number", "N", "the number of isolines", GH_ParamAccess.item, 3);
+            pManager[3].Optional = true;
         }
 
         /// <summary>
@@ -33,8 +34,8 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddCurveParameter("Iso Curves", "C", "the extracted isolines from input mesh", GH_ParamAccess.list);
-            pManager.AddPointParameter("Isoline Points", "P", "extracted points on isolines", GH_ParamAccess.tree);
+            pManager.AddCurveParameter("Isoline Curve", "C", "the extracted isolines from input mesh", GH_ParamAccess.list);
+            pManager.AddPointParameter("Isoline Point", "P", "extracted points on isolines", GH_ParamAccess.tree);
         }
 
         /// <summary>
@@ -45,8 +46,8 @@ namespace igmGH
         {
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             List<int> con_idx = new List<int>();
-            List<float> con_val = new List<float>();
-            int divN = 1;
+            List<double> con_val = new List<double>();
+            int divN = 3;
 
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
@@ -56,7 +57,7 @@ namespace igmGH
             if (!(con_idx.Count > 0) || !(con_val.Count > 0)) { return; }
             if (con_idx.Count != con_val.Count) { return; }
             // TODO: add warning message
-            if (!DA.GetData(3, ref divN)) { return; }
+            if (!DA.GetData(3, ref divN) || divN < 0) { return; }
 
             // call the cpp function to solve the adjacency list
             var res = IGLRhinoCommon.Utils.getIsolinePts(ref mesh, ref con_idx, ref con_val, divN);

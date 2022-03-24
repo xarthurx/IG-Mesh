@@ -36,6 +36,7 @@
 #include <igl/slice_into.h>
 #include <igl/triangle_triangle_adjacency.h>
 #include <igl/unique.h>
+#include <igl/write_triangle_mesh.h>
 
 // -------------------------------------
 // common headers and namespace

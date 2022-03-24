@@ -109,6 +109,15 @@ void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh) {
   }
 }
 
+bool IGM_write_triangle_mesh(char* filename, ON_Mesh* pMesh) {
+  // cvt mesh
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  return igl::write_triangle_mesh(filename, matV, matF);
+}
+
 void IGM_centroid(ON_Mesh* pMesh, ON_SimpleArray<double>* c) {
   // cvt mesh
   MatrixXd matV;
@@ -346,56 +355,63 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
 }
 
 // RH_C_FUNCTION
-void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-                       float* con_value, int numCon, int divN, float* isoLnPts,
-                       int* numPtsPerLst) {
+int IGM_extract_isoline(ON_Mesh* pMesh, int divN, ON_SimpleArray<int>* con_idx,
+                        ON_SimpleArray<double>* con_val,
+                        ON_SimpleArray<ON_3dPointArray>* isoP) {
   // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
   // "isoLnPts' in each isoline
 
-  // cvt mesh
-  MatrixXf eigenV;
-  MatrixXi eigenF;
-  cvtArrayToEigenXt(V, nV, eigenV);
-  cvtArrayToEigenXt(F, nF, eigenF);
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  if (matV.rows() == 0 || matF.rows() == 0) return 1;
 
   // cvt constraints
-  VectorXi conIdx(numCon);
-  VectorXf conVal(numCon);
+  VectorXi conIdx;
+  VectorXd conVal;
+  cvtON_ArrayToEigenV(con_idx, conIdx);
+  cvtON_ArrayToEigenV(con_val, conVal);
 
-  for (size_t i = 0; i < numCon; i++) {
-    conIdx[i] = *(con_idx + i);
-    conVal[i] = *(con_value + i);
-  }
+  if (conIdx.size() == 0 || conVal.size() == 0) return 2;
 
   // solve scalar field
-  VectorXf meshScalar(eigenV.rows());
-  GeoLib::solveScalarField(eigenV, eigenF, conIdx, conVal, meshScalar);
+  VectorXd meshScalar(matV.rows());
+  GeoLib::solveScalarField(matV, matF, conIdx, conVal, meshScalar);
 
   // extract isolines
-  map<float, MatrixXf> tmpIsoPts;
-  GeoLib::computeIsoPts(eigenV, eigenF, meshScalar, divN, tmpIsoPts);
+  map<double, MatrixXd> tmpIsoPts;
+  GeoLib::computeIsoPts(matV, matF, meshScalar, divN, tmpIsoPts);
 
-  // write data back to the c# pointer arrary
-  vector<int> transferNumPtPerLst;
-  vector<float> transferIsoLnCollection(0);
+  // use the sorted list
   for (auto const& [key, val] : tmpIsoPts) {
-    vector<float> transferIsoLn(val.rows() * 3);
-
-    // isoline points
+    ON_3dPointArray tmpL(0);
     for (size_t i = 0; i < val.rows(); i++) {
-      transferIsoLnCollection.emplace_back(val(i, 0));
-      transferIsoLnCollection.emplace_back(val(i, 1));
-      transferIsoLnCollection.emplace_back(val(i, 2));
+      tmpL.Append(ON_3dPoint(val(i, 0), val(i, 1), val(i, 2)));
     }
-
-    // number of pts per isoline
-    transferNumPtPerLst.push_back(val.rows());
+    isoP->Append(tmpL);
   }
+  //// write data back to the c# pointer arrary
+  // vector<int> transferNumPtPerLst;
+  // vector<double> transferIsoLnCollection(0);
+  // for (auto const& [key, val] : tmpIsoPts) {
+  //  vector<double> transferIsoLn(val.rows() * 3);
 
-  std::copy(transferIsoLnCollection.begin(), transferIsoLnCollection.end(),
-            isoLnPts);
-  std::copy(transferNumPtPerLst.begin(), transferNumPtPerLst.end(),
-            numPtsPerLst);
+  //  // isoline points
+  //  for (size_t i = 0; i < val.rows(); i++) {
+  //    transferIsoLnCollection.emplace_back(val(i, 0));
+  //    transferIsoLnCollection.emplace_back(val(i, 1));
+  //    transferIsoLnCollection.emplace_back(val(i, 2));
+  //  }
+
+  //  // number of pts per isoline
+  //  transferNumPtPerLst.push_back(val.rows());
+  //}
+
+  // std::copy(transferIsoLnCollection.begin(), transferIsoLnCollection.end(),
+  //          isoLnPts);
+  // std::copy(transferNumPtPerLst.begin(), transferNumPtPerLst.end(),
+  //          numPtsPerLst);
 }
 
 // RH_C_FUNCTION

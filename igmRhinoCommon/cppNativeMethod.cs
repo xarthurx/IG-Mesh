@@ -20,8 +20,11 @@ namespace IGLRhinoCommon
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool IGM_read_triangle_mesh(string fName, IntPtr pMesh);
 
-        //[DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        //internal static extern bool IGM_read_triangle_mesh(string fName, IntPtr V, IntPtr F);
+        /// <summary>
+        /// Write triangle mesh
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern bool IGM_write_triangle_mesh(string fName, IntPtr pMesh);
 
         /// <summary>
         /// Compute mesh adjacency list
@@ -110,8 +113,7 @@ namespace IGLRhinoCommon
         /// Extract mesh IsoLine Points
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void extractIsoLinePts(IntPtr V, int nV, IntPtr F, int nF,
-            IntPtr con_idx, IntPtr con_val, int numCon, int divN, IntPtr isoLnPts, IntPtr numPtEachLst);
+        internal static extern int IGM_extract_isoline(IntPtr pMesh, int divN, IntPtr con_idx, IntPtr con_val, IntPtr isoP);
 
         /// <summary>
         /// Compute mesh Laplacian

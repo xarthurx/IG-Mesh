@@ -9,8 +9,8 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_read_triangle_mesh()
-          : base("Load TriMesh", "ireadMsh",
-              "Read a triangle mesh directly from disk. format supported: obj, off, stl, wrl, ply, mesh.",
+          : base("Load TriMesh", "iLoadMsh",
+              "Load a triangle mesh directly from disk. format supported: obj, off, stl, wrl, ply, mesh.",
               "IG-Mesh", "01 | IO+Info")
         {
         }
