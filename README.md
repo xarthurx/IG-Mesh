@@ -32,7 +32,7 @@ I will add the corresponding functions to the library after evaluation, ASAP.
 
 
 ## Licence
-The library is released under the [MIT licence](docs/LICENCE.md).
+The library is released under the [MIT licence](./docs/LICENCE.md).
 
 
 ---
