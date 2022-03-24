@@ -17,6 +17,7 @@
 #include <igl/boundary_facets.h>
 #include <igl/boundary_loop.h>
 #include <igl/centroid.h>
+#include <igl/fast_winding_number.h>
 #include <igl/parula.h>
 #include <igl/per_corner_normals.h>
 #include <igl/per_edge_normals.h>

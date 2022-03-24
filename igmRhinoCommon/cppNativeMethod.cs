@@ -125,5 +125,11 @@ namespace IGLRhinoCommon
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_principal_curvature(IntPtr pMesh, uint r, IntPtr PD1, IntPtr PD2, IntPtr PV1, IntPtr PV2);
+
+        /// <summary>
+        /// .compute fast winding number
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_fast_winding_number(IntPtr pMesh, IntPtr Q, IntPtr W);
     }
 }

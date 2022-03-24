@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_principal_curvature()
           : base("Principal Curvature", "iPrincipalCurvature",
               "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-              "IGM", "07 | Utils")
+              "IGM", "05 | Query")
         {
         }
 

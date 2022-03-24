@@ -686,5 +686,27 @@ namespace IGLRhinoCommon
 
             return (PD1, PD2, PV1, PV2);
         }
+
+        public static List<double> getFastWindingNumber(ref Mesh rMesh, ref List<Point3d> Q)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            List<double> Qarray = new List<double>();
+            foreach (var item in Q)
+            {
+                Qarray.Add(item.X);
+                Qarray.Add(item.Y);
+                Qarray.Add(item.Z);
+            }
+            var Qcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(Qarray);
+            var Wcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+
+            CppIGM.IGM_fast_winding_number(pMesh, Qcpp.ConstPointer(), Wcpp.NonConstPointer());
+
+            List<double> W = new List<double>(Wcpp.ToArray());
+
+            return W;
+        }
     }
 }

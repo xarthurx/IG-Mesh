@@ -21,6 +21,13 @@ void cvtArrayToEigenXt(T* inputArray, int sz,
   }
 }
 
+void cvtOn_PtArrayToEigen(ON_3dPointArray* V, MatrixXd& matV) {
+  matV.resize(V->Count(), 3);
+  for (size_t i = 0; i < V->Count(); i++) {
+    matV.row(i) << V->At(i)->x, V->At(i)->y, V->At(i)->z;
+  }
+}
+
 void cvtONstructToEigen(ON_3dPointArray& mV, ON_SimpleArray<ON_MeshFace>& mF,
                         MatrixXd& matV, MatrixXi& matF) {
   matV.resize(mV.Count(), 3);
@@ -301,7 +308,7 @@ void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
 }
 
 void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
-                    ON_SimpleArray<double>* res) {
+                   ON_SimpleArray<double>* res) {
   // cvt mesh
   MatrixXd matV;
   MatrixXi matF;
@@ -440,4 +447,19 @@ void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
 
   cvtEigenVecToON_Array(mPV1, PV1);
   cvtEigenVecToON_Array(mPV2, PV2);
+}
+
+void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
+                             ON_SimpleArray<double>* W) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+
+  MatrixXd matQ;
+  cvtArrayToEigenXt(Q->Array(), Q->Count() / 3, matQ);
+
+  VectorXd vecW;
+  igl::fast_winding_number(matV, matF, matQ, vecW);
+
+  cvtEigenVecToON_Array(vecW, W);
 }

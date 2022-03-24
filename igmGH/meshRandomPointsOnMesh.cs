@@ -1,5 +1,4 @@
-﻿
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using System;
 
 namespace igmGH
@@ -12,7 +11,7 @@ namespace igmGH
         public IGM_random_points_on_mesh()
           : base("Random Points On Mesh", "iRndPtsMesh",
               "Randomly sample N points on surface of the given mesh.",
-              "IGM", "07 | Utils")
+              "IGM", "05 | Query")
         {
         }
 

@@ -111,7 +111,7 @@ void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res);
 
 // ! --------------------------------
-// ! advanced
+// ! querying
 // ! --------------------------------
 RH_C_FUNCTION
 void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
@@ -130,3 +130,7 @@ RH_C_FUNCTION
 void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
                              ON_3dPointArray* PD2, ON_SimpleArray<double>* PV1,
                              ON_SimpleArray<double>* PV2);
+
+RH_C_FUNCTION
+void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
+                             ON_SimpleArray<double>* W);

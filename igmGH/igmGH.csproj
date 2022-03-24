@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="meshBoundEdge.cs" />
+    <Compile Include="meshFastWindingNumber.cs" />
     <Compile Include="meshInfo.cs" />
     <Compile Include="meshNormalFace.cs" />
     <Compile Include="meshNormalsCorner.cs" />
