@@ -20,7 +20,7 @@ The rest is developed by the author in `C++` and ported to `C#` in the same mann
 
 The author would like to pay his deepest gratitude to the library developers for this library and the responsive Q\&A during the past years [^1].
 
-[^1]*The name of this library is also partially inspired by the [libigl](https://libigl.github.io).*
+[^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io).*
 
 
 ## Alpha phase and Use case collection
