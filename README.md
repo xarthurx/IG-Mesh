@@ -8,7 +8,7 @@
 
 The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level mesh operation to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
-## Download & Installation (TODO)
+## Download & Installation 
 Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
 
 1. Download the `.zip` file for your OS from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
