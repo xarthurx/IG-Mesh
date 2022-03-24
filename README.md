@@ -1,6 +1,6 @@
 # IG-Mesh
 
-![](./graphics/title_img.png)
+![](./graphics/title_img.jpg)
 
 ## A mesh processing library for Grasshopper (Rhino)
 
