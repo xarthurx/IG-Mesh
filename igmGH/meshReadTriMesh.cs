@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_read_triangle_mesh()
           : base("Load TriMesh", "ireadMsh",
               "Read a triangle mesh directly from disk. format supported: obj, off, stl, wrl, ply, mesh.",
-              "IGM", "01 | IO+Info")
+              "IG-Mesh", "01 | IO+Info")
         {
         }
 

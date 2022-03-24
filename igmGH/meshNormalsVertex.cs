@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_vert_normals()
           : base("Vertex Normal", "iNormals_V",
               "Compute the per vertex normals of the given mesh.",
-              "IGM", "02 | Basic Property")
+              "IG-Mesh", "02 | Basic Property")
         {
         }
 

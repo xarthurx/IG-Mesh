@@ -13,7 +13,7 @@ namespace igmGH
         public meshIsoLine()
           : base("Isoline", "iIsoline",
               "Extract the isolines of a given mesh.",
-              "IGM", "05 | Query")
+              "IG-Mesh", "05 | Query")
         {
         }
 

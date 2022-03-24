@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_laplacian()
           : base("IGM_Laplacian", "igLaplacian",
               "Solve laplacian equation under given boundary condition.",
-              "IGM", "05 | Query")
+              "IG-Mesh", "05 | Query")
         {
         }
 

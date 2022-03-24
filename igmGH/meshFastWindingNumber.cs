@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_winding_number()
           : base("Winding Number", "iWindingNum",
               "Compute the winding number for the query pts to the given mesh.",
-              "IGM", "05 | Query")
+              "IG-Mesh", "05 | Query")
         {
         }
 

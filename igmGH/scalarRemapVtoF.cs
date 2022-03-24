@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_remap_VtoF()
           : base("Remap Data from Vertices To Faces", "iRemapVF",
               "Move a scalar field defined on vertices to faces by averaging.",
-              "IGM", "04 | Mapping")
+              "IG-Mesh", "04 | Mapping")
         {
         }
 

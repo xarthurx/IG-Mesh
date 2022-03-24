@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_vert_face_normals()
           : base("Face Normal", "iNormals_F",
               "Compute the per face normals of the given mesh.",
-              "IGM", "02 | Basic Property")
+              "IG-Mesh", "02 | Basic Property")
         {
         }
 

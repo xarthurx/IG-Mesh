@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_mesh_properties()
           : base("Mesh Info", "igMeshInfo",
               "Provide various mesh info: V, F, etc.",
-              "IGM", "01 | IO+Info")
+              "IG-Mesh", "01 | IO+Info")
         {
         }
 
