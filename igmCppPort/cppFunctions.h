@@ -50,7 +50,7 @@ void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh);
 // ! --------------------------------
 
 RH_C_FUNCTION
-void IGM_centroid(ON_Mesh* pMesh, ON_3dPointArray* c);
+void IGM_centroid(ON_Mesh* pMesh, ON_SimpleArray<double>* c);
 
 // BC   barycenters of the mesh triangles
 RH_C_FUNCTION
@@ -108,6 +108,10 @@ void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
 
 RH_C_FUNCTION
 void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
+                   ON_SimpleArray<double>* res);
+
+RH_C_FUNCTION
+void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res);
 
 // ! --------------------------------

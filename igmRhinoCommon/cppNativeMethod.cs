@@ -101,6 +101,12 @@ namespace IGLRhinoCommon
         internal static extern void IGM_remapFtoV(IntPtr pMesh, IntPtr val, IntPtr res);
 
         /// <summary>
+        /// remap scalar from vertex to face
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_remapVtoF(IntPtr pMesh, IntPtr val, IntPtr res);
+
+        /// <summary>
         /// Extract mesh IsoLine Points
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]

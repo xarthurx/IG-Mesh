@@ -12,6 +12,7 @@
 // IGL includes
 // -------------------------------------
 #include <igl/adjacency_list.h>
+#include <igl/average_onto_faces.h>
 #include <igl/average_onto_vertices.h>
 #include <igl/barycenter.h>
 #include <igl/boundary_facets.h>

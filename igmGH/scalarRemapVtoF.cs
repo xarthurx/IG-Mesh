@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace igmGH
 {
-    public class IGM_remap_FtoV : GH_Component
+    public class IGM_remap_VtoF : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_remap_FtoV()
-          : base("Remap Data from Faces To Vertices", "iRemapFV",
-              "Move a scalar field defined on faces to vertices by averaging.",
+        public IGM_remap_VtoF()
+          : base("Remap Data from Vertices To Faces", "iRemapVF",
+              "Move a scalar field defined on vertices to faces by averaging.",
               "IGM", "04 | Mapping")
         {
         }
@@ -22,7 +22,7 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Base mesh.", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Scalar", "S", "Scalar defined on faces.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Scalar", "S", "Scalar defined on vertices.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddNumberParameter("Remaped Scalar", "SV", "The remapped valuse on vertices.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Remaped Scalar", "SF", "The remapped valuse on faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -43,15 +43,15 @@ namespace igmGH
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            List<double> scalarV = new List<double>();
-            if (!DA.GetDataList<double>(1, scalarV)) { return; }
-            if (scalarV.Count != mesh.Faces.Count) { return; }
+            List<double> scalarF = new List<double>();
+            if (!DA.GetDataList<double>(1, scalarF)) { return; }
+            if (scalarF.Count != mesh.Vertices.Count) { return; }
 
             // call the cpp function to solve the adjacency list
-            var sv = IGLRhinoCommon.Utils.remapFtoV(ref mesh, scalarV);
+            var sf = IGLRhinoCommon.Utils.remapVtoF(ref mesh, scalarF);
 
             // output
-            DA.SetDataList(0, sv);
+            DA.SetDataList(0, sf);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("a0ee589c-082d-4ca1-bdfe-f5e3a3ddd6c8"); }
+            get { return new Guid("b2743097-03cb-4897-968f-bdcc3e0f95fc"); }
         }
     }
 }

@@ -47,10 +47,11 @@ void cvtON_ArrayToEigenV(ON_SimpleArray<T>* onArray, Vector<T, -1>& vec) {
   vec = Vector<T, -1>::Map(onArray->Array(), onArray->Count());
 }
 template <typename T>
-void cvtEigenVToArray(Vector<T, -1>& vec, ON_SimpleArray<T>* onArray) {
-  for (size_t i = 0; i < vec.size(); i++) {
-    onArray->Append(vec[i]);
-  }
+void cvtEigenVToON_Array(Vector<T, -1>& vec, ON_SimpleArray<T>* onArray) {
+  onArray->Append(vec.size(), vec.data());
+  // for (size_t i = 0; i < vec.size(); i++) {
+  //  onArray->Append(vec[i]);
+  //}
 }
 
 template <typename T>
@@ -74,12 +75,6 @@ void cvtEigenToON_ArrayInt(const MatrixXi& matF, ON_SimpleArray<int>* F) {
     int tmp[3]{matF(i, 0), matF(i, 1), matF(i, 2)};
     F->Append(3, tmp);
   }
-}
-
-template <typename T>
-void cvtEigenVecToON_Array(const Vector<T, Dynamic>& vecV,
-                           ON_SimpleArray<T>* P) {
-  P->Append(vecV.size(), vecV.data());
 }
 
 // bool IGM_read_triangle_mesh(char* filename, ON_3dPointArray* V,
@@ -109,19 +104,19 @@ void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh) {
   }
 }
 
-void IGM_centroid(ON_Mesh* pMesh, ON_3dPointArray* c) {
+void IGM_centroid(ON_Mesh* pMesh, ON_SimpleArray<double>* c) {
   // cvt mesh
   MatrixXd matV;
   MatrixXi matF;
   cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
 
-  Vector3d cen;
+  VectorXd cen;
 
   // compute
   igl::centroid(matV, matF, cen);
 
   // one-item array due to limitation of wrappers
-  cvtEigenToON_Points(MatrixXd(cen.transpose()), c);
+  cvtEigenVToON_Array(cen, c);
 }
 
 void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
@@ -328,7 +323,24 @@ void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
   igl::average_onto_vertices(matV, matF, scalarVal, vecSV);
 
   // send back
-  cvtEigenVecToON_Array(vecSV, res);
+  cvtEigenVToON_Array(vecSV, res);
+}
+
+void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
+                   ON_SimpleArray<double>* res) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+
+  VectorXd scalarVal;
+  cvtON_ArrayToEigenV(val, scalarVal);
+
+  // compute data
+  VectorXd vecSF;
+  igl::average_onto_faces(matF, scalarVal, vecSF);
+
+  // send back
+  cvtEigenVToON_Array(vecSF, res);
 }
 
 // RH_C_FUNCTION
@@ -434,7 +446,7 @@ void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
   }
 
   cvtEigenToON_Points(samples, B);
-  cvtEigenVecToON_Array(faceI, FI);
+  cvtEigenVToON_Array(faceI, FI);
 }
 
 void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
@@ -451,8 +463,8 @@ void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
   cvtEigenToON_Points(mPD1, PD1);
   cvtEigenToON_Points(mPD2, PD2);
 
-  cvtEigenVecToON_Array(mPV1, PV1);
-  cvtEigenVecToON_Array(mPV2, PV2);
+  cvtEigenVToON_Array(mPV1, PV1);
+  cvtEigenVToON_Array(mPV2, PV2);
 }
 
 void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
@@ -467,7 +479,7 @@ void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
   VectorXd vecW;
   igl::fast_winding_number(matV, matF, matQ, vecW);
 
-  cvtEigenVecToON_Array(vecW, W);
+  cvtEigenVToON_Array(vecW, W);
 }
 
 void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
@@ -492,7 +504,7 @@ void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
                        vecI, matC, matN);
 
   // convert data back
-  cvtEigenVToArray(vecS, S);
-  cvtEigenVToArray(vecI, I);
+  cvtEigenVToON_Array(vecS, S);
+  cvtEigenVToON_Array(vecI, I);
   cvtEigenToON_Points(matC, C);
 }

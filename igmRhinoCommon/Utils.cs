@@ -71,14 +71,16 @@ namespace IGLRhinoCommon
                 F.Add(new List<int> { mF[i * 3], mF[i * 3 + 1], mF[i * 3 + 2] });
             }
 
-            var cen = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            var Ccpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
             // igl for mesh centroid
-            CppIGM.IGM_centroid(pMesh, cen.NonConstPointer());
+            CppIGM.IGM_centroid(pMesh, Ccpp.NonConstPointer());
+            var arrayCen = Ccpp.ToArray();
+            Point3d cen = new Point3d(arrayCen[0], arrayCen[1], arrayCen[2]);
 
             // use native methods for volume
             double vol = rhinoMesh.Volume();
 
-            return (V, F, cen.ToArray()[0], vol);
+            return (V, F, cen, vol);
         }
 
         public static List<double> remapFtoV(ref Mesh rMesh, List<double> scalarV)
@@ -97,6 +99,24 @@ namespace IGLRhinoCommon
             List<double> mappedV = new List<double>(arrayDbl);
 
             return mappedV;
+        }
+
+        public static List<double> remapVtoF(ref Mesh rMesh, List<double> scalarF)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            var valCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(scalarF);
+            var resCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+
+            // call the cpp func
+            CppIGM.IGM_remapVtoF(pMesh, valCpp.ConstPointer(), resCpp.NonConstPointer());
+
+            // conversion to C# type
+            var arrayDbl = resCpp.ToArray();
+            List<double> mappedF = new List<double>(arrayDbl);
+
+            return mappedF;
         }
 
         public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)

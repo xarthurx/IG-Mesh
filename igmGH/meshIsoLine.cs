@@ -11,8 +11,8 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public meshIsoLine()
-          : base("mesh isoline", "isoline",
-              "extract the isolines of a given mesh",
+          : base("Isoline", "iIsoline",
+              "Extract the isolines of a given mesh.",
               "IGM", "05 | Query")
         {
         }
@@ -23,9 +23,9 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Constraint Indices", "I", "the indices to be constrained", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Constraint Values", "V", "the values to constrain with", GH_ParamAccess.list);
-            pManager.AddIntegerParameter("Number of Isolines", "N", "the number of isolines", GH_ParamAccess.item, 3);
+            pManager.AddIntegerParameter("Constraint Index", "I", "the indices to be constrained", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Constraint Value", "val", "the values to constrain with", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Isoline Number", "N", "the number of isolines", GH_ParamAccess.item, 3);
         }
 
         /// <summary>
