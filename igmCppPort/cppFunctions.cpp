@@ -46,6 +46,12 @@ void cvtON_ArrayToEigenV(ON_SimpleArray<T>* onArray, Vector<T, -1>& vec) {
   // vec = Vector<T, -1>(onArray->Array());
   vec = Vector<T, -1>::Map(onArray->Array(), onArray->Count());
 }
+template <typename T>
+void cvtEigenVToArray(Vector<T, -1>& vec, ON_SimpleArray<T>* onArray) {
+  for (size_t i = 0; i < vec.size(); i++) {
+    onArray->Append(vec[i]);
+  }
+}
 
 template <typename T>
 void cvtEigenToON_Points(const Matrix<T, Dynamic, Dynamic>& matP,
@@ -462,4 +468,31 @@ void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
   igl::fast_winding_number(matV, matF, matQ, vecW);
 
   cvtEigenVecToON_Array(vecW, W);
+}
+
+void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
+                         ON_SimpleArray<double>* S, ON_SimpleArray<int>* I,
+                         ON_3dPointArray* C) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+
+  MatrixXd matQ;
+  cvtArrayToEigenXt(Q->Array(), Q->Count() / 3, matQ);
+
+  // make sure "type" within range.
+  if (type < 1 || type > 4) type = 4;
+
+  VectorXd vecS;
+  VectorXi vecI;
+  MatrixXd matC;
+  MatrixXd matN;  // tmp variable for now.
+
+  igl::signed_distance(matQ, matV, matF, (igl::SignedDistanceType)type, vecS,
+                       vecI, matC, matN);
+
+  // convert data back
+  cvtEigenVToArray(vecS, S);
+  cvtEigenVToArray(vecI, I);
+  cvtEigenToON_Points(matC, C);
 }

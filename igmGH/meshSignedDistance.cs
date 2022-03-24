@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace igmGH
 {
-    public class IGM_winding_number : GH_Component
+    public class IGM_signed_distance : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_winding_number()
-          : base("Winding Number", "iWindingNum",
-              "Compute the winding number for the query pts to the given mesh.",
+        public IGM_signed_distance()
+          : base("Signed Distance", "iSignedDis",
+              "Compute the signed distance for the query pts to the given mesh.",
               "IGM", "05 | Query")
         {
         }
@@ -23,6 +23,8 @@ namespace igmGH
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
             pManager.AddPointParameter("QueryPoints", "P", "The points to be queried.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("signed_type", "st", "The method used for computing signed distance: 1-winding number; 2-default; 3-unsigned; 4-fast winding number (default).", GH_ParamAccess.item, 4);
+            pManager[2].Optional = true;
         }
 
         /// <summary>
@@ -30,7 +32,9 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddNumberParameter("Winding Number", "W", "The winding number of the queried points.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Signed Distance", "SD", "The smallest signed distances of the queried points.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Closest Face Index", "FI", "Face indices corresponding to the smallest distances.", GH_ParamAccess.list);
+            pManager.AddPointParameter("Closest Point", "CP", "Closest Points to the queried points.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -47,11 +51,16 @@ namespace igmGH
             List<Rhino.Geometry.Point3d> Q = new List<Rhino.Geometry.Point3d>();
             if (!DA.GetDataList(1, Q)) { return; }
 
+            int st = new int();
+            if (!DA.GetData(2, ref st)) { return; }
+
             // call the cpp function to solve the adjacency list
-            var w = IGLRhinoCommon.Utils.getFastWindingNumber(ref mesh, ref Q);
+            var (sd, fi, cp) = IGLRhinoCommon.Utils.getSignedDistance(ref mesh, ref Q, st);
 
             // output
-            DA.SetDataList(0, w);
+            DA.SetDataList(0, sd);
+            DA.SetDataList(1, fi);
+            DA.SetDataList(2, cp);
         }
 
         /// <summary>
@@ -72,7 +81,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("c5c7b5c0-2cb4-48e6-903d-0e186c6de25d"); }
+            get { return new Guid("864f0192-bba2-487c-85ec-0118e564d69d"); }
         }
     }
 }

@@ -708,5 +708,32 @@ namespace IGLRhinoCommon
 
             return W;
         }
+
+        public static (List<double> SD, List<int> FI, List<Point3d> CP) getSignedDistance(ref Mesh rMesh, ref List<Point3d> Q, int signed_type)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            List<double> Qarray = new List<double>();
+            foreach (var item in Q)
+            {
+                Qarray.Add(item.X);
+                Qarray.Add(item.Y);
+                Qarray.Add(item.Z);
+            }
+            var Qcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(Qarray);
+
+            var SDcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+            var FIcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var CPcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+
+            CppIGM.IGM_signed_distance(pMesh, Qcpp.ConstPointer(), signed_type, SDcpp.NonConstPointer(), FIcpp.NonConstPointer(), CPcpp.NonConstPointer());
+
+            List<double> SD = new List<double>(SDcpp.ToArray());
+            List<int> FI = new List<int>(FIcpp.ToArray());
+            List<Point3d> CP = new List<Point3d>(CPcpp.ToArray());
+
+            return (SD, FI, CP);
+        }
     }
 }

@@ -134,3 +134,8 @@ void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
 RH_C_FUNCTION
 void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
                              ON_SimpleArray<double>* W);
+
+RH_C_FUNCTION
+void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
+                         ON_SimpleArray<double>* S, ON_SimpleArray<int>* I,
+                         ON_3dPointArray* C);
