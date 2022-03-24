@@ -5,7 +5,7 @@
 
 `IG-Mesh`, standing for either `igl-grasshopper mesh` or `intelligent and geometric mesh`, is a grasshopper plugin targeting at triangular surface mesh processing.
 
-The library is developed for the general architecture, design, and fabrication community, hoping to provide an one-stop solution to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
+The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level mesh operation to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 ## Download & Installation (TODO)
 The most recent release version can be found in the release section.
@@ -14,11 +14,13 @@ The [project page](_blank) on [Food4Rhino](https://www.food4rhino.com/en) also h
 
 ## Library credit
 
-Many of the base functions are borrowed from the famous geometry processing library [libigl](https://libigl.github.io), and ported into C# environment through the [PInvoke](https://www.grasshopper3d.com/forum/topics/link-use-c-code-or-c-lib-with-new-gh-plugin) methods. 
+Many of the base functions are converted from the geometry processing library [libigl](https://libigl.github.io), and ported into C# environment through the [PInvoke](https://www.grasshopper3d.com/forum/topics/link-use-c-code-or-c-lib-with-new-gh-plugin) methods. 
 
-The rest is developed by the author in `C++` and ported in the same manner.
+The rest is developed by the author in `C++` and ported to `C#` in the same manner.
 
-The name of this library is also partially inspired by the [libigl](https://libigl.github.io). The author would like to pay his deepest gratitude to the library developer for the tool and the responsive Q\&A during the past years.
+The author would like to pay his deepest gratitude to the library developers for this library and the responsive Q\&A during the past years [^1].
+
+[^1]*The name of this library is also partially inspired by the [libigl](https://libigl.github.io).*
 
 
 ## Alpha phase and Use case collection
