@@ -123,8 +123,8 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
                        int* numPtsPerLst);
 
 RH_C_FUNCTION
-void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-                      float* con_value, int numCon, float* laplacianValue);
+void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                      ON_SimpleArray<double>* con_val, ON_SimpleArray<double>* laplacianValue);
 
 RH_C_FUNCTION
 void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
@@ -134,6 +134,9 @@ RH_C_FUNCTION
 void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
                              ON_3dPointArray* PD2, ON_SimpleArray<double>* PV1,
                              ON_SimpleArray<double>* PV2);
+
+RH_C_FUNCTION
+void IGM_gaussian_curvature(ON_Mesh* pMesh, ON_SimpleArray<double>* K);
 
 RH_C_FUNCTION
 void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,

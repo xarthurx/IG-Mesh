@@ -54,9 +54,44 @@ struct MeshStat {
   }
 };
 
-void solveScalarField(const MatrixXf& V, const MatrixXi& F,
-                      const VectorXi& con_idx, const VectorXf& con_value,
-                      VectorXf& meshScalar);
+template <typename T>
+void solveScalarField(const Matrix<T, -1, -1>& V, const MatrixXi& F,
+                      const VectorXi& con_idx, const Vector<T, -1>& con_val,
+                      Vector<T, -1>& meshScalar) {
+  // boundary edges
+  Eigen::MatrixXi E;
+  igl::boundary_facets(F, E);
+
+  // find boundiary vertices
+  Eigen::VectorXi b, IA, IC;
+  igl::unique(E, b, IA, IC);  // all boundary in b
+
+  // List of all vertex indices
+  Eigen::VectorXi all, in;
+  all = Eigen::VectorXi::LinSpaced(V.rows(), 0, V.rows() - 1);
+
+  igl::setdiff(all, con_idx, in, IA);
+
+  // Slice Laplacian matrix
+  Eigen::SparseMatrix<T> L, L_in_in, L_in_b;
+  igl::cotmatrix(V, F, L);
+  igl::slice(L, in, in, L_in_in);
+  igl::slice(L, in, con_idx, L_in_b);
+
+  // slice into meshScalar to assign values
+  igl::slice_into(con_val, con_idx, meshScalar);
+
+  // Dirichlet boundary condition from pre-assigned value
+  Eigen::Vector<T, -1> bc;  // given boundary value
+  igl::slice(meshScalar, con_idx, bc);
+
+  ////Solve PDE
+  Eigen::SimplicialLLT<Eigen::SparseMatrix<T>> solver(-L_in_in);
+  Eigen::Vector<T, -1> Z_in = solver.solve(L_in_b * bc);
+
+  igl::slice_into(Z_in, in, meshScalar);
+};
+
 void computeIsoPts(const MatrixXf& V, const MatrixXi& F,
                    const VectorXf& meshScalar, int divN,
                    map<float, MatrixXf>& isoLinePts, bool sorted = true);

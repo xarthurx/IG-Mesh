@@ -10,7 +10,7 @@ namespace igmGH
         /// </summary>
         public IGM_gaussian_curvature()
           : base("Gaussian Curvature", "iGaussianCurvature",
-              "Compute discrete local integral gaussian curvature of the given mesh (angle deficit, without averaging by local area).",
+              "Compute integral of gaussian curvature of the given mesh.",
               "IG-Mesh", "02 | Properties")
         {
         }
@@ -28,7 +28,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddNumberParameter("Curvature", "K", "Discrete gaussian curvature values.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Curvature", "GK", "Gaussian curvature values.", GH_ParamAccess.list);
         }
 
         /// <summary>

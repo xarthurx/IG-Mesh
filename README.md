@@ -38,7 +38,8 @@ I will add the corresponding functions to the library after evaluation, ASAP.
 ## Future Planning
 Below is an incomplete list of functions that `IG-Mesh` plans to provide. The list is constantly adjusted based on feedback:
 
-- edge-related functions and half-Edge data structure
+- edge-related functions for vector fields operation 
+- Various approaches for unrolling mesh (parametrization)
 - geodesic related functions (shortest paths, heat-geodesic, etc.)
 - FEM-related functions (need evaluation on speed and computational efficiency)
 - tet-based volume processing functionality

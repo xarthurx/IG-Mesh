@@ -28,13 +28,18 @@ void cvtOn_PtArrayToEigen(ON_3dPointArray* V, MatrixXd& matV) {
   }
 }
 
-void cvtONstructToEigen(ON_3dPointArray& mV, ON_SimpleArray<ON_MeshFace>& mF,
-                        MatrixXd& matV, MatrixXi& matF) {
+void cvtMeshToEigen(ON_Mesh* pMesh, MatrixXd& matV, MatrixXi& matF) {
+  auto& mV = pMesh->m_dV;
+  if (!pMesh->HasDoublePrecisionVertices()) {
+    mV = pMesh->m_V;
+  }
+
   matV.resize(mV.Count(), 3);
   for (size_t i = 0; i < mV.Count(); i++) {
     matV.row(i) << mV[i].x, mV[i].y, mV[i].z;
   }
 
+  auto& mF = pMesh->m_F;
   matF.resize(mF.Count(), 3);
   for (size_t i = 0; i < mF.Count(); i++) {
     matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
@@ -108,22 +113,23 @@ void IGM_centroid(ON_Mesh* pMesh, ON_SimpleArray<double>* c) {
   // cvt mesh
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
-  VectorXd cen;
+  Vector3d cen;
 
   // compute
   igl::centroid(matV, matF, cen);
 
-  // one-item array due to limitation of wrappers
-  cvtEigenVToON_Array(cen, c);
+  c->Append(cen[0]);
+  c->Append(cen[1]);
+  c->Append(cen[2]);
 }
 
 void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
   // cvt mesh
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   // call func
   MatrixXd matBC;
@@ -192,14 +198,10 @@ void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
 }
 
 void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
-  // if (pMesh->HasDoublePrecisionVertices()) {
-  //  ON_3dPointArray& V = pMesh->m_dV;
-  //}
-
   MatrixXi matF;
   cvtArrayToEigenXt(F, nF, matF);
-  MatrixXi matTT, matTTI;
 
+  MatrixXi matTT, matTTI;
   igl::triangle_triangle_adjacency(matF, matTT, matTTI);
 
   RowMajMatXi::Map(adjTT, matTT.rows(), matTT.cols()) = matTT;
@@ -250,7 +252,7 @@ void IGM_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz) {
 void IGM_vert_normals(ON_Mesh* pMesh, ON_3dPointArray* VN) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   MatrixXd matVN;
   igl::per_vertex_normals(matV, matF, matVN);
@@ -261,7 +263,7 @@ void IGM_vert_normals(ON_Mesh* pMesh, ON_3dPointArray* VN) {
 void IGM_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   MatrixXd matFN;
   igl::per_face_normals(matV, matF, matFN);
@@ -274,7 +276,7 @@ void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
   // cvt mesh
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   // compute per-corner-normal
   MatrixXd matCN;
@@ -313,7 +315,7 @@ void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
   // cvt mesh
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   VectorXd scalarVal;
   cvtON_ArrayToEigenV(val, scalarVal);
@@ -330,7 +332,7 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   VectorXd scalarVal;
   cvtON_ArrayToEigenV(val, scalarVal);
@@ -397,41 +399,33 @@ void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
 }
 
 // RH_C_FUNCTION
-void computeLaplacian(float* V, int nV, int* F, int nF, int* con_idx,
-                      float* con_value, int numCon, float* laplacianValue) {
-  // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
-  // "isoLnPts' in each isoline
-
+void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                   ON_SimpleArray<double>* con_val,
+                   ON_SimpleArray<double>* laplacianValue) {
   // cvt mesh
-  MatrixXf eigenV;
-  MatrixXi eigenF;
-  cvtArrayToEigenXt(V, nV, eigenV);
-  cvtArrayToEigenXt(F, nF, eigenF);
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
 
-  // cvt constraints
-  VectorXi conIdx(numCon);
-  VectorXf conVal(numCon);
-
-  for (size_t i = 0; i < numCon; i++) {
-    conIdx[i] = *(con_idx + i);
-    conVal[i] = *(con_value + i);
-  }
+  // cvt cons
+  VectorXi vecConIdx;
+  VectorXd vecConVal;
+  cvtON_ArrayToEigenV(con_idx, vecConIdx);
+  cvtON_ArrayToEigenV(con_val, vecConVal);
 
   // solve scalar field
-  VectorXf meshScalar(eigenV.rows());
-  GeoLib::solveScalarField(eigenV, eigenF, conIdx, conVal, meshScalar);
+  VectorXd lapVal;
+  GeoLib::solveScalarField(matV, matF, vecConIdx, vecConVal, lapVal);
 
   // transfer data back
-  VectorXf meshScalarFloat = meshScalar.cast<float>();
-  Eigen::VectorXf::Map(laplacianValue, meshScalarFloat.rows()) =
-      meshScalarFloat;
+  cvtEigenVToON_Array(lapVal, laplacianValue);
 }
 
 void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
                               ON_SimpleArray<int>* FI) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   MatrixXd matP;
   VectorXi faceI;
@@ -454,7 +448,7 @@ void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
                              ON_SimpleArray<double>* PV2) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   MatrixXd mPD1, mPD2;
   VectorXd mPV1, mPV2;
@@ -467,11 +461,28 @@ void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
   cvtEigenVToON_Array(mPV2, PV2);
 }
 
+void IGM_gaussian_curvature(ON_Mesh* pMesh, ON_SimpleArray<double>* K) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  VectorXd vecK;
+  igl::gaussian_curvature(matV, matF, vecK);
+  SparseMatrix<double> M, Minv;
+  igl::massmatrix(matV, matF, igl::MASSMATRIX_TYPE_DEFAULT, M);
+  igl::invert_diag(M, Minv);
+
+  // Divide by area to get integral average
+  auto aveK = (Minv * vecK).eval();
+
+  cvtEigenVToON_Array(aveK, K);
+}
+
 void IGM_fast_winding_number(ON_Mesh* pMesh, ON_SimpleArray<double>* Q,
                              ON_SimpleArray<double>* W) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   MatrixXd matQ;
   cvtArrayToEigenXt(Q->Array(), Q->Count() / 3, matQ);
@@ -487,7 +498,7 @@ void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
                          ON_3dPointArray* C) {
   MatrixXd matV;
   MatrixXi matF;
-  cvtONstructToEigen(pMesh->m_dV, pMesh->m_F, matV, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   MatrixXd matQ;
   cvtArrayToEigenXt(Q->Array(), Q->Count() / 3, matQ);
