@@ -15,7 +15,7 @@ Pre-compiled releases are available on the [GitHub repo](https://github.com/xart
 2. Unzip the `.zip` file and put the folder into you "Grasshopper Component Folder".
 3. Restart Rhino and Grasshopper.
 
-The [project page on Food4Rhino](https://www.food4rhino.com/en) also holds major release versions of this library.
+<!-- The [project page on Food4Rhino](https://www.food4rhino.com/en) also holds major release versions of this library. -->
 
 ## Library credit
 
@@ -36,7 +36,7 @@ Please submit an issue and tell me what your mesh processing task requires and w
 I will add the corresponding functions to the library after evaluation, ASAP.
 
 
-## Future Planning
+## Future Plan (Non-Goal TODO)
 Below is an incomplete list of functions that `IG-Mesh` plans to provide. The list is constantly adjusted based on feedback:
 
 - edge-related functions for vector fields operation 
