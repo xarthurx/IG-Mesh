@@ -707,6 +707,19 @@ namespace IGLRhinoCommon
             return (PD1, PD2, PV1, PV2);
         }
 
+        public static List<double> getGaussianCurvature(ref Mesh rMesh)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            var Kcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+
+            CppIGM.IGM_gaussian_curvature(pMesh, Kcpp.NonConstPointer());
+
+            List<double> K = new List<double>(Kcpp.ToArray());
+            return K;
+        }
+
         public static List<double> getFastWindingNumber(ref Mesh rMesh, ref List<Point3d> Q)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));

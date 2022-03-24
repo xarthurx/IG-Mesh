@@ -8,9 +8,13 @@
 The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level mesh operation to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 ## Download & Installation (TODO)
-The most recent release version can be found in the release section.
-The [project page](_blank) on [Food4Rhino](https://www.food4rhino.com/en) also holds major release version of this library.
+Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh):
 
+1. Download the `.zip` file for your OS from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
+2. Unzip the `.zip` file and put the folder into you "Grasshopper Component Folder".
+3. Restart Rhino and Grasshopper.
+
+The [project page on Food4Rhino](https://www.food4rhino.com/en) also holds major release versions of this library.
 
 ## Library credit
 
@@ -29,6 +33,15 @@ The author would like to pay his deepest gratitude to the library developers for
 Please submit an issue and tell me what your mesh processing task requires and what type of functions are missing.
 
 I will add the corresponding functions to the library after evaluation, ASAP.
+
+
+## Future Planning
+Below is an incomplete list of functions that `IG-Mesh` plans to provide. The list is constantly adjusted based on feedback:
+
+- edge-related functions and half-Edge data structure
+- geodesic related functions (shortest paths, heat-geodesic, etc.)
+- FEM-related functions (need evaluation on speed and computational efficiency)
+- tet-based volume processing functionality
 
 
 ## Licence
@@ -50,6 +63,8 @@ If `IG-Mesh` contributes to an academic publication, cite it as:
 ```
 ## Compilation and Contribution
 
+You need to install `Visual Studio 2017` or above to compile the project.
+
 ### `openNURBS`
 1. Download the [openNURBS](https://github.com/mcneel/opennurbs) library to your local desk, compile it (both `debug` and `Release`).
 
@@ -60,12 +75,12 @@ If `IG-Mesh` contributes to an academic publication, cite it as:
 1. Download the [libigl](https://libigl.github.io) library to your local desk. 
 2. Add the `include` dir in the Property Page of `igm_cppPort`.
 
-### nuget packages
-In the `NuGet` package manager, you should install the following packages for the solution:
-- Grasshopper
-- RhinoCommon
-- System.Collections
-- System.Runtime
+### `nuget` Packages
+In the `NuGet` package manager of `Visual Studio`, you should install the following packages for the solution:
+- `Grasshopper`
+- `RhinoCommon`
+- `System.Collections`
+- `System.Runtime`
 
 ### Build this library
 After the above two steps, you should now be able to build the whole solution and generate the `.gha` and `.dll` file.

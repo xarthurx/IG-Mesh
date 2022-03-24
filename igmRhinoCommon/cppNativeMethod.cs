@@ -121,19 +121,25 @@ namespace IGLRhinoCommon
             IntPtr con_idx, IntPtr con_val, int numCon, IntPtr laplacianValue);
 
         /// <summary>
-        /// randomly sample points on meshes.
+        /// randomly sample points on meshes
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_random_point_on_mesh(IntPtr pMesh, int N, IntPtr B, IntPtr FI);
 
         /// <summary>
-        /// principal curvatures.
+        /// Compute principal curvatures
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_principal_curvature(IntPtr pMesh, uint r, IntPtr PD1, IntPtr PD2, IntPtr PV1, IntPtr PV2);
 
         /// <summary>
-        /// compute fast winding number
+        /// Compute gaussian curvatures
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_gaussian_curvature(IntPtr pMesh, IntPtr K);
+
+        /// <summary>
+        /// compute the fast winding number
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_fast_winding_number(IntPtr pMesh, IntPtr Q, IntPtr W);

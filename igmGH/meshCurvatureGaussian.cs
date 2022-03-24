@@ -3,15 +3,15 @@ using System;
 
 namespace igmGH
 {
-    public class IGM_principal_curvature : GH_Component
+    public class IGM_gaussian_curvature : GH_Component
     {
         /// <summary>
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
-        public IGM_principal_curvature()
-          : base("Principal Curvature", "iPrincipalCurvature",
-              "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-              "IG-Mesh", "05 | Query")
+        public IGM_gaussian_curvature()
+          : base("Gaussian Curvature", "iGaussianCurvature",
+              "Compute discrete local integral gaussian curvature of the given mesh (angle deficit, without averaging by local area).",
+              "IG-Mesh", "02 | Properties")
         {
         }
 
@@ -21,8 +21,6 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("radius", "r", "controls the size of the neighbourhood used, 1 = average edge length.", GH_ParamAccess.item, 5);
-            pManager[1].Optional = true;
         }
 
         /// <summary>
@@ -30,10 +28,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Principal Dir 1", "PD1", "Maximal curvature direction for each vertex.", GH_ParamAccess.list);
-            pManager.AddVectorParameter("Principal Dir 2", "PD2", "Minimal curvature direction for each vertex.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Principal Value 1", "PV1", "Maximal curvature value for each vertex.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Principal Value 2", "PV2", "Minimal curvature value for each vertex.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Curvature", "K", "Discrete gaussian curvature values.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -47,19 +42,11 @@ namespace igmGH
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            // use default threshold if not given by the user
-            int r = 5;
-            if (!DA.GetData(1, ref r)) { }
-            if (r < 1) { r = 1; } // make sure the value is unit
-
             // call the cpp function to solve the adjacency list
-            var (PD1, PD2, PV1, PV2) = IGLRhinoCommon.Utils.getPrincipalCurvature(ref mesh, (uint)r);
+            var k = IGLRhinoCommon.Utils.getGaussianCurvature(ref mesh);
 
             // output
-            DA.SetDataList(0, PD1);
-            DA.SetDataList(1, PD2);
-            DA.SetDataList(2, PV1);
-            DA.SetDataList(3, PV2);
+            DA.SetDataList(0, k);
         }
 
         /// <summary>
@@ -80,7 +67,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("ab67cd8c-b15b-40b4-b052-e8d39ccc1ea5"); }
+            get { return new Guid("6d32480e-e790-4b3f-9ad5-1fb638b75ba4"); }
         }
     }
 }

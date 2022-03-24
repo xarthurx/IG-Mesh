@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="meshBoundEdge.cs" />
     <Compile Include="meshFastWindingNumber.cs" />
+    <Compile Include="meshCurvatureGaussian.cs" />
     <Compile Include="meshInfo.cs" />
     <Compile Include="meshNormalFace.cs" />
     <Compile Include="meshNormalsCorner.cs" />
@@ -55,7 +56,7 @@
     <Compile Include="meshBoundLoop.cs" />
     <Compile Include="meshAdjacencyTriTri.cs" />
     <Compile Include="meshAdjacencyVertTri.cs" />
-    <Compile Include="meshPrincipalCurvature.cs" />
+    <Compile Include="meshCurvaturePrincipal.cs" />
     <Compile Include="meshRandomPointsOnMesh.cs" />
     <Compile Include="igm_Info.cs" />
     <Compile Include="meshAdjacentVertVert.cs" />
