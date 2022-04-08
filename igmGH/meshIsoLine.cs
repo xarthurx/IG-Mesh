@@ -23,8 +23,8 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Constraint Index", "I", "the indices to be constrained", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Constraint Value", "val", "the values to constrain with", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Constraint Index", "conI", "the indices to be constrained", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Constraint Value", "conV", "the values to constrain with", GH_ParamAccess.list);
             pManager.AddIntegerParameter("Isoline Number", "N", "the number of isolines", GH_ParamAccess.item, 3);
             pManager[3].Optional = true;
         }

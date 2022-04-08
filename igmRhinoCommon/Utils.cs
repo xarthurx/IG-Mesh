@@ -174,7 +174,6 @@ namespace IGLRhinoCommon
             IntPtr adjTTI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 3 * nF);
 
             // call the c++ func
-            int sz;
             CppIGM.IGM_triangle_triangle_adjacency(meshF, nF, adjTT_cpp, adjTTI_cpp);
 
             int[] resTT = new int[nF * 3];

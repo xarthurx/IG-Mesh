@@ -109,11 +109,13 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
   <ItemGroup>
     <ClInclude Include="geolib.h" />
     <ClInclude Include="cppFunctions.h" />
+    <ClInclude Include="json_helper.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="geolib.cpp" />
     <ClCompile Include="cppFunctions.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
