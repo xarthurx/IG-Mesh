@@ -110,6 +110,18 @@ namespace IGMRhinoCommon
         internal static extern void IGM_remapVtoF(IntPtr pMesh, IntPtr val, IntPtr res);
 
         /// <summary>
+        /// Extract mesh constrained scalar field
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_constrained_scalar(IntPtr pMesh, IntPtr con_idx, IntPtr con_val, IntPtr meshScalar);
+
+        /// <summary>
+        /// Extract mesh isoline from scalar field
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_extract_isoline_from_scalar(IntPtr pMesh, IntPtr meshScalar, IntPtr iso_t, IntPtr isoP);
+
+        /// <summary>
         /// Extract mesh IsoLine Points
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]

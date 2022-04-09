@@ -3,11 +3,16 @@
 // -------------------------------------
 #define NOMINMAX  // avoid the min/max macro from windows.h
 
+//#define WIN64
+//#define RHINO_V6_READY
+//
+//#include "RhinoSdkStdafxPreamble.h"
+//#include "rhinoSdk.h"
+
 // defining OPENNURBS_PUBLIC_INSTALL_DIR enables automatic linking using pragmas
 #define OPENNURBS_PUBLIC_INSTALL_DIR "C:/Libraries/opennurbs"
 
 #include "C:/Libraries/opennurbs/opennurbs_public.h"
-//#include "C:\\Program Files\\Rhino 7 SDK\\openNURBS\\opennurbs.h"
 
 // -------------------------------------
 // IGL includes

@@ -22,25 +22,17 @@
 
 #endif
 
-// void cvtONstructToEigen(const ON_3dPointArray& mV,
-//                            const ON_SimpleArray<ON_MeshFace>& mF,
-//                            MatrixXd& matV, MatrixXi& matF);
-// void cvtEigenToON_Points(const MatrixXd& matP, ON_3dPointArray* P);
-// void cvtEigenToON_Vector(const MatrixXd& matV, ON_3dVectorArray* V);
-
-// Inputs & Outputs:
-// V    Flattened #V x 3 matrix of vertex cordinates
-// nV   vertex number
-// F    Flattened #F x 3 matrix of indices of triangle corners into V
-// nF   face number
+void testFunc() {
+  // auto* isoP = new ON_SimpleArray<ON_3dPointArray*>();
+  // auto& x = isoP->AppendNew();
+  // x = new ON_3dPointArray();
+  // x->Append(ON_3dPoint(0, 1, 2));
+  // isoP->Count();
+}
 
 // ! --------------------------------
 // ! IO funcs
 // ! --------------------------------
-// RH_C_FUNCTION
-// bool IGM_read_triangle_mesh(char* filename, ON_3dPointArray* V,
-//                            ON_SimpleArray<int>* F);
-
 // construct openNURBS mesh directly in cpp and send it back to C#
 RH_C_FUNCTION
 void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh);
@@ -97,9 +89,6 @@ void IGM_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN);
 RH_C_FUNCTION
 void IGM_corner_normals(ON_Mesh* pMesh, const double threshold_deg,
                         ON_3dPointArray* CN);
-// void IGM_corner_normals(float* V, int nV, int* F, int nF, float
-// threshold_deg,
-//                        float* FN);
 
 RH_C_FUNCTION
 void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
@@ -121,19 +110,23 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
 // ! querying
 // ! --------------------------------
 RH_C_FUNCTION
+void IGM_constrained_scalar(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                            ON_SimpleArray<double>* con_val,
+                            ON_SimpleArray<double>* meshScal);
+
+RH_C_FUNCTION
+void IGM_extract_isoline_from_scalar(ON_Mesh* pMesh,
+                                     ON_SimpleArray<double>* iso_t,
+                                     ON_SimpleArray<double>* meshS,
+                                     ON_SimpleArray<ON_3dPointArray*>* isoP);
+
+// combined func of the above two
+RH_C_FUNCTION
 void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
                          ON_SimpleArray<double>* con_val,
                          ON_SimpleArray<double>* iso_t,
                          ON_SimpleArray<ON_3dPointArray*>* isoP,
                          ON_SimpleArray<double>* meshS);
-
-void testFunc() {
-  auto* isoP = new ON_SimpleArray<ON_3dPointArray*>();
-  auto& x = isoP->AppendNew();
-  x = new ON_3dPointArray();
-  x->Append(ON_3dPoint(0, 1, 2));
-  isoP->Count();
-}
 
 RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,

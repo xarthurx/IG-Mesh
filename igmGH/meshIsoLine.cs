@@ -27,6 +27,7 @@ namespace igmGH
             pManager.AddIntegerParameter("Constraint Index", "conI", "Vertex indices to be constrained.", GH_ParamAccess.list);
             pManager.AddNumberParameter("Constraint Value", "conV", "Values (in [0, 1]) to constrain with.", GH_ParamAccess.list);
             pManager.AddNumberParameter("Isoline t", "t", "Interpretation parameters (in [0, 1]) of isolines.", GH_ParamAccess.list);
+
         }
 
         /// <summary>

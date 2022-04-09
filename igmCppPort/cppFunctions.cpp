@@ -82,20 +82,6 @@ void cvtEigenToON_ArrayInt(const MatrixXi& matF, ON_SimpleArray<int>* F) {
   }
 }
 
-// bool IGM_read_triangle_mesh(char* filename, ON_3dPointArray* V,
-//                            ON_SimpleArray<int>* F) {
-//  MatrixXd matV;
-//  MatrixXi matF;
-//  auto res = igl::read_triangle_mesh(filename, matV, matF);
-//
-//  if (res) {
-//    cvtEigenToON_Points(matV, V);
-//    cvtEigenToON_ArrayInt(matF, F);
-//  }
-//
-//  return res;
-//}
-
 void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh) {
   MatrixXd matV;
   MatrixXi matF;
@@ -354,7 +340,51 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
   cvtEigenVToON_Array(vecSF, res);
 }
 
-// RH_C_FUNCTION
+void IGM_constrained_scalar(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                            ON_SimpleArray<double>* con_val,
+                            ON_SimpleArray<double>* meshScal) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  // cvt constraints
+  VectorXi conIdx;
+  VectorXd conVal, isoVal;
+  cvtON_ArrayToEigenV(con_idx, conIdx);
+  cvtON_ArrayToEigenV(con_val, conVal);
+
+  // solve scalar field
+  VectorXd meshScalar(matV.rows());
+  GeoLib::solveScalarField(matV, matF, conIdx, conVal, meshScalar);
+  cvtEigenVToON_Array(meshScalar, meshScal);
+}
+
+void IGM_extract_isoline_from_scalar(ON_Mesh* pMesh,
+                                     ON_SimpleArray<double>* meshS,
+                                     ON_SimpleArray<double>* iso_t,
+                                     ON_SimpleArray<ON_3dPointArray*>* isoP) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  VectorXd meshScalar, isoVal;
+  cvtON_ArrayToEigenV(meshS, meshScalar);
+  cvtON_ArrayToEigenV(iso_t, isoVal);
+
+  // extract isolines
+  std::map<double, MatrixXd> tmpIsoPts;
+  GeoLib::computeIsoPts(matV, matF, meshScalar, isoVal, tmpIsoPts);
+
+  // use the sorted list
+  for (auto const& [key, val] : tmpIsoPts) {
+    auto& tmpL = isoP->AppendNew();
+    tmpL = new ON_3dPointArray();
+    for (size_t i = 0; i < val.rows(); i++) {
+      tmpL->Append(ON_3dPoint(val(i, 0), val(i, 1), val(i, 2)));
+    }
+  }
+}
+
 void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
                          ON_SimpleArray<double>* con_val,
                          ON_SimpleArray<double>* iso_t,
@@ -390,7 +420,6 @@ void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
   }
 }
 
-// RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
                    ON_SimpleArray<double>* con_val,
                    ON_SimpleArray<double>* laplacianValue) {

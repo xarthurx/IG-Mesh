@@ -529,6 +529,57 @@ namespace IGMRhinoCommon
             return (EN, EI, EMAP);
         }
 
+        public static List<double> getConstrainedScalar(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (con_idx.Count != con_val.Count) throw new OverflowException();
+
+            // input
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+            var conIcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt(con_idx);
+            var conVcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(con_val);
+
+            // output
+            var scalarVcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+
+            CppIGM.IGM_constrained_scalar(pMesh, conIcpp.ConstPointer(), conVcpp.ConstPointer(), scalarVcpp.NonConstPointer());
+
+            // conversion to C# type
+            List<double> scalarV = new List<double>(scalarVcpp.ToArray());
+
+            return scalarV;
+        }
+
+        public static List<List<Point3d>> getIsolineFromScalar(ref Mesh rMesh, ref List<double> meshScalar, ref List<double> iso_t)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+
+            // input
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+            var meshS = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(meshScalar);
+            var isoTcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(iso_t);
+
+            // output
+            var isoPcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayArrayPoint3d();
+
+            CppIGM.IGM_extract_isoline_from_scalar(pMesh, meshS.ConstPointer(), isoTcpp.ConstPointer(), isoPcpp.NonConstPointer());
+
+            // conversion to C# type
+            List<List<Point3d>> isoP = new List<List<Point3d>>();
+
+            for (int i = 0; i < isoPcpp.Count; i++)
+            {
+                isoP.Add(new List<Point3d>());
+
+                for (int j = 0; j < isoPcpp.PointCountAt(i); j++)
+                {
+                    isoP[i].Add(isoPcpp[i, j]);
+                }
+            }
+
+            return isoP;
+        }
+
         public static (List<List<Point3d>>, List<double>) getIsolinePts(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val, ref List<double> iso_t)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
@@ -562,6 +613,7 @@ namespace IGMRhinoCommon
 
             return (isoP, scalarV);
         }
+
 
         public static List<float> getLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val)
         {
