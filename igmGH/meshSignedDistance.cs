@@ -55,7 +55,7 @@ namespace igmGH
             if (!DA.GetData(2, ref st)) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (sd, fi, cp) = IGLRhinoCommon.Utils.getSignedDistance(ref mesh, ref Q, st);
+            var (sd, fi, cp) = IGMRhinoCommon.Utils.getSignedDistance(ref mesh, ref Q, st);
 
             // output
             DA.SetDataList(0, sd);

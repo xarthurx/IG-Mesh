@@ -4,6 +4,7 @@
     <StartAction>Program</StartAction>
     <StartWorkingDirectory>C:\Users\xarthur\source\repo\IG-Mesh\igmGH\bin\</StartWorkingDirectory>
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>

@@ -44,7 +44,7 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGLRhinoCommon.Utils.getAdjacencyLst(ref mesh);
+            var res = IGMRhinoCommon.Utils.getAdjacencyLst(ref mesh);
 
             // construct the index & pt tree from the adjacency list
             Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();

@@ -53,7 +53,7 @@ namespace igmGH
             if (r < 1) { r = 1; } // make sure the value is unit
 
             // call the cpp function to solve the adjacency list
-            var (PD1, PD2, PV1, PV2) = IGLRhinoCommon.Utils.getPrincipalCurvature(ref mesh, (uint)r);
+            var (PD1, PD2, PV1, PV2) = IGMRhinoCommon.Utils.getPrincipalCurvature(ref mesh, (uint)r);
 
             // output
             DA.SetDataList(0, PD1);

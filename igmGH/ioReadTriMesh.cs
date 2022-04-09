@@ -44,7 +44,7 @@ namespace igmGH
 
             //Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             Rhino.Geometry.Mesh mesh;
-            IGLRhinoCommon.Utils.getMesh(fName, out mesh);
+            IGMRhinoCommon.Utils.getMesh(fName, out mesh);
 
             if (!mesh.IsValid) { return; }
             // output

@@ -45,7 +45,7 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var fn = IGLRhinoCommon.Utils.getNormalsFace(ref mesh);
+            var fn = IGMRhinoCommon.Utils.getNormalsFace(ref mesh);
 
             // output
             DA.SetDataList(0, fn);
