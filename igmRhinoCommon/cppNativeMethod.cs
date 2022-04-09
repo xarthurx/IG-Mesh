@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace IGLRhinoCommon
+namespace IGMRhinoCommon
 {
     internal static class Import
     {
@@ -113,7 +113,7 @@ namespace IGLRhinoCommon
         /// Extract mesh IsoLine Points
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int IGM_extract_isoline(IntPtr pMesh, int divN, IntPtr con_idx, IntPtr con_val, IntPtr isoP);
+        internal static extern void IGM_extract_isoline(IntPtr pMesh, IntPtr con_idx, IntPtr con_val, IntPtr iso_t, IntPtr isoP, IntPtr meshScalar);
 
         /// <summary>
         /// Compute mesh Laplacian

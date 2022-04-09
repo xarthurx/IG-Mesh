@@ -29,7 +29,11 @@ int main() {
 
   // extract isolines
   map<double, MatrixXd> tmpIsoPts;
-  GeoLib::computeIsoPts(matV, matF, meshScalar, 4, tmpIsoPts);
+  VectorXd tmpVal(3);
+  tmpVal << 0.3, 0.5, 1.2;
+  GeoLib::computeIsoPts(matV, matF, meshScalar, tmpVal, tmpIsoPts);
 
   int x = 5;
+
+  // testFunc();
 }

@@ -7,6 +7,7 @@
 #define OPENNURBS_PUBLIC_INSTALL_DIR "C:/Libraries/opennurbs"
 
 #include "C:/Libraries/opennurbs/opennurbs_public.h"
+//#include "C:\\Program Files\\Rhino 7 SDK\\openNURBS\\opennurbs.h"
 
 // -------------------------------------
 // IGL includes

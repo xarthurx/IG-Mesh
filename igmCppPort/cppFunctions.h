@@ -121,12 +121,19 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
 // ! querying
 // ! --------------------------------
 RH_C_FUNCTION
-int IGM_extract_isoline(ON_Mesh* pMesh, int divN, ON_SimpleArray<int>* con_idx,
+void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
                          ON_SimpleArray<double>* con_val,
-                         ON_SimpleArray<ON_3dPointArray>* isoP);
-// void extractIsoLinePts(float* V, int nV, int* F, int nF, int* con_idx,
-//                       float* con_value, int numCon, int divN, float*
-//                       isoLnPts, int* numPtsPerLst);
+                         ON_SimpleArray<double>* iso_t,
+                         ON_SimpleArray<ON_3dPointArray*>* isoP,
+                         ON_SimpleArray<double>* meshS);
+
+void testFunc() {
+  auto* isoP = new ON_SimpleArray<ON_3dPointArray*>();
+  auto& x = isoP->AppendNew();
+  x = new ON_3dPointArray();
+  x->Append(ON_3dPoint(0, 1, 2));
+  isoP->Count();
+}
 
 RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,

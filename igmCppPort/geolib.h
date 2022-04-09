@@ -94,7 +94,8 @@ void solveScalarField(const Matrix<T, -1, -1>& V, const MatrixXi& F,
 
 template <typename T>
 void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
-                   const Vector<T, -1>& meshScalar, int divN,
+                   const Vector<T, -1>& meshScalar,
+                   const Vector<T, -1>& isoValue,
                    map<T, Matrix<T, -1, -1>>& isoLinePts, bool sorted = true) {
   float startBnd{0.0001}, endBnd{0.9999};
 
@@ -109,51 +110,61 @@ void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
   std::set<int> boundLoop;
   for (size_t i = 0; i < B.size(); i++) boundLoop.insert(B[i]);
 
-  //// find & interpolate
-  Vector<T, -1> isoValue = Vector<T, -1>::LinSpaced(
-      divN, startBnd, endBnd);  // interpolate value for each vertical bars
+  // find & interpolate
+  // Vector<T, -1> isoValue = Vector<T, -1>::LinSpaced(
+  //    divN, startBnd, endBnd);  // interpolate value for each vertical bars
 
   map<T, vector<Vector<T, 3>>> isoL;
-  for (size_t i = 0; i < isoValue.size(); i++) {
-    isoL.insert(make_pair(isoValue[i], vector<Vector<T, 3>>(0)));
+  for (auto t : isoValue) {
+    isoL.insert(make_pair(t, vector<Vector<T, 3>>(0)));
   }
 
   // to record the starting pos of each isoline
   map<T, int> startPtId;
 
-  // extract the points where isoline and mesh edges intersect
-  for (size_t i = 0; i < E.rows(); i++) {
-    auto idx0 = E.row(i)[0];
-    auto idx1 = E.row(i)[1];
-    auto x0 = meshScalar[idx0];
-    auto x1 = meshScalar[idx1];
+  // extract the points where isoline and mesh edges intersect. O(nE)
+  for (auto& [key, val] : isoL) {
+    // iterate through all edges and record pts with the same key value
+    for (size_t i = 0; i < E.rows(); i++) {
+      auto id0 = E(i, 0);
+      auto id1 = E(i, 1);
+      auto x0 = meshScalar[id0];
+      auto x1 = meshScalar[id1];
 
-    if (x0 > x1) {
-      std::swap(x0, x1);
-      std::swap(idx0, idx1);
-    }
-
-    for (auto& [key, val] : isoL) {
+      if (x0 > x1) {
+        std::swap(x0, x1);
+        std::swap(id0, id1);
+      }
+      // for (auto& [key, val] : isoL) {
       if (key >= x0 && key <= x1) {
-        auto tmpVec = V.row(idx0) +
-                      ((key - x0) / (x1 - x0)) * (V.row(idx1) - V.row(idx0));
-        val.emplace_back(tmpVec[0], tmpVec[1], tmpVec[2]);
+        Matrix<T, 1, -1> valPt = (V.row(id0) + V.row(id1)) * 0.5;
+        if (x0 != x1)
+          valPt =
+              V.row(id0) + ((key - x0) / (x1 - x0)) * (V.row(id1) - V.row(id0));
+
+        val.emplace_back(valPt[0], valPt[1], valPt[2]);
 
         // record if on boundary
-        if (boundLoop.find(idx0) != boundLoop.end() &&
-            boundLoop.find(idx1) != boundLoop.end())
+        if (boundLoop.find(id0) != boundLoop.end() &&
+            boundLoop.find(id1) != boundLoop.end())
           startPtId[key] = val.size() - 1;
       }
-
-      // transform into MatrixXd and export
-      Matrix<T, -1, -1> val_mat(val.size(), 3);
-      for_each(val.begin(), val.end(), [&](auto& pts) {
-        int id = &pts - &val[0];
-        val_mat.row(id) = RowVector<T, 3>(pts);
-      });
-
-      isoLinePts[key] = val_mat;
     }
+
+    Matrix<T, -1, -1> val_mat;
+    val_mat.resize(val.size(), 3);
+
+    for_each(val.begin(), val.end(), [&](auto& pts) {
+      size_t id = &pts - &val[0];
+      val_mat.row(id) = pts.transpose();
+    });
+
+    // if only one points, then remove it.
+    if (val.size() == 1) {
+      val_mat.resize(0, 0);
+    }
+
+    isoLinePts[key] = val_mat;
   }
 
   if (sorted) {
@@ -179,6 +190,8 @@ void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
 
     // process each isoline
     for (auto& [key, val] : isoLinePts) {
+      if (val.rows() == 0) continue;
+
       set<int> addedPtId;
 
       // prepare data
@@ -187,6 +200,7 @@ void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
 
       while (addedPtId.size() != val.rows()) {
         int nextPt = closestPt(val, addedPtId, sortedPolyline.back());
+
         sortedPolyline.push_back(val.row(nextPt));
         addedPtId.insert(nextPt);
       }
@@ -197,19 +211,27 @@ void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
       }
     };
 
+    // collect valid isolines
+    vector<T> validIso(0);
+    for (auto& [key, val] : isoLinePts) {
+      if (val.rows() != 0) validIso.push_back(key);
+    }
+
     // reverse isolines if needed
-    int cnt = 0;
-    for (auto it = isoLinePts.begin(); cnt < divN - 1; it++) {
-      auto next = std::next(it);
+    if (validIso.size() > 1) {
+      for (size_t i = 0; i < validIso.size() - 1; i++) {
+        auto& key0 = validIso[i];
+        auto& key1 = validIso[i + 1];
 
-      if ((it->second.row(0) - next->second.row(0)).norm() >
-          (it->second.row(0) - next->second.row(next->second.rows() - 1))
-              .norm()) {
-        next->second.colwise().reverseInPlace();
+        auto& ln0 = isoLinePts[key0];
+        auto& ln1 = isoLinePts[key1];
+
+        if ((ln0.row(0) - ln1.row(0)).norm() >
+            (ln0.row(0) - ln1.row(ln1.rows() - 1)).norm()) {
+          ln1.colwise().reverseInPlace();
+        }
       }
-
-      cnt++;
-    };
+    }
   }
 }
 }  // namespace GeoLib

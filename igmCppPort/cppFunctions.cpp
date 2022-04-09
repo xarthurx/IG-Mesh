@@ -355,63 +355,39 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
 }
 
 // RH_C_FUNCTION
-int IGM_extract_isoline(ON_Mesh* pMesh, int divN, ON_SimpleArray<int>* con_idx,
-                        ON_SimpleArray<double>* con_val,
-                        ON_SimpleArray<ON_3dPointArray>* isoP) {
-  // size of 'numPtsPerLst'  =  divN;  "numPtsPerLst" contains the # of pts of
-  // "isoLnPts' in each isoline
-
+void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                         ON_SimpleArray<double>* con_val,
+                         ON_SimpleArray<double>* iso_t,
+                         ON_SimpleArray<ON_3dPointArray*>* isoP,
+                         ON_SimpleArray<double>* meshS) {
   MatrixXd matV;
   MatrixXi matF;
   cvtMeshToEigen(pMesh, matV, matF);
 
-  if (matV.rows() == 0 || matF.rows() == 0) return 1;
-
   // cvt constraints
   VectorXi conIdx;
-  VectorXd conVal;
+  VectorXd conVal, isoVal;
   cvtON_ArrayToEigenV(con_idx, conIdx);
   cvtON_ArrayToEigenV(con_val, conVal);
-
-  if (conIdx.size() == 0 || conVal.size() == 0) return 2;
+  cvtON_ArrayToEigenV(iso_t, isoVal);
 
   // solve scalar field
   VectorXd meshScalar(matV.rows());
   GeoLib::solveScalarField(matV, matF, conIdx, conVal, meshScalar);
+  cvtEigenVToON_Array(meshScalar, meshS);
 
   // extract isolines
-  map<double, MatrixXd> tmpIsoPts;
-  GeoLib::computeIsoPts(matV, matF, meshScalar, divN, tmpIsoPts);
+  std::map<double, MatrixXd> tmpIsoPts;
+  GeoLib::computeIsoPts(matV, matF, meshScalar, isoVal, tmpIsoPts);
 
   // use the sorted list
   for (auto const& [key, val] : tmpIsoPts) {
-    ON_3dPointArray tmpL(0);
+    auto& tmpL = isoP->AppendNew();
+    tmpL = new ON_3dPointArray();
     for (size_t i = 0; i < val.rows(); i++) {
-      tmpL.Append(ON_3dPoint(val(i, 0), val(i, 1), val(i, 2)));
+      tmpL->Append(ON_3dPoint(val(i, 0), val(i, 1), val(i, 2)));
     }
-    isoP->Append(tmpL);
   }
-  //// write data back to the c# pointer arrary
-  // vector<int> transferNumPtPerLst;
-  // vector<double> transferIsoLnCollection(0);
-  // for (auto const& [key, val] : tmpIsoPts) {
-  //  vector<double> transferIsoLn(val.rows() * 3);
-
-  //  // isoline points
-  //  for (size_t i = 0; i < val.rows(); i++) {
-  //    transferIsoLnCollection.emplace_back(val(i, 0));
-  //    transferIsoLnCollection.emplace_back(val(i, 1));
-  //    transferIsoLnCollection.emplace_back(val(i, 2));
-  //  }
-
-  //  // number of pts per isoline
-  //  transferNumPtPerLst.push_back(val.rows());
-  //}
-
-  // std::copy(transferIsoLnCollection.begin(), transferIsoLnCollection.end(),
-  //          isoLnPts);
-  // std::copy(transferNumPtPerLst.begin(), transferNumPtPerLst.end(),
-  //          numPtsPerLst);
 }
 
 // RH_C_FUNCTION
