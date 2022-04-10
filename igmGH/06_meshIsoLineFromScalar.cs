@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace igmGH
 {
-    public class meshIsoLineFromScalar : GH_Component
+    public class IGM_isoline_scalar : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public meshIsoLineFromScalar()
+        public IGM_isoline_scalar()
           : base("Isoline", "iIsoline",
               "Extract the isolines of a given mesh from its scalar field.",
               "IG-Mesh", "06 | Utils")
@@ -18,11 +18,16 @@ namespace igmGH
         }
 
         /// <summary>
+        /// icon position in a category
+        /// </summary>
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+
+        /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
             pManager.AddNumberParameter("Mesh Scalar", "S", "Scalar values for the vertices.", GH_ParamAccess.list);
             pManager.AddNumberParameter("Isoline t", "t", "Interpretation parameters (in [0, 1]) of isolines.", GH_ParamAccess.list);
         }
@@ -41,7 +46,7 @@ namespace igmGH
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
+            Mesh mesh = new Mesh();
             List<double> mesh_scalar = new List<double>();
             List<double> iso_t = new List<double>();
 

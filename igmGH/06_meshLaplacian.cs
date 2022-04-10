@@ -10,18 +10,22 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_laplacian()
-          : base("IGM_Laplacian", "igLaplacian",
+          : base("Laplacian", "igLaplacian",
               "Solve laplacian equation under given boundary condition.",
               "IG-Mesh", "06 | Utils")
         {
         }
+
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Constraint Indices", "I", "the indices to be constrained", GH_ParamAccess.list);
             pManager.AddNumberParameter("Constraint Values", "V", "the values to constrain with", GH_ParamAccess.list);
         }
