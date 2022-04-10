@@ -20,7 +20,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Number", "N", "number of sampled points.", GH_ParamAccess.item, 0);
             pManager[1].Optional = true;
         }

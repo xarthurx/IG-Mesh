@@ -21,7 +21,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
             pManager.AddPointParameter("QueryPoints", "P", "The points to be queried.", GH_ParamAccess.list);
             pManager.AddIntegerParameter("signed_type", "st", "The method used for computing signed distance: 1-winding number; 2-default; 3-unsigned; 4-fast winding number (default).", GH_ParamAccess.item, 4);
             pManager[2].Optional = true;

@@ -25,7 +25,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("radius", "r", "controls the size of the neighbourhood used, 1 = average edge length.", GH_ParamAccess.item, 5);
             pManager[1].Optional = true;
         }

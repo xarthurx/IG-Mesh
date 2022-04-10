@@ -23,7 +23,7 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddTextParameter("File Location", "file", "Mesh file location from disk.", GH_ParamAccess.item);
-            //pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            //pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
         }
 
         /// <summary>
