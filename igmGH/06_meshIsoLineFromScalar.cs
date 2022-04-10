@@ -13,7 +13,7 @@ namespace igmGH
         public meshIsoLineFromScalar()
           : base("Isoline", "iIsoline",
               "Extract the isolines of a given mesh from its scalar field.",
-              "IG-Mesh", "05 | Query")
+              "IG-Mesh", "06 | Utils")
         {
         }
 
@@ -25,7 +25,6 @@ namespace igmGH
             pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
             pManager.AddNumberParameter("Mesh Scalar", "S", "Scalar values for the vertices.", GH_ParamAccess.list);
             pManager.AddNumberParameter("Isoline t", "t", "Interpretation parameters (in [0, 1]) of isolines.", GH_ParamAccess.list);
-
         }
 
         /// <summary>

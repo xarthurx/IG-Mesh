@@ -10,10 +10,12 @@ namespace igmGH
         /// </summary>
         public IGM_read_triangle_mesh()
           : base("Load TriMesh", "iLoadMsh",
-              "Load a triangle mesh directly from disk. format supported: obj, off, stl, wrl, ply, mesh.",
+              "Load a triangle mesh directly from disk. Format supported: obj, off, stl, wrl, ply, mesh.",
               "IG-Mesh", "01 | IO+Info")
         {
         }
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         /// <summary>
         /// Registers all the input parameters for this component.

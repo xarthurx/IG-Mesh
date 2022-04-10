@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
+using System;
 using System.Collections.Generic;
-using Grasshopper.Kernel;
-using Rhino.Geometry;
 
 namespace igmGH
 {
@@ -11,9 +10,9 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public meshConstrainedScalar()
-          : base("Solve Constrained Scalar Field", "iScalarField",
+          : base("Constrained Scalar", "iScalarField",
               "Compute scalar field of the mesh based on any constraints.",
-              "IG-Mesh", "05 | Query")
+              "IG-Mesh", "06 | Utils")
         {
         }
 
@@ -87,8 +86,8 @@ namespace igmGH
             get
             {
                 //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
-                return null;
+                //return null;
+                return Properties.Resources.meshIsoline;
             }
         }
 
@@ -97,8 +96,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("ed30dcba-59c1-405e-ae12-f3f7e6452567"); }
+            get { return new Guid("c5ab7140-1b8c-4724-8188-78a6c2a23bd8"); }
         }
-
     }
 }

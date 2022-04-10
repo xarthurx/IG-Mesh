@@ -15,6 +15,9 @@ namespace igmGH
         {
         }
 
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>

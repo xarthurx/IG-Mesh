@@ -15,6 +15,8 @@ namespace igmGH
               "IG-Mesh", "01 | IO+Info")
         {
         }
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.

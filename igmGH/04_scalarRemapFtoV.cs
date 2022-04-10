@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_remap_FtoV()
-          : base("Remap Data from Faces To Vertices", "iRemapFV",
+          : base("Remap Faces To Vertices", "iRemapFV",
               "Move a scalar field defined on faces to vertices by averaging.",
               "IG-Mesh", "04 | Mapping")
         {
