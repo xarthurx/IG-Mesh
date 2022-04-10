@@ -435,47 +435,6 @@ namespace IGMRhinoCommon
 
             return CN;
 
-            ////initialize the pointer and pass data
-            //int nV = rhinoMesh.Vertices.Count;
-            //int nF = rhinoMesh.Faces.Count;
-
-            //// copy data into the IntPtr
-            //float[] V = rhinoMesh.Vertices.ToFloatArray();
-            //IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(V[0]) * V.Length);
-            //Marshal.Copy(V, 0, meshV, V.Length);
-
-            //int[] F = rhinoMesh.Faces.ToIntArray(true);
-            //IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            //Marshal.Copy(F, 0, meshF, F.Length);
-
-            //// call the cpp func
-            //IntPtr CN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * 3 * nF);
-            //CppIGM.IGM_corner_normals(meshV, nV, meshF, nF, thre_deg, CN_cpp);
-
-            //float[] resCN = new float[nF * 3 * 3];
-            //Marshal.Copy(CN_cpp, resCN, 0, nF * 3 * 3);
-
-            //Marshal.FreeHGlobal(meshV);
-            //Marshal.FreeHGlobal(meshF);
-            //Marshal.FreeHGlobal(CN_cpp);
-
-            //// send back to RhinoCommon type
-            //List<List<Vector3d>> CN = new List<List<Vector3d>>();
-
-            //for (int i = 0; i < nF; i++)
-            //{
-            //    List<Vector3d> cornerN = new List<Vector3d>();
-            //    int fId = i * 3;
-            //    for (int j = 0; j < 3; j++)
-            //    {
-            //        int nId = fId + j;
-            //        cornerN.Add(new Vector3d(resCN[nId * 3], resCN[nId * 3 + 1], resCN[nId * 3 + 2]));
-            //    }
-            //    CN.Add(cornerN);
-
-            //}
-
-
         }
 
         public static (List<Vector3d>, List<List<int>>, List<int>) getNormalsEdge(ref Mesh rhinoMesh, int wT)
