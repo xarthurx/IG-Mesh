@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes a new instance of the IGM_Barycenter class.
         /// </summary>
         public IGM_BoundEdge()
-          : base("Boundary Edge", "iBoundEdge",
+          : base("Boundary Edge", "igBoundEdge",
               "compute the boundary edges the given mesh.",
               "IG-Mesh", "03 | Adjacency+Bound")
         {

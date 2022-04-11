@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes a new instance of the IGM_Barycenter class.
         /// </summary>
         public IGM_BoundLoop()
-          : base("Boundary Loop", "iBoundLoop",
+          : base("Boundary Loop", "igBoundLoop",
               "compute the boundary loop of the given mesh.",
               "IG-Mesh", "03 | Adjacency+Bound")
         {

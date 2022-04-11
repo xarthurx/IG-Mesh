@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_vert_normals()
-          : base("Vertex Normal", "iNormals_V",
+          : base("Vertex Normal", "igNormals_V",
               "Compute the per vertex normals of the given mesh.",
               "IG-Mesh", "02 | Properties")
         {
@@ -60,7 +60,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshNormalVertex;
             }
         }
 

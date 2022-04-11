@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_mesh_properties()
-          : base("Mesh Info", "iMeshInfo",
+          : base("Mesh Info", "igMeshInfo",
               "Provide various mesh info: V, F, centroid, volume.",
               "IG-Mesh", "01 | IO+Info")
         {
@@ -72,7 +72,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshInfo;
             }
         }
 

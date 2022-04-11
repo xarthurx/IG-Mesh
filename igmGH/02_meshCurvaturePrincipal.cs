@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
         public IGM_principal_curvature()
-          : base("Principal Curvature", "iPrincipalCurvature",
+          : base("Principal Curvature", "igPrincipalCurvature",
               "Compute the principal curvature directions and magnitude of the given triangle mesh.",
               "IG-Mesh", "02 | Properties")
         {

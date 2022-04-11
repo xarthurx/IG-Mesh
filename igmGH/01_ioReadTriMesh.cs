@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_read_triangle_mesh()
-          : base("Load TriMesh", "iLoadMsh",
+          : base("Load TriMesh", "igLoadMsh",
               "Load a triangle mesh directly from disk. Format supported: obj, off, stl, wrl, ply, mesh.",
               "IG-Mesh", "01 | IO+Info")
         {
@@ -62,7 +62,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.ioReadTriMesh;
             }
         }
 

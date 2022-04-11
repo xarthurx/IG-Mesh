@@ -11,7 +11,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_constrained_scalar()
-          : base("Constrained Scalar", "iConstrainedScalar",
+          : base("Constrained Scalar", "igConstrainedScalar",
               "Compute a scalar field based on any vertex-based constraints.",
               "IG-Mesh", "06 | Utils")
         {

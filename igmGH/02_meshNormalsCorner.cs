@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
         public IGM_normals_corner()
-          : base("Corner Normal", "iNormals_C",
+          : base("Corner Normal", "igNormals_C",
               "Compute per corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
               "IG-Mesh", "02 | Properties")
         {
@@ -72,7 +72,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshNormalCorner;
             }
         }
 

@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_winding_number()
-          : base("Winding Number", "iWindingNum",
+          : base("Winding Number", "igWindingNum",
               "Compute the winding number for the query pts to the given mesh.",
               "IG-Mesh", "05 | Query")
         {

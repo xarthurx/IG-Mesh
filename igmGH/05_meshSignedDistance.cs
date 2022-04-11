@@ -10,7 +10,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_signed_distance()
-          : base("Signed Distance", "iSignedDis",
+          : base("Signed Distance", "igSignedDist",
               "Compute the signed distance for the query pts to the given mesh.",
               "IG-Mesh", "05 | Query")
         {

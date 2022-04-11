@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_barycenter()
-          : base("Barycenter", "iBarycenter",
+          : base("Barycenter", "igBarycenter",
               "compute the barycenter of each triangle of the given mesh.",
               "IG-Mesh", "02 | Properties")
         {
@@ -21,8 +21,6 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            //pManager.AddPointParameter("Mesh V", "V", "A list of mesh vertices.", GH_ParamAccess.list);
-            //pManager.AddIntegerParameter("Mesh F", "F", "A list of mesh faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -30,7 +28,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddPointParameter("Barycenters", "BC", "the barycenters of the input mesh's faces", GH_ParamAccess.list);
+            pManager.AddPointParameter("Barycenters", "BC", "The barycenters of the input mesh's faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -60,7 +58,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshBarycenter;
             }
         }
 

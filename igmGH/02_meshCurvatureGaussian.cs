@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
         public IGM_gaussian_curvature()
-          : base("Gaussian Curvature", "iGaussianCurvature",
+          : base("Gaussian Curvature", "igGaussianCurvature",
               "Compute integral of gaussian curvature of the given mesh.",
               "IG-Mesh", "02 | Properties")
         {

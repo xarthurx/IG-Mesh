@@ -9,7 +9,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_write_triangle_mesh()
-          : base("Save TriMesh", "iSaveMsh",
+          : base("Save TriMesh", "igSaveMsh",
               "Save a triangle mesh directly to disk. format supported: obj, off, stl, wrl, ply, mesh.",
               "IG-Mesh", "01 | IO+Info")
         {
@@ -24,7 +24,7 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Mesh to save.", GH_ParamAccess.item);
-            pManager.AddTextParameter("File Location", "file", "Mesh file location from disk.", GH_ParamAccess.item);
+            pManager.AddTextParameter("File Path", "path", "File path to save the mesh to disk.", GH_ParamAccess.item);
             pManager.AddBooleanParameter("Try Save", "T", "Save when TRUE.", GH_ParamAccess.item);
         }
 
@@ -77,7 +77,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.ioWriteTriMesh;
             }
         }
 

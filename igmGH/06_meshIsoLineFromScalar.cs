@@ -11,7 +11,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_isoline_scalar()
-          : base("Isoline", "iIsoline",
+          : base("Isoline", "igIsoline",
               "Extract the isolines of a given mesh from its scalar field.",
               "IG-Mesh", "06 | Utils")
         {
@@ -85,7 +85,6 @@ namespace igmGH
             get
             {
                 //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
                 return Properties.Resources.meshIsoline;
             }
         }
