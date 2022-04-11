@@ -45,35 +45,35 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="00_igm_Info.cs" />
+    <Compile Include="01_ioReadTriMesh.cs" />
     <Compile Include="01_ioWriteTriMesh.cs" />
-    <Compile Include="03_meshBoundEdge.cs" />
-    <Compile Include="05_meshFastWindingNumber.cs" />
-    <Compile Include="02_meshCurvatureGaussian.cs" />
     <Compile Include="01_meshInfo.cs" />
-    <Compile Include="06_meshConstrainedScalar.cs" />
-    <Compile Include="06_meshIsoLineFromScalar.cs" />
     <Compile Include="02_meshNormalFace.cs" />
     <Compile Include="02_meshNormalsCorner.cs" />
     <Compile Include="02_meshNormalsVertex.cs" />
     <Compile Include="02_meshBarycenter.cs" />
+    <Compile Include="03_meshBoundEdge.cs" />
+    <Compile Include="02_meshCurvaturePrincipal.cs" />
+    <Compile Include="02_meshCurvatureGaussian.cs" />
+    <Compile Include="03_meshAdjacentVertVert.cs" />
     <Compile Include="03_meshBoundLoop.cs" />
     <Compile Include="03_meshAdjacencyTriTri.cs" />
     <Compile Include="03_meshAdjacencyVertTri.cs" />
-    <Compile Include="02_meshCurvaturePrincipal.cs" />
+    <Compile Include="04_scalarRemapFtoV.cs" />
+    <Compile Include="04_scalarRemapVtoF.cs" />
     <Compile Include="05_meshRandomPointsOnMesh.cs" />
-    <Compile Include="00_igm_Info.cs" />
-    <Compile Include="03_meshAdjacentVertVert.cs" />
-    <Compile Include="06_meshLaplacian.cs" />
-    <Compile Include="01_ioReadTriMesh.cs" />
     <Compile Include="05_meshSignedDistance.cs" />
+    <Compile Include="05_meshFastWindingNumber.cs" />
+    <Compile Include="06_meshLaplacian.cs" />
+    <Compile Include="06_meshConstrainedScalar.cs" />
+    <Compile Include="06_meshIsoLineFromScalar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="04_scalarRemapFtoV.cs" />
-    <Compile Include="04_scalarRemapVtoF.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\igmRhinoCommon\igmRhinoCommon.csproj">
