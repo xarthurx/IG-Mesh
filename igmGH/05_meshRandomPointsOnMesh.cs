@@ -22,6 +22,7 @@ namespace igmGH
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Number", "N", "Number of sampled points.", GH_ParamAccess.item, 0);
+            // the uniform method uses a blue-noise (Poisson's disk) approach to sample the points.
             pManager.AddIntegerParameter("Method", "M", "The method used for sampling: 0-random; 1-uniform.", GH_ParamAccess.item, 0);
 
             pManager[1].Optional = true;
