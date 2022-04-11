@@ -620,7 +620,7 @@ namespace IGMRhinoCommon
             return laplacianV;
         }
 
-        public static (List<Point3d> BC, List<int> FI) getRandomPointsOnMesh(ref Mesh rhinoMesh, int N)
+        public static (List<Point3d> P, List<int> FI) getRandomPointsOnMesh(ref Mesh rhinoMesh, int N, int M)
         {
 
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -629,12 +629,17 @@ namespace IGMRhinoCommon
             // call the cpp func
             var Pcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
             var FIcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
-            CppIGM.IGM_random_point_on_mesh(pMesh, N, Pcpp.NonConstPointer(), FIcpp.NonConstPointer());
 
-            List<Point3d> BC = new List<Point3d>(Pcpp.ToArray());
+            // compute random sampling based on methods
+            if (M == 0)
+                CppIGM.IGM_random_point_on_mesh(pMesh, N, Pcpp.NonConstPointer(), FIcpp.NonConstPointer());
+            else if (M == 1)
+                CppIGM.IGM_blue_noise_sampling_on_mesh(pMesh, N, Pcpp.NonConstPointer(), FIcpp.NonConstPointer());
+
+            List<Point3d> P = new List<Point3d>(Pcpp.ToArray());
             List<int> FI = new List<int>(FIcpp.ToArray());
 
-            return (BC, FI);
+            return (P, FI);
         }
 
         public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2) getPrincipalCurvature(ref Mesh rMesh, uint r)

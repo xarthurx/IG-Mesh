@@ -134,7 +134,11 @@ void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
                    ON_SimpleArray<double>* laplacianValue);
 
 RH_C_FUNCTION
-void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
+void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
+                              ON_SimpleArray<int>* FI);
+
+RH_C_FUNCTION
+void IGM_blue_noise_sampling_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
                               ON_SimpleArray<int>* FI);
 
 RH_C_FUNCTION

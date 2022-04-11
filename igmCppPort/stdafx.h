@@ -36,6 +36,7 @@
 #include <igl/per_vertex_normals.h>
 #include <igl/principal_curvature.h>
 #include <igl/random_points_on_mesh.h>
+#include <igl/blue_noise.h>
 #include <igl/read_triangle_mesh.h>
 #include <igl/setdiff.h>
 #include <igl/signed_distance.h>

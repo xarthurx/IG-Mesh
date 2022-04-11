@@ -9,8 +9,8 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_random_points_on_mesh()
-          : base("Random Points On Mesh", "iRndPtsMesh",
-              "Randomly sample N points on surface of the given mesh.",
+          : base("Random Points On Mesh", "iRndPtMesh",
+              "Randomly sample N points on surface of the given mesh with random/uniform distribution.",
               "IG-Mesh", "05 | Query")
         {
         }
@@ -21,8 +21,11 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Number", "N", "number of sampled points.", GH_ParamAccess.item, 0);
+            pManager.AddIntegerParameter("Number", "N", "Number of sampled points.", GH_ParamAccess.item, 0);
+            pManager.AddIntegerParameter("Method", "M", "The method used for sampling: 0-random; 1-uniform.", GH_ParamAccess.item, 0);
+
             pManager[1].Optional = true;
+            pManager[2].Optional = true;
         }
 
         /// <summary>
@@ -48,11 +51,14 @@ namespace igmGH
             int N = 1;
             if (!DA.GetData(1, ref N) || N == 0) { return; }
 
+            int M = 0;
+            if (!DA.GetData(2, ref M)) { return; }
+
             // call the cpp function to solve the adjacency list
-            var (b, fi) = IGMRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N);
+            var (p, fi) = IGMRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N, M);
 
             // output
-            DA.SetDataList(0, b);
+            DA.SetDataList(0, p);
             DA.SetDataList(1, fi);
         }
 

@@ -141,6 +141,12 @@ namespace IGMRhinoCommon
         internal static extern void IGM_random_point_on_mesh(IntPtr pMesh, int N, IntPtr B, IntPtr FI);
 
         /// <summary>
+        /// randomly sample points on meshes
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_blue_noise_sampling_on_mesh(IntPtr pMesh, int N, IntPtr P, IntPtr FI);
+
+        /// <summary>
         /// Compute principal curvatures
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]

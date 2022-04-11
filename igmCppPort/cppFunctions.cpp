@@ -442,25 +442,40 @@ void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
   cvtEigenVToON_Array(lapVal, laplacianValue);
 }
 
-void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* B,
+void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
                               ON_SimpleArray<int>* FI) {
   MatrixXd matV;
   MatrixXi matF;
   cvtMeshToEigen(pMesh, matV, matF);
 
-  MatrixXd matP;
+  MatrixXd B, matP;
   VectorXi faceI;
-  igl::random_points_on_mesh(N, matV, matF, matP, faceI);
 
-  // cvt from P on a plane into Euclidian space
-  MatrixXd samples(matP.rows(), 3);
-  for (int i = 0; i < matP.rows(); i++) {
-    samples.row(i) = matP(i, 0) * matV.row(matF(faceI(i), 0)) +
-                     matP(i, 1) * matV.row(matF(faceI(i), 1)) +
-                     matP(i, 2) * matV.row(matF(faceI(i), 2));
-  }
+  igl::random_points_on_mesh(N, matV, matF, B, faceI, matP);
 
-  cvtEigenToON_Points(samples, B);
+  cvtEigenToON_Points(matP, P);
+  cvtEigenVToON_Array(faceI, FI);
+}
+
+void IGM_blue_noise_sampling_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
+                                     ON_SimpleArray<int>* FI) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  // compute the radius from desired number
+  const double r = [&matV, &matF](const int n) {
+    Eigen::VectorXd A;
+    igl::doublearea(matV, matF, A);
+    return sqrt(((A.sum() * 0.5 / (n * 0.6162910373)) / igl::PI));
+  }(N);
+
+  MatrixXd matB, matP;
+  VectorXi faceI;
+
+  igl::blue_noise(matV, matF, r, matB, faceI, matP);
+
+  cvtEigenToON_Points(matP, P);
   cvtEigenVToON_Array(faceI, FI);
 }
 
