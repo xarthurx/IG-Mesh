@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace igmGH
 {
-    class IGM_constrained_scalar : GH_Component
+    public class IGM_constrained_scalar : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
@@ -13,7 +13,7 @@ namespace igmGH
         public IGM_constrained_scalar()
           : base("Constrained Scalar", "iConstrainedScalar",
               "Compute a scalar field based on any vertex-based constraints.",
-              "IG-Mesh", "07 | Utils")
+              "IG-Mesh", "06 | Utils")
         {
         }
 
@@ -102,7 +102,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("c5ab7140-1b8c-4724-8188-78a6c2a23bd8"); }
+            get { return new Guid("35e7181a-b972-11ec-8422-0242ac120002"); }
         }
     }
 }
