@@ -124,6 +124,15 @@
   <data name="ioWriteTriMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\ioWriteTriMesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="meshAdjacencyTriTri" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshAdjacencyTriTri.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshAdjacencyVertTri" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshAdjacencyVertTri.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshAdjacencyVertVert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshAdjacencyVertVert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="meshBarycenter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshBarycenter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -131,9 +140,6 @@
     <value>icons\meshInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="meshIsoline" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>icons\meshIsoline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="meshIsoline1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshIsoline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="meshNormalCorner" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -144,5 +150,11 @@
   </data>
   <data name="meshNormalVertex" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshNormalVertex.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="scalarRemapFtoV" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\scalarRemapFtoV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="scalarRemapVtoF" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\scalarRemapVtoF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

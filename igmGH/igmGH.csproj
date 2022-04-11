@@ -122,6 +122,21 @@
   <ItemGroup>
     <None Include="Properties\icons\meshNormalVertex.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\scalarRemapFtoV.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\scalarRemapVtoF.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshAdjacencyTriTri.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshAdjacencyVertTri.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshAdjacencyVertVert.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

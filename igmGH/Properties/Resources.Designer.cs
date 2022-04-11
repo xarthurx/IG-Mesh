@@ -83,6 +83,36 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap meshAdjacencyTriTri {
+            get {
+                object obj = ResourceManager.GetObject("meshAdjacencyTriTri", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshAdjacencyVertTri {
+            get {
+                object obj = ResourceManager.GetObject("meshAdjacencyVertTri", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshAdjacencyVertVert {
+            get {
+                object obj = ResourceManager.GetObject("meshAdjacencyVertVert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meshBarycenter {
             get {
                 object obj = ResourceManager.GetObject("meshBarycenter", resourceCulture);
@@ -113,16 +143,6 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap meshIsoline1 {
-            get {
-                object obj = ResourceManager.GetObject("meshIsoline1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap meshNormalCorner {
             get {
                 object obj = ResourceManager.GetObject("meshNormalCorner", resourceCulture);
@@ -146,6 +166,26 @@ namespace igmGH.Properties {
         internal static System.Drawing.Bitmap meshNormalVertex {
             get {
                 object obj = ResourceManager.GetObject("meshNormalVertex", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap scalarRemapFtoV {
+            get {
+                object obj = ResourceManager.GetObject("scalarRemapFtoV", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap scalarRemapVtoF {
+            get {
+                object obj = ResourceManager.GetObject("scalarRemapVtoF", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
