@@ -15,7 +15,7 @@ The goal is to resolve the long-lasting pain for mesh processing on the [Rhino](
 
 ## Download & Installation 
 
-### Install with `PackageManager` (Rhino 7+)
+### Install with **PackageManager** (Rhino 7+)
 1. Open Rhino and run command `PackageManager`.
 2. Search for "IG-Mesh".
 3. Install and restart Rhino.
