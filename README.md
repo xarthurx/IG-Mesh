@@ -4,10 +4,14 @@
 
 ## A mesh processing library for Grasshopper (Rhino)
 
-`IG-Mesh`, standing for `intelligent-geometric mesh` or `igl-grasshopper mesh`, is a grasshopper plugin for low-level triangular mesh processing.
+`IG-Mesh`, standing for `I Got a Mesh` or `Igl-Grasshopper Mesh`, is a grasshopper plugin for low-level triangular mesh processing.
 
-The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level mesh operation to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
+The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level (vertex-based, edge-based) mesh operations. 
 
+The goal is to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
+
+
+### Overview of the plugin tools
 ![](./graphics/overview_img.png)
 
 ## Download & Installation 
@@ -27,7 +31,7 @@ The author would like to pay his deepest gratitude to the developers for this li
 
 The rest funcitons are developed by the author in `C++` and ported to `C#` in the same manner.
 
-[^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io).*
+[^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io) library.*
 
 
 ## Alpha phase and Use case collection
@@ -55,13 +59,13 @@ The library is released under the [MIT licence](./docs/LICENCE.md).
 ---
 Author: [Zhao Ma](https://beyond-disciplines.com)
 
-If `IG-Mesh` contributes to an academic publication, cite it as:
+If `IG-Mesh` contributes to an academic publication, please cite it as:
 ```bib
 @software{ig-mesh,
   title = {IG-Mesh},
   author = {Zhao Ma},
   url = {https://github.com/xarthurx/IG-Mesh},
-  version = {0.0.1}
+  version = {0.1.0}
   year = {2022}
 }
 ```
@@ -70,7 +74,7 @@ If `IG-Mesh` contributes to an academic publication, cite it as:
 You need to install `Visual Studio 2017` or above to compile the project.
 
 ### `openNURBS`
-1. Download the [openNURBS](https://github.com/mcneel/opennurbs) library to your local desk, compile it (both `debug` and `Release`).
+1. Download the [openNURBS](https://github.com/mcneel/opennurbs) library to your local desk, and build it (both `debug` and `Release`) following the instructions.
 
 2. Modify the corresponding dir in the `stdafx.h` file under project `igm_cppPort`.
 
