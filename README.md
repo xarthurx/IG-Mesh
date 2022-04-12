@@ -11,7 +11,6 @@ The library is developed for the general architecture, design, and fabrication c
 The goal is to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 
-### Overview of the plugin tools
 ![](./graphics/overview_img.png)
 
 ## Download & Installation 
@@ -52,24 +51,6 @@ Below is an incomplete list of functions that `IG-Mesh` plans to provide. The li
 - tet-based volume processing functionality
 
 
-## Licence
-The library is released under the [MIT licence](./docs/LICENCE.md).
-
-
----
-## Credit & Citation 
-Author: [Zhao Ma](https://beyond-disciplines.com)
-
-If `IG-Mesh` contributes to an academic publication, please cite it as:
-```bib
-@software{ig-mesh,
-  title = {IG-Mesh},
-  author = {Zhao Ma},
-  url = {https://github.com/xarthurx/IG-Mesh},
-  version = {0.1.0}
-  year = {2022}
-}
-```
 ## Compilation and Contribution
 
 You need to install `Visual Studio 2017` or above to compile the project.
@@ -95,5 +76,20 @@ In the `NuGet` package manager of `Visual Studio`, you should install the follow
 After the above two steps, you should now be able to build the whole solution and generate the `.gha` and `.dll` file.
 
 
+## Licence
+The library is released under the [MIT licence](./docs/LICENCE.md).
 
+---
+## Credit & Citation 
+Author: [Zhao Ma](https://beyond-disciplines.com)
 
+If `IG-Mesh` contributes to an academic publication, please cite it as:
+```bib
+@software{ig-mesh,
+  title = {IG-Mesh},
+  author = {Zhao Ma},
+  url = {https://github.com/xarthurx/IG-Mesh},
+  version = {0.1.0}
+  year = {2022}
+}
+```
