@@ -92,8 +92,7 @@ namespace igmGH
         {
             get
             {
-                //You can add image files to your project resources and access them like this:
-                return null;
+                return Properties.Resources.meshConstrainedScalar;
             }
         }
 

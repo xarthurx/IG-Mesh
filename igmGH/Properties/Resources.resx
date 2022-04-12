@@ -136,6 +136,9 @@
   <data name="meshBarycenter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshBarycenter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="meshConstrainedScalar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshConstrainedScalar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="meshInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -150,6 +153,15 @@
   </data>
   <data name="meshNormalVertex" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshNormalVertex.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshRandomPtsOnMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshRandomPtsOnMesh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshSignedDist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshSignedDist.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshWindingNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshWindingNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="scalarRemapFtoV" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\scalarRemapFtoV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

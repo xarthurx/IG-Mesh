@@ -123,6 +123,16 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap meshConstrainedScalar {
+            get {
+                object obj = ResourceManager.GetObject("meshConstrainedScalar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meshInfo {
             get {
                 object obj = ResourceManager.GetObject("meshInfo", resourceCulture);
@@ -166,6 +176,36 @@ namespace igmGH.Properties {
         internal static System.Drawing.Bitmap meshNormalVertex {
             get {
                 object obj = ResourceManager.GetObject("meshNormalVertex", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshRandomPtsOnMesh {
+            get {
+                object obj = ResourceManager.GetObject("meshRandomPtsOnMesh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshSignedDist {
+            get {
+                object obj = ResourceManager.GetObject("meshSignedDist", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshWindingNumber {
+            get {
+                object obj = ResourceManager.GetObject("meshWindingNumber", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

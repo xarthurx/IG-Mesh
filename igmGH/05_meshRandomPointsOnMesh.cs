@@ -16,6 +16,11 @@ namespace igmGH
         }
 
         /// <summary>
+        /// icon position in a category
+        /// </summary>
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
+
+        /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
@@ -72,7 +77,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshRandomPtsOnMesh;
             }
         }
 

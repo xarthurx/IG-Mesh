@@ -48,8 +48,6 @@ void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
                    const Vector<T, -1>& meshScalar,
                    const Vector<T, -1>& isoValue,
                    map<T, Matrix<T, -1, -1>>& isoLinePts, bool sorted = true) {
-  float startBnd{0.000001}, endBnd{0.999999};
-
   isoLinePts.clear();
 
   Eigen::MatrixXi E;
@@ -60,10 +58,6 @@ void computeIsoPts(const Matrix<T, -1, -1>& V, const MatrixXi& F,
   // construct set for querying
   std::set<int> boundLoop;
   for (size_t i = 0; i < B.size(); i++) boundLoop.insert(B[i]);
-
-  // find & interpolate
-  // Vector<T, -1> isoValue = Vector<T, -1>::LinSpaced(
-  //    divN, startBnd, endBnd);  // interpolate value for each vertical bars
 
   map<T, vector<Vector<T, 3>>> isoL;
   for (auto t : isoValue) {
