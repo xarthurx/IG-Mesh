@@ -14,13 +14,21 @@ The goal is to resolve the long-lasting pain for mesh processing on the [Rhino](
 ![](./graphics/overview_img.png)
 
 ## Download & Installation 
+
+### Install with `PackageManager` (Rhino 7+)
+1. Open Rhino and run command `PackageManager`.
+2. Search for "IG-Mesh".
+3. Install and restart Rhino.
+
+### pre-compiled release
 Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
 
 1. Download the `.zip` file for your OS from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
 2. Unzip the `.zip` file and put the folder into you "Grasshopper Component Folder".
-3. Restart Rhino and Grasshopper.
+3. Restart Rhino.
 
-<!-- The [project page on Food4Rhino](https://www.food4rhino.com/en) also holds major release versions of this library. -->
+### [Food4Rhino](https://www.food4rhino.com/en)
+The [project page on Food4Rhino](https://www.food4rhino.com/en) also holds major release versions of this library.
 
 ## Library credit
 

@@ -13,12 +13,13 @@ namespace igmGH
                 return "IG-Mesh";
             }
         }
+
         public override Bitmap Icon
         {
             get
             {
                 //Return a 24x24 pixel bitmap to represent this GHA library.
-                return null;
+                return Properties.Resources.meshCurvaturePrincipal;
             }
         }
         public override string Description
@@ -26,7 +27,7 @@ namespace igmGH
             get
             {
                 //Return a short string describing the purpose of this GHA library.
-                return "A one-stop solution for mesh processing in Rhino+Grasshopper";
+                return "IG-Mesh is a one-stop solution for low-level (vertex-based, edge-based) mesh processing. It transplants many functions available in the computer graphics community to the Rhino+GH platform.";
             }
         }
         public override Guid Id
@@ -42,7 +43,7 @@ namespace igmGH
             get
             {
                 //Return a string identifying you or your company.
-                return "Dr. Zhao Ma";
+                return "Zhao Ma";
             }
         }
         public override string AuthorContact
@@ -50,7 +51,24 @@ namespace igmGH
             get
             {
                 //Return a string representing your preferred contact details.
-                return "xliotx@gmail.com";
+                return "https://github.com/xarthurx/IG-Mesh";
+            }
+        }
+
+        public override GH_LibraryLicense License
+        {
+            get
+            {
+                return GH_LibraryLicense.opensource;
+            }
+
+        }
+
+        public override string Version
+        {
+            get
+            {
+                return "0.1.1";
             }
         }
     }
