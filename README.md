@@ -1,12 +1,14 @@
 # IG-Mesh
 
-![](./graphics/title_img.jpg)
+![](./graphics/title_img.png)
 
 ## A mesh processing library for Grasshopper (Rhino)
 
 `IG-Mesh`, standing for `intelligent-geometric mesh` or `igl-grasshopper mesh`, is a grasshopper plugin for low-level triangular mesh processing.
 
 The library is developed for the general architecture, design, and fabrication community, hoping to provide solutions for low-level mesh operation to resolve the long-lasting pain for mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
+
+![](./graphics/overview_img.png)
 
 ## Download & Installation 
 Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
@@ -21,9 +23,9 @@ Pre-compiled releases are available on the [GitHub repo](https://github.com/xart
 
 Many of the base functions are converted from the geometry processing library [libigl](https://libigl.github.io), and ported into C# environment through the [PInvoke](https://www.grasshopper3d.com/forum/topics/link-use-c-code-or-c-lib-with-new-gh-plugin) methods. 
 
-The rest is developed by the author in `C++` and ported to `C#` in the same manner.
+The author would like to pay his deepest gratitude to the developers for this library and the responsive Q\&A during the past years [^1].
 
-The author would like to pay his deepest gratitude to the library developers for this library and the responsive Q\&A during the past years [^1].
+The rest funcitons are developed by the author in `C++` and ported to `C#` in the same manner.
 
 [^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io).*
 
