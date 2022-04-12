@@ -36,7 +36,7 @@ The rest funcitons are developed by the author in `C++` and ported to `C#` in th
 ## Alpha phase and Use case collection
 **This library is currently under the alpha phase for initial public test. To improve it one-step further, your contribution is needed.**
 
-Please submit an issue and tell me what your mesh processing task requires and what type of functions are missing.
+Please submit an issue and describe what your mesh processing task requires and what type of functions are missing.
 
 I will add the corresponding functions to the library after evaluation, ASAP.
 
