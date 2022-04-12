@@ -9,9 +9,9 @@ namespace igmGH
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
         public IGM_principal_curvature()
-          : base("Principal Curvature", "igPrincipalCurvature",
+          : base("Principal Curvature", "igCurvaturePrincipal",
               "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-              "IG-Mesh", "02 | Properties")
+              "IG-Mesh", "05 | Measure")
         {
         }
 
@@ -75,8 +75,7 @@ namespace igmGH
             get
             {
                 //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshCurvaturePrincipal;
             }
         }
 

@@ -54,15 +54,15 @@
     <Compile Include="02_meshNormalsVertex.cs" />
     <Compile Include="02_meshBarycenter.cs" />
     <Compile Include="03_meshBoundEdge.cs" />
-    <Compile Include="02_meshCurvaturePrincipal.cs" />
-    <Compile Include="02_meshCurvatureGaussian.cs" />
+    <Compile Include="05_meshCurvaturePrincipal.cs" />
+    <Compile Include="05_meshCurvatureGaussian.cs" />
     <Compile Include="03_meshAdjacentVertVert.cs" />
     <Compile Include="03_meshBoundLoop.cs" />
     <Compile Include="03_meshAdjacencyTriTri.cs" />
     <Compile Include="03_meshAdjacencyVertTri.cs" />
     <Compile Include="04_scalarRemapFtoV.cs" />
     <Compile Include="04_scalarRemapVtoF.cs" />
-    <Compile Include="05_meshRandomPointsOnMesh.cs" />
+    <Compile Include="06_meshRandomPointsOnMesh.cs" />
     <Compile Include="05_meshSignedDistance.cs" />
     <Compile Include="05_meshFastWindingNumber.cs" />
     <Compile Include="06_meshIsoLineFromScalar.cs" />
@@ -147,6 +147,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\icons\meshWindingNumber.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshBoundEdge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshBoundLoop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshCurvatureGaussian.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshCurvaturePrincipal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

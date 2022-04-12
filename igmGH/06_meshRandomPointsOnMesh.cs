@@ -3,19 +3,21 @@ using System;
 
 namespace igmGH
 {
-    public class IGM_gaussian_curvature : GH_Component
+    public class IGM_random_points_on_mesh : GH_Component
     {
         /// <summary>
-        /// Initializes the new instance of the corner_normals class.
+        /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_gaussian_curvature()
-          : base("Gaussian Curvature", "igGaussianCurvature",
-              "Compute integral of gaussian curvature of the given mesh.",
-              "IG-Mesh", "02 | Properties")
+        public IGM_random_points_on_mesh()
+          : base("Random Points On Mesh", "igRndPt",
+              "Randomly sample N points on surface of the given mesh with random/uniform distribution.",
+              "IG-Mesh", "06 | Util")
         {
         }
 
-        // icon position in a category
+        /// <summary>
+        /// icon position in a category
+        /// </summary>
         public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
@@ -24,6 +26,12 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
+            pManager.AddIntegerParameter("Number", "N", "Number of sampled points.", GH_ParamAccess.item, 0);
+            // the uniform method uses a blue-noise (Poisson's disk) approach to sample the points.
+            pManager.AddIntegerParameter("Method", "M", "The method used for sampling: 0-random; 1-uniform.", GH_ParamAccess.item, 0);
+
+            pManager[1].Optional = true;
+            pManager[2].Optional = true;
         }
 
         /// <summary>
@@ -31,7 +39,8 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddNumberParameter("Curvature", "GK", "Gaussian curvature values.", GH_ParamAccess.list);
+            pManager.AddPointParameter("Sampled Points", "P", "The N sampled points.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Face Index", "FI", "The corresponding face indices of the sampled points.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -45,11 +54,18 @@ namespace igmGH
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
+            int N = 1;
+            if (!DA.GetData(1, ref N) || N == 0) { return; }
+
+            int M = 0;
+            if (!DA.GetData(2, ref M)) { return; }
+
             // call the cpp function to solve the adjacency list
-            var k = IGMRhinoCommon.Utils.getGaussianCurvature(ref mesh);
+            var (p, fi) = IGMRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N, M);
 
             // output
-            DA.SetDataList(0, k);
+            DA.SetDataList(0, p);
+            DA.SetDataList(1, fi);
         }
 
         /// <summary>
@@ -61,7 +77,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return null;
+                return Properties.Resources.meshRandomPtsOnMesh;
             }
         }
 
@@ -70,7 +86,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("6d32480e-e790-4b3f-9ad5-1fb638b75ba4"); }
+            get { return new Guid("5819dc11-ccff-41eb-b126-96c34911ddc1"); }
         }
     }
 }

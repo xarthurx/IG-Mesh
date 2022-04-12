@@ -13,7 +13,7 @@ namespace igmGH
         public IGM_isoline_scalar()
           : base("Isoline", "igIsoline",
               "Extract the isolines of a given mesh from its scalar field.",
-              "IG-Mesh", "06 | Utils")
+              "IG-Mesh", "06 | Util")
         {
         }
 

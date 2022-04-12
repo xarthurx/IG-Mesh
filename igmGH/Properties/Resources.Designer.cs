@@ -123,9 +123,49 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap meshBoundEdge {
+            get {
+                object obj = ResourceManager.GetObject("meshBoundEdge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshBoundLoop {
+            get {
+                object obj = ResourceManager.GetObject("meshBoundLoop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meshConstrainedScalar {
             get {
                 object obj = ResourceManager.GetObject("meshConstrainedScalar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshCurvatureGaussian {
+            get {
+                object obj = ResourceManager.GetObject("meshCurvatureGaussian", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshCurvaturePrincipal {
+            get {
+                object obj = ResourceManager.GetObject("meshCurvaturePrincipal", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
