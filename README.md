@@ -57,6 +57,7 @@ The library is released under the [MIT licence](./docs/LICENCE.md).
 
 
 ---
+## Credit & Citation 
 Author: [Zhao Ma](https://beyond-disciplines.com)
 
 If `IG-Mesh` contributes to an academic publication, please cite it as:
