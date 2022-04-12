@@ -27,8 +27,8 @@ Pre-compiled releases are available on the [GitHub repo](https://github.com/xart
 2. Unzip the `.zip` file and put the folder into you "Grasshopper Component Folder".
 3. Restart Rhino.
 
-### [Food4Rhino](https://www.food4rhino.com/en)
-The [project page on Food4Rhino](https://www.food4rhino.com/en) also holds major release versions of this library.
+### Food4Rhino 
+The [project page on Food4Rhino](https://www.food4rhino.com/en/app/ig-mesh) also holds major release versions of this library.
 
 ## Library credit
 
