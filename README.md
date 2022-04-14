@@ -49,14 +49,20 @@ Please submit an issue and describe what your mesh processing task requires and 
 I will add the corresponding functions to the library after evaluation, ASAP.
 
 
+## Planned Feature 
+Below are the current planned features to be added in the next release:
+- planarization using ['Shape-Up'](https://lgg.epfl.ch/publications/2012/shapeup/index.php)
+- Half-Edge structure
+- Fast geodesic distance based on the "Heat-kernel" method
+
+
 ## Future Plan (Non-Goal TODO)
 Below is an incomplete list of functions that `IG-Mesh` plans to provide. The list is constantly adjusted based on feedback:
 
 - edge-related functions for vector fields operation 
 - Various approaches for unrolling mesh (parametrization)
-- geodesic related functions (shortest paths, heat-geodesic, etc.)
 - FEM-related functions (need evaluation on speed and computational efficiency)
-- tet-based volume processing functionality
+- voxel (tet-based) processing functionality
 
 
 ## Compilation and Contribution
