@@ -32,7 +32,7 @@ The [project page on Food4Rhino](https://www.food4rhino.com/en/app/ig-mesh) also
 
 ## Library credit
 
-Many of the base functions are converted from the geometry processing library [libigl](https://libigl.github.io), and ported into C# environment through the [PInvoke](https://www.grasshopper3d.com/forum/topics/link-use-c-code-or-c-lib-with-new-gh-plugin) methods. 
+Many of the base functions are converted from the geometry processing library [libigl](https://libigl.github.io), and ported into C# environment through the [PInvoke](https://www.grasshopper3d.com/forum/topics/link-use-c-code-or-c-lib-with-new-gh-plugin) methods and [openNURBS](https://github.com/mcneel/opennurbs).
 
 The author would like to pay his deepest gratitude to the developers for this library and the responsive Q\&A during the past years [^1].
 
@@ -91,7 +91,7 @@ After the above two steps, you should now be able to build the whole solution an
 
 
 ## Licence
-The library is released under the [MIT licence](./docs/LICENCE.md).
+The library is released under the [MIT licence](./LICENSE).
 
 ---
 ## Credit & Citation 
