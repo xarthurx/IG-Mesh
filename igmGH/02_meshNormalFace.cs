@@ -3,15 +3,15 @@ using System;
 
 namespace igmGH
 {
-    public class IGM_vert_face_normals : GH_Component
+    public class IGM_normals_face : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_vert_face_normals()
+        public IGM_normals_face()
           : base("Face Normal", "igNormals_F",
               "Compute the per face normals of the given mesh.",
-              "IG-Mesh", "02 | Properties")
+              "IG-Mesh", "02|Properties")
         {
         }
 

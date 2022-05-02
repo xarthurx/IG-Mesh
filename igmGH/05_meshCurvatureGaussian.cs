@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_gaussian_curvature()
           : base("Gaussian Curvature", "igCurvatureGaussian",
               "Compute integral of gaussian curvature of the given mesh.",
-              "IG-Mesh", "05 | Measure")
+              "IG-Mesh", "05|Measure")
         {
         }
 

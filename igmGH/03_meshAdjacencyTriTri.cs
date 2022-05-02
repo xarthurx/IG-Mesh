@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_tri_tri_adjacency()
           : base("Triangle-Triangle Adjacency", "igAdjTT",
               "Compute the triangle-triangle adjacency relationship of the given mesh.",
-              "IG-Mesh", "03 | Adjacency+Bound")
+              "IG-Mesh", "03|Adjacency+Bound")
         {
         }
 

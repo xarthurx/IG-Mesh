@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_read_triangle_mesh()
           : base("Load TriMesh", "igLoadMsh",
               "Load a triangle mesh directly from disk. Format supported: obj, off, stl, wrl, ply, mesh.",
-              "IG-Mesh", "01 | IO+Info")
+              "IG-Mesh", "01|IO+Info")
         {
         }
         // icon position in a category

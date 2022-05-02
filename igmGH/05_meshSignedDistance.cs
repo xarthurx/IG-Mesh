@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_signed_distance()
           : base("Signed Distance", "igSignedDist",
               "Compute the signed distance for the query pts to the given mesh.",
-              "IG-Mesh", "05 | Measure")
+              "IG-Mesh", "05|Measure")
         {
         }
 

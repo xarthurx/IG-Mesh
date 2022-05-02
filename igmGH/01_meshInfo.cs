@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_mesh_properties()
           : base("Mesh Info", "igMeshInfo",
               "Provide various mesh info: V, F, centroid, volume.",
-              "IG-Mesh", "01 | IO+Info")
+              "IG-Mesh", "01|IO+Info")
         {
         }
         // icon position in a category

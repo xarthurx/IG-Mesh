@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_write_triangle_mesh()
           : base("Save TriMesh", "igSaveMsh",
               "Save a triangle mesh directly to disk. format supported: obj, off, stl, wrl, ply, mesh.",
-              "IG-Mesh", "01 | IO+Info")
+              "IG-Mesh", "01|IO+Info")
         {
         }
 

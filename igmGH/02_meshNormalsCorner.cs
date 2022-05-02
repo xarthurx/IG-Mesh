@@ -12,7 +12,7 @@ namespace igmGH
         public IGM_normals_corner()
           : base("Corner Normal", "igNormals_C",
               "Compute per corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
-              "IG-Mesh", "02 | Properties")
+              "IG-Mesh", "02|Properties")
         {
         }
 
