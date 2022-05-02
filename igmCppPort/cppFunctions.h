@@ -22,14 +22,6 @@
 
 #endif
 
-void testFunc() {
-  // auto* isoP = new ON_SimpleArray<ON_3dPointArray*>();
-  // auto& x = isoP->AppendNew();
-  // x = new ON_3dPointArray();
-  // x->Append(ON_3dPoint(0, 1, 2));
-  // isoP->Count();
-}
-
 // ! --------------------------------
 // ! IO funcs
 // ! --------------------------------
@@ -92,10 +84,7 @@ void IGM_corner_normals(ON_Mesh* pMesh, const double threshold_deg,
 
 RH_C_FUNCTION
 void IGM_edge_normals(ON_Mesh* pMesh, int weightingType, ON_3dPointArray* EN,
-                      ON_SimpleArray<ON_2dex>* EI,
-                      ON_SimpleArray<int>* EMAP);
-// void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
-//                      float* EN, int* EI, int* EMAP, int& sz);
+                      ON_SimpleArray<ON_2dex>* EI, ON_SimpleArray<int>* EMAP);
 
 // ! --------------------------------
 // ! mapping
@@ -110,35 +99,12 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res);
 
 // ! --------------------------------
-// ! querying
+// ! measure
 // ! --------------------------------
-RH_C_FUNCTION
-void IGM_constrained_scalar(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
-                            ON_SimpleArray<double>* con_val,
-                            ON_SimpleArray<double>* meshScal);
-
-RH_C_FUNCTION
-void IGM_extract_isoline_from_scalar(ON_Mesh* pMesh,
-                                     ON_SimpleArray<double>* iso_t,
-                                     ON_SimpleArray<double>* meshS,
-                                     ON_SimpleArray<ON_3dPointArray*>* isoP);
-
-// combined func of the above two
-RH_C_FUNCTION
-void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
-                         ON_SimpleArray<double>* con_val,
-                         ON_SimpleArray<double>* iso_t,
-                         ON_SimpleArray<ON_3dPointArray*>* isoP,
-                         ON_SimpleArray<double>* meshS);
-
 RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
                    ON_SimpleArray<double>* con_val,
                    ON_SimpleArray<double>* laplacianValue);
-
-RH_C_FUNCTION
-void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
-                              ON_SimpleArray<int>* FI);
 
 RH_C_FUNCTION
 void IGM_blue_noise_sampling_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
@@ -160,3 +126,39 @@ RH_C_FUNCTION
 void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
                          ON_SimpleArray<double>* S, ON_SimpleArray<int>* I,
                          ON_3dPointArray* C);
+
+// ! --------------------------------
+// ! utils
+// ! --------------------------------
+
+RH_C_FUNCTION
+void IGM_constrained_scalar(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                            ON_SimpleArray<double>* con_val,
+                            ON_SimpleArray<double>* meshScal);
+
+RH_C_FUNCTION
+void IGM_extract_isoline_from_scalar(ON_Mesh* pMesh,
+                                     ON_SimpleArray<double>* iso_t,
+                                     ON_SimpleArray<double>* meshS,
+                                     ON_SimpleArray<ON_3dPointArray*>* isoP);
+
+// combined func of the above two
+RH_C_FUNCTION
+void IGM_extract_isoline(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
+                         ON_SimpleArray<double>* con_val,
+                         ON_SimpleArray<double>* iso_t,
+                         ON_SimpleArray<ON_3dPointArray*>* isoP,
+                         ON_SimpleArray<double>* meshS);
+
+RH_C_FUNCTION
+void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
+                              ON_SimpleArray<int>* FI);
+
+
+RH_C_FUNCTION
+void IGM_heat_geodesic_precompute(ON_Mesh* pMesh, igl::HeatGeodesicsData<double>* geoData);
+
+RH_C_FUNCTION
+void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
+                              ON_SimpleArray<int>* gamma,
+                              ON_SimpleArray<double>* D);

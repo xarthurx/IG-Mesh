@@ -63,6 +63,7 @@
     <Compile Include="03_meshAdjacencyVertTri.cs" />
     <Compile Include="04_scalarRemapFtoV.cs" />
     <Compile Include="04_scalarRemapVtoF.cs" />
+    <Compile Include="06_meshHeatGeoPrecompute.cs" />
     <Compile Include="06_meshRandomPointsOnMesh.cs" />
     <Compile Include="05_meshSignedDistance.cs" />
     <Compile Include="05_meshFastWindingNumber.cs" />

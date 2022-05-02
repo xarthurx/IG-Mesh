@@ -54,7 +54,6 @@ void cvtON_ArrayToEigenV(ON_SimpleArray<T>* onArray, Vector<T, -1>& vec) {
 template <typename T>
 void cvtEigenVToON_Array(const Vector<T, -1>& vec, ON_SimpleArray<T>* onArray) {
   onArray->Append(vec.size(), vec.data());
-  //}
 }
 
 template <typename T>
@@ -281,9 +280,7 @@ void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
 }
 
 void IGM_edge_normals(ON_Mesh* pMesh, int weightingType, ON_3dPointArray* EN,
-                      ON_SimpleArray<ON_2dex>* EI,
-                      // ON_SimpleArray<int>* EI0, ON_SimpleArray<int>* EI1,
-                      ON_SimpleArray<int>* EMAP) {
+                      ON_SimpleArray<ON_2dex>* EI, ON_SimpleArray<int>* EMAP) {
   MatrixXd matV;
   MatrixXi matF;
   cvtMeshToEigen(pMesh, matV, matF);
@@ -296,40 +293,10 @@ void IGM_edge_normals(ON_Mesh* pMesh, int weightingType, ON_3dPointArray* EN,
       matV, matF, static_cast<igl::PerEdgeNormalsWeightingType>(weightingType),
       cppEN, cppEI, cppEMAP);
 
-  //VectorXi cppEI0(cppEI.col(0));
-  //VectorXi cppEI1(cppEI.col(1));
-  // cvtEigenVToON_Array(cppEI0, EI0);
-  // cvtEigenVToON_Array(cppEI1, EI1);
-
   cvtEigenToON_Points(cppEN, EN);
   cvtEigenMatIdxToON_Array(cppEI, EI);
   cvtEigenVToON_Array(cppEMAP, EMAP);
 }
-
-// void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
-//                      float* EN, int* EI, int* EMAP, int& sz) {
-//  // cvt mesh
-//  MatrixXf matV;
-//  MatrixXi matF;
-//  cvtArrayToEigenXt(V, nV, matV);
-//  cvtArrayToEigenXt(F, nF, matF);
-//
-//  // compute per-edge-normal
-//  MatrixXf matEN;
-//  MatrixXf matFN;
-//  MatrixXi matEI;
-//  VectorXi vecEMAP;
-//  igl::per_edge_normals(
-//      matV, matF,
-//      static_cast<igl::PerEdgeNormalsWeightingType>(weightingType), matEN,
-//      matEI, vecEMAP);
-//
-//  // cvt back
-//  RowMajMatXf::Map(EN, matEN.rows(), matEN.cols()) = matEN;
-//  RowMajMatXi::Map(EI, matEI.rows(), matEI.cols()) = matEI;
-//  VectorXi::Map(EMAP, vecEMAP.size()) = vecEMAP;
-//  sz = matEI.rows();
-//}
 
 void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res) {
@@ -468,21 +435,6 @@ void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
   cvtEigenVToON_Array(lapVal, laplacianValue);
 }
 
-void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
-                              ON_SimpleArray<int>* FI) {
-  MatrixXd matV;
-  MatrixXi matF;
-  cvtMeshToEigen(pMesh, matV, matF);
-
-  MatrixXd B, matP;
-  VectorXi faceI;
-
-  igl::random_points_on_mesh(N, matV, matF, B, faceI, matP);
-
-  cvtEigenToON_Points(matP, P);
-  cvtEigenVToON_Array(faceI, FI);
-}
-
 void IGM_blue_noise_sampling_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
                                      ON_SimpleArray<int>* FI) {
   MatrixXd matV;
@@ -580,4 +532,44 @@ void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
   cvtEigenVToON_Array(vecS, S);
   cvtEigenVToON_Array(vecI, I);
   cvtEigenToON_Points(matC, C);
+}
+
+void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
+                              ON_SimpleArray<int>* FI) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  MatrixXd B, matP;
+  VectorXi faceI;
+
+  igl::random_points_on_mesh(N, matV, matF, B, faceI, matP);
+
+  cvtEigenToON_Points(matP, P);
+  cvtEigenVToON_Array(faceI, FI);
+}
+
+void IGM_heat_geodesic_precompute(ON_Mesh* pMesh, igl::HeatGeodesicsData<double>* geoData) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  double t = std::pow(igl::avg_edge_length(matV, matF), 2);
+
+  igl::heat_geodesics_precompute(matV, matF, t, *geoData);
+
+}
+
+void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
+                              ON_SimpleArray<int>* gamma,
+                              ON_SimpleArray<double>* D) {
+  assert(data != nullptr && "Pre-computed data is empty!");
+
+  Eigen::VectorXi gammaCpp;
+  cvtON_ArrayToEigenV(gamma, gammaCpp);
+
+  // compute distance
+  Eigen::VectorXd disCpp;
+  igl::heat_geodesics_solve(*data, gammaCpp, disCpp);
+  cvtEigenVToON_Array(disCpp, D);
 }

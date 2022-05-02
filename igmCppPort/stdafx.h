@@ -21,6 +21,7 @@
 #include <igl/average_onto_faces.h>
 #include <igl/average_onto_vertices.h>
 #include <igl/barycenter.h>
+#include <igl/blue_noise.h>
 #include <igl/boundary_facets.h>
 #include <igl/boundary_loop.h>
 #include <igl/centroid.h>
@@ -28,6 +29,7 @@
 #include <igl/edges.h>
 #include <igl/fast_winding_number.h>
 #include <igl/gaussian_curvature.h>
+#include <igl/heat_geodesics.h>
 #include <igl/invert_diag.h>
 #include <igl/parula.h>
 #include <igl/per_corner_normals.h>
@@ -36,7 +38,6 @@
 #include <igl/per_vertex_normals.h>
 #include <igl/principal_curvature.h>
 #include <igl/random_points_on_mesh.h>
-#include <igl/blue_noise.h>
 #include <igl/read_triangle_mesh.h>
 #include <igl/setdiff.h>
 #include <igl/signed_distance.h>

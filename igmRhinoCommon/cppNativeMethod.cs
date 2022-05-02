@@ -170,5 +170,17 @@ namespace IGMRhinoCommon
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_signed_distance(IntPtr pMesh, IntPtr Q, int type, IntPtr S, IntPtr I, IntPtr C);
+
+        /// <summary>
+        /// compute geodesic pre-computed data
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_heat_geodesic_precompute(IntPtr pMesh, IntPtr geoData);
+
+        /// <summary>
+        /// solve geodesic distance using pre-computed data
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_heat_geodesic_solve(IntPtr data, IntPtr gamma, IntPtr D);
     }
 }

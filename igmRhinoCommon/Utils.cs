@@ -459,7 +459,7 @@ namespace IGMRhinoCommon
             var EI = new List<List<int>>();
             foreach (var it in arrayEI)
             {
-                EI.Add(new List<int>(){it.I, it.J});
+                EI.Add(new List<int>() { it.I, it.J });
             }
 
             var EMAP = new List<int>(EMAPcpp.ToArray());
@@ -765,6 +765,26 @@ namespace IGMRhinoCommon
             List<Point3d> CP = new List<Point3d>(CPcpp.ToArray());
 
             return (SD, FI, CP);
+        }
+
+        public static void getHeatGeodesicPrecomputedData(ref Mesh rMesh, ref GeoData geoData)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+            IntPtr geoDataCpp = Rhino.Runtime.InteropWrappers.SimpleArraySurfacePointer();
+
+            CppIGM.IGM_heat_geodesic_precompute(pMesh, geoData);
+        }
+
+        public static List<double> getHeatGeodesicDist(IntPtr geoData, ref List<int> gamma)
+        {
+            var gammaCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt(gamma);
+            var disCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+            CppIGM.IGM_heat_geodesic_solve(geoData, gammaCpp.ConstPointer(), disCpp.NonConstPointer());
+
+            List<double> D = new List<double>(disCpp.ToArray());
+
+            return D;
         }
     }
 }
