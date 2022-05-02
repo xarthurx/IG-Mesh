@@ -439,51 +439,77 @@ namespace IGMRhinoCommon
 
         public static (List<Vector3d>, List<List<int>>, List<int>) getNormalsEdge(ref Mesh rhinoMesh, int wT)
         {
-            //initialize the pointer and pass data
-            int nV = rhinoMesh.Vertices.Count;
-            int nF = rhinoMesh.Faces.Count;
-            int nE = rhinoMesh.TopologyEdges.Count * 2;
-
-            // copy data into the IntPtr
-            float[] V = rhinoMesh.Vertices.ToFloatArray();
-            IntPtr meshV = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * V.Length);
-            Marshal.Copy(V, 0, meshV, V.Length);
-
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
+            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
-            IntPtr EN_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(float)) * 3 * nE);
-            IntPtr EI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 2 * nE);
-            IntPtr EMAP_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nE);
+            var ENcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            var EIcpp = new Rhino.Runtime.InteropWrappers.SimpleArray2dex();
+            var EMAPcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            CppIGM.IGM_edge_normals(pMesh, wT, ENcpp.NonConstPointer(), EIcpp.NonConstPointer(), EMAPcpp.NonConstPointer());
 
-            int sz;
-            CppIGM.IGM_edge_normals(meshV, nV, meshF, nF, wT, EN_cpp, EI_cpp, EMAP_cpp, out sz);
+            var arrayEN = ENcpp.ToArray();
+            List<Vector3d> EN = new List<Vector3d>();
+            foreach (var it in arrayEN)
+            {
+                EN.Add(new Vector3d(it));
+            }
 
-            float[] resEN = new float[nE * 3];
-            int[] resEI = new int[nE * 2];
-            int[] resEMAP = new int[nE];
-            Marshal.Copy(EN_cpp, resEN, 0, nE * 3);
-            Marshal.Copy(EI_cpp, resEI, 0, nE * 2);
-            Marshal.Copy(EMAP_cpp, resEMAP, 0, nE);
+            var arrayEI = EIcpp.ToArray();
+            var EI = new List<List<int>>();
+            foreach (var it in arrayEI)
+            {
+                EI.Add(new List<int>(){it.I, it.J});
+            }
 
-            if (meshV != IntPtr.Zero) Marshal.FreeHGlobal(meshV);
-            if (meshF != IntPtr.Zero) Marshal.FreeHGlobal(meshF);
-            if (EN_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EN_cpp);
-            if (EI_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EI_cpp);
-            if (EMAP_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EMAP_cpp);
+            var EMAP = new List<int>(EMAPcpp.ToArray());
+
+
+
+            //initialize the pointer and pass data
+            //int nV = rhinoMesh.Vertices.Count;
+            //int nF = rhinoMesh.Faces.Count;
+            //int nE = rhinoMesh.TopologyEdges.Count * 2;
+
+            ////// copy data into the intptr
+            ////float[] v = rhinomesh.vertices.tofloatarray();
+            ////intptr meshv = marshal.allochglobal(marshal.sizeof(typeof(float)) * v.length);
+            ////marshal.copy(v, 0, meshv, v.length);
+
+            ////int[] f = rhinomesh.faces.tointarray(true);
+            ////intptr meshf = marshal.allochglobal(marshal.sizeof(typeof(int)) * f.length);
+            ////marshal.copy(f, 0, meshf, f.length);
+
+            ////// call the cpp func
+            ////intptr en_cpp = marshal.allochglobal(marshal.sizeof(typeof(float)) * 3 * ne);
+            ////intptr ei_cpp = marshal.allochglobal(marshal.sizeof(typeof(int)) * 2 * ne);
+            ////intptr emap_cpp = marshal.allochglobal(marshal.sizeof(typeof(int)) * ne);
+
+            //int sz;
+            //CppIGM.IGM_edge_normals(meshV, nV, meshF, nF, wT, EN_cpp, EI_cpp, EMAP_cpp, out sz);
+
+            //float[] resEN = new float[nE * 3];
+            //int[] resEI = new int[nE * 2];
+            //int[] resEMAP = new int[nE];
+            //Marshal.Copy(EN_cpp, resEN, 0, nE * 3);
+            //Marshal.Copy(EMAP_cpp, resEMAP, 0, nE);
+
+            //if (meshV != IntPtr.Zero) Marshal.FreeHGlobal(meshV);
+            //if (meshF != IntPtr.Zero) Marshal.FreeHGlobal(meshF);
+            //if (EN_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EN_cpp);
+            //if (EI_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EI_cpp);
+            //if (EMAP_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EMAP_cpp);
 
             // send back to RhinoCommon type
-            List<Vector3d> EN = new List<Vector3d>();
-            List<List<int>> EI = new List<List<int>>();
-            List<int> EMAP = new List<int>(resEMAP);
+            //List<Vector3d> EN = new List<Vector3d>();
+            //List<List<int>> EI = new List<List<int>>();
+            //List<int> EMAP = new List<int>(EMAPcpp);
 
-            for (int i = 0; i < sz; i++)
-            {
-                EN.Add(new Vector3d(resEN[i * 3], resEN[i * 3 + 1], resEN[i * 3 + 2]));
-                EI.Add(new List<int> { resEI[i * 2], resEI[i * 2 + 1] });
-            }
+            //for (int i = 0; i < sz; i++)
+            //{
+            //    EN.Add(new Vector3d(resEN[i * 3], resEN[i * 3 + 1], resEN[i * 3 + 2]));
+            //    EI.Add(new List<int> { resEI[i * 2], resEI[i * 2 + 1] });
+            //}
 
             return (EN, EI, EMAP);
         }

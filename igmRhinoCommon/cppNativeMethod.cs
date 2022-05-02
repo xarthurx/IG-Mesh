@@ -95,7 +95,8 @@ namespace IGMRhinoCommon
         /// Compute per_edge normals
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_edge_normals(IntPtr V, int nV, IntPtr F, int nF, int wT, IntPtr EN, IntPtr EI, IntPtr EMAP, out int sz);
+        internal static extern void IGM_edge_normals(IntPtr pMesh, int wT, IntPtr EN, IntPtr EI, IntPtr EMAP);
+        //internal static extern void IGM_edge_normals(IntPtr V, int nV, IntPtr F, int nF, int wT, IntPtr EN, IntPtr EI, IntPtr EMAP, out int sz);
 
         /// <summary>
         /// remap scalar from face to vertex

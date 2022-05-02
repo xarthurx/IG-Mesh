@@ -48,15 +48,21 @@ void cvtMeshToEigen(ON_Mesh* pMesh, MatrixXd& matV, MatrixXi& matF) {
 
 template <typename T>
 void cvtON_ArrayToEigenV(ON_SimpleArray<T>* onArray, Vector<T, -1>& vec) {
-  // vec = Vector<T, -1>(onArray->Array());
   vec = Vector<T, -1>::Map(onArray->Array(), onArray->Count());
 }
+
 template <typename T>
-void cvtEigenVToON_Array(Vector<T, -1>& vec, ON_SimpleArray<T>* onArray) {
+void cvtEigenVToON_Array(const Vector<T, -1>& vec, ON_SimpleArray<T>* onArray) {
   onArray->Append(vec.size(), vec.data());
-  // for (size_t i = 0; i < vec.size(); i++) {
-  //  onArray->Append(vec[i]);
   //}
+}
+
+template <typename T>
+void cvtEigenMatIdxToON_Array(const Matrix<T, Dynamic, 2>& matIdx,
+                              ON_SimpleArray<ON_2dex>* onArray) {
+  for (size_t i = 0; i < matIdx.rows(); i++) {
+    onArray->Append(ON_2dex(matIdx(i, 0), matIdx(i, 1)));
+  }
 }
 
 template <typename T>
@@ -72,13 +78,6 @@ void cvtEigenToON_Vectors(const Matrix<T, Dynamic, Dynamic>& matV,
                           ON_3dVectorArray* V) {
   for (size_t i = 0; i < matV.rows(); i++) {
     V->Append(ON_3dVector(matV(i, 0), matV(i, 1), matV(i, 2)));
-  }
-}
-
-void cvtEigenToON_ArrayInt(const MatrixXi& matF, ON_SimpleArray<int>* F) {
-  for (size_t i = 0; i < matF.rows(); i++) {
-    int tmp[3]{matF(i, 0), matF(i, 1), matF(i, 2)};
-    F->Append(3, tmp);
   }
 }
 
@@ -281,29 +280,56 @@ void IGM_corner_normals(ON_Mesh* pMesh, double threshold_deg,
   cvtEigenToON_Points(matCN, CN);
 }
 
-void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
-                      float* EN, int* EI, int* EMAP, int& sz) {
-  // cvt mesh
-  MatrixXf matV;
+void IGM_edge_normals(ON_Mesh* pMesh, int weightingType, ON_3dPointArray* EN,
+                      ON_SimpleArray<ON_2dex>* EI,
+                      // ON_SimpleArray<int>* EI0, ON_SimpleArray<int>* EI1,
+                      ON_SimpleArray<int>* EMAP) {
+  MatrixXd matV;
   MatrixXi matF;
-  cvtArrayToEigenXt(V, nV, matV);
-  cvtArrayToEigenXt(F, nF, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
-  // compute per-edge-normal
-  MatrixXf matEN;
-  MatrixXf matFN;
-  MatrixXi matEI;
-  VectorXi vecEMAP;
+  MatrixXd cppEN;
+  Matrix<int, Dynamic, 2> cppEI;
+  VectorXi cppEMAP;
+
   igl::per_edge_normals(
       matV, matF, static_cast<igl::PerEdgeNormalsWeightingType>(weightingType),
-      matEN, matEI, vecEMAP);
+      cppEN, cppEI, cppEMAP);
 
-  // cvt back
-  RowMajMatXf::Map(EN, matEN.rows(), matEN.cols()) = matEN;
-  RowMajMatXi::Map(EI, matEI.rows(), matEI.cols()) = matEI;
-  VectorXi::Map(EMAP, vecEMAP.size()) = vecEMAP;
-  sz = matEI.rows();
+  //VectorXi cppEI0(cppEI.col(0));
+  //VectorXi cppEI1(cppEI.col(1));
+  // cvtEigenVToON_Array(cppEI0, EI0);
+  // cvtEigenVToON_Array(cppEI1, EI1);
+
+  cvtEigenToON_Points(cppEN, EN);
+  cvtEigenMatIdxToON_Array(cppEI, EI);
+  cvtEigenVToON_Array(cppEMAP, EMAP);
 }
+
+// void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
+//                      float* EN, int* EI, int* EMAP, int& sz) {
+//  // cvt mesh
+//  MatrixXf matV;
+//  MatrixXi matF;
+//  cvtArrayToEigenXt(V, nV, matV);
+//  cvtArrayToEigenXt(F, nF, matF);
+//
+//  // compute per-edge-normal
+//  MatrixXf matEN;
+//  MatrixXf matFN;
+//  MatrixXi matEI;
+//  VectorXi vecEMAP;
+//  igl::per_edge_normals(
+//      matV, matF,
+//      static_cast<igl::PerEdgeNormalsWeightingType>(weightingType), matEN,
+//      matEI, vecEMAP);
+//
+//  // cvt back
+//  RowMajMatXf::Map(EN, matEN.rows(), matEN.cols()) = matEN;
+//  RowMajMatXi::Map(EI, matEI.rows(), matEI.cols()) = matEI;
+//  VectorXi::Map(EMAP, vecEMAP.size()) = vecEMAP;
+//  sz = matEI.rows();
+//}
 
 void IGM_remapFtoV(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res) {

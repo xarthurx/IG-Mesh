@@ -2,7 +2,7 @@
 using Rhino.Geometry;
 using System;
 
-namespace igl_GrassHopper
+namespace igmGH 
 {
     public class IGL_normals_edge : GH_Component
     {
@@ -13,7 +13,7 @@ namespace igl_GrassHopper
         public IGL_normals_edge()
           : base("IGL_NormalsEdge", "iNormals_E",
               "Compute per edge normals for a triangle mesh by weighted face normals based on different weighting schemes.",
-              "IGL+", "Normals")
+              "IG-Mesh", "02 | Properties")
         {
         }
 
@@ -58,7 +58,7 @@ namespace igl_GrassHopper
             }
 
             // call the cpp function to solve the adjacency list
-            var (en, ei, emap) = IGLRhinoCommon.Utils.getNormalsEdge(ref mesh, w);
+            var (en, ei, emap) = IGMRhinoCommon.Utils.getNormalsEdge(ref mesh, w);
 
             Grasshopper.DataTree<int> eiTree = new Grasshopper.DataTree<int>();
             for (int i = 0; i < ei.Count; i++)

@@ -91,8 +91,11 @@ void IGM_corner_normals(ON_Mesh* pMesh, const double threshold_deg,
                         ON_3dPointArray* CN);
 
 RH_C_FUNCTION
-void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
-                      float* EN, int* EI, int* EMAP, int& sz);
+void IGM_edge_normals(ON_Mesh* pMesh, int weightingType, ON_3dPointArray* EN,
+                      ON_SimpleArray<ON_2dex>* EI,
+                      ON_SimpleArray<int>* EMAP);
+// void IGM_edge_normals(float* V, int nV, int* F, int nF, int weightingType,
+//                      float* EN, int* EI, int* EMAP, int& sz);
 
 // ! --------------------------------
 // ! mapping
@@ -139,7 +142,7 @@ void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
 
 RH_C_FUNCTION
 void IGM_blue_noise_sampling_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
-                              ON_SimpleArray<int>* FI);
+                                     ON_SimpleArray<int>* FI);
 
 RH_C_FUNCTION
 void IGM_principal_curvature(ON_Mesh* pMesh, unsigned r, ON_3dPointArray* PD1,
