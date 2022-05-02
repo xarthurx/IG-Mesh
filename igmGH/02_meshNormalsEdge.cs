@@ -1,5 +1,4 @@
 ﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
 using System;
 
 namespace igmGH 
@@ -11,18 +10,21 @@ namespace igmGH
         /// Initializes the new instance of the corner_normals class.
         /// </summary>
         public IGL_normals_edge()
-          : base("IGL_NormalsEdge", "iNormals_E",
-              "Compute per edge normals for a triangle mesh by weighted face normals based on different weighting schemes.",
-              "IG-Mesh", "02 | Properties")
+          : base("Edge Normal", "iNormals_E",
+              "Compute per-edge normals for a triangle mesh by weighted face normals based on different weighting schemes.",
+              "IG-Mesh", "02|Properties")
         {
         }
+
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "input mesh to analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Input mesh to analysis.", GH_ParamAccess.item);
             pManager.AddIntegerParameter("Weighting Type", "w", "The weighting type how face normals influence edge normals: 0-uniform; 1-area average.", GH_ParamAccess.item, 1);
             pManager[1].Optional = true;
         }
@@ -32,9 +34,9 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Edge Normal", "EN", "the edge-corner normals of the input mesh's faces.", GH_ParamAccess.list);
-            pManager.AddIntegerParameter("Edge End Index into Vertex List", "EI", "the end point indices from the vertex list.", GH_ParamAccess.tree);
-            pManager.AddIntegerParameter("Edge Index", "EMAP", "the edge indices from the edge list.", GH_ParamAccess.list);
+            pManager.AddVectorParameter("Edge Normal", "EN", "The per edge normals of the input mesh.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Edge End Index into Vertex List", "EI", "The end point indices from the vertex list.", GH_ParamAccess.tree);
+            pManager.AddIntegerParameter("Edge Index", "EMAP", "The edge indices from the global edge list.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -43,7 +45,6 @@ namespace igmGH
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }

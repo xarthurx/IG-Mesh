@@ -10,10 +10,13 @@ namespace igmGH
         /// </summary>
         public IGM_normals_face()
           : base("Face Normal", "igNormals_F",
-              "Compute the per face normals of the given mesh.",
+              "Compute per-face normals of the given mesh.",
               "IG-Mesh", "02|Properties")
         {
         }
+
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.

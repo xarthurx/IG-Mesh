@@ -11,10 +11,13 @@ namespace igmGH
         /// </summary>
         public IGM_normals_corner()
           : base("Corner Normal", "igNormals_C",
-              "Compute per corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
+              "Compute per-corner normals for a triangle mesh by computing the area-weighted average of normals at incident faces whose normals deviate  less than the provided threshold.",
               "IG-Mesh", "02|Properties")
         {
         }
+
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -22,7 +25,7 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            pManager.AddNumberParameter("Degree Threshold", "t", "a threshold in degrees on sharp angles.", GH_ParamAccess.item, 10.0);
+            pManager.AddNumberParameter("Degree Threshold", "t", "A threshold in degrees on sharp angles.", GH_ParamAccess.item, 10.0);
             pManager[1].Optional = true;
         }
 
@@ -31,7 +34,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Corner Normals", "CN", "the per-corner normals of the input mesh's faces.", GH_ParamAccess.tree);
+            pManager.AddVectorParameter("Corner Normals", "CN", "The per-corner normals of the input mesh's faces.", GH_ParamAccess.tree);
         }
 
         /// <summary>

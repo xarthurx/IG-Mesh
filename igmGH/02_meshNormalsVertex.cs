@@ -10,10 +10,13 @@ namespace igmGH
         /// </summary>
         public IGM_normals_vert()
           : base("Vertex Normal", "igNormals_V",
-              "Compute the per vertex normals of the given mesh.",
+              "Compute per-vertex normals of the given mesh.",
               "IG-Mesh", "02|Properties")
         {
         }
+
+        // icon position in a category
+        public override GH_Exposure Exposure => GH_Exposure.secondary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
