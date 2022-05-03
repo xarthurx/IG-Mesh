@@ -549,20 +549,21 @@ void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
   cvtEigenVToON_Array(faceI, FI);
 }
 
-void IGM_heat_geodesic_precompute(ON_Mesh* pMesh, igl::HeatGeodesicsData<double>* geoData) {
+igl::HeatGeodesicsData<double>* IGM_heat_geodesic_precompute(ON_Mesh* pMesh) {
   MatrixXd matV;
   MatrixXi matF;
   cvtMeshToEigen(pMesh, matV, matF);
 
   double t = std::pow(igl::avg_edge_length(matV, matF), 2);
 
-  igl::heat_geodesics_precompute(matV, matF, t, *geoData);
+  igl::heat_geodesics_precompute(matV, matF, t, geoData);
 
+  return &geoData;
 }
 
 void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
-                              ON_SimpleArray<int>* gamma,
-                              ON_SimpleArray<double>* D) {
+                             ON_SimpleArray<int>* gamma,
+                             ON_SimpleArray<double>* D) {
   assert(data != nullptr && "Pre-computed data is empty!");
 
   Eigen::VectorXi gammaCpp;

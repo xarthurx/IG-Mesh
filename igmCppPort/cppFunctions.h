@@ -154,11 +154,12 @@ RH_C_FUNCTION
 void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
                               ON_SimpleArray<int>* FI);
 
+static igl::HeatGeodesicsData<double> geoData;
 
 RH_C_FUNCTION
-void IGM_heat_geodesic_precompute(ON_Mesh* pMesh, igl::HeatGeodesicsData<double>* geoData);
+igl::HeatGeodesicsData<double>* IGM_heat_geodesic_precompute(ON_Mesh* pMesh);
 
 RH_C_FUNCTION
 void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
-                              ON_SimpleArray<int>* gamma,
-                              ON_SimpleArray<double>* D);
+                             ON_SimpleArray<int>* gamma,
+                             ON_SimpleArray<double>* D);

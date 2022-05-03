@@ -6,7 +6,7 @@ namespace igmGH
 {
     public class IGM_heat_geodesic_precompute : GH_Component
     {
-        static int meshHeatCode;
+        Rhino.Geometry.Mesh heat_mesh;
         static IntPtr geoData;
 
         /// <summary>
@@ -60,11 +60,11 @@ namespace igmGH
             bool redo = false;
             if (!DA.GetData(2, ref redo)) { return; }
 
-            int newMeshHeatCode = mesh.GetHashCode();
-            if (newMeshHeatCode != meshHeatCode || redo || geoData == IntPtr.Zero)
+            var meshSame = (heat_mesh != null && Rhino.Geometry.InstanceReferenceGeometry.GeometryEquals(mesh, heat_mesh));
+            if (redo || geoData == IntPtr.Zero || !meshSame)
             {
                 geoData = IGMRhinoCommon.Utils.getHeatGeodesicPrecomputedData(ref mesh);
-                meshHeatCode = newMeshHeatCode;
+                heat_mesh = mesh;
             }
 
             var D = IGMRhinoCommon.Utils.getHeatGeodesicDist(geoData, ref gamma);
@@ -72,6 +72,7 @@ namespace igmGH
             // output
             DA.SetDataList(0, D);
         }
+
 
         /// <summary>
         /// Provides an Icon for the component.

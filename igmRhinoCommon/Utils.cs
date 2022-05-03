@@ -767,13 +767,12 @@ namespace IGMRhinoCommon
             return (SD, FI, CP);
         }
 
-        public static void getHeatGeodesicPrecomputedData(ref Mesh rMesh, ref GeoData geoData)
+        public static IntPtr getHeatGeodesicPrecomputedData(ref Mesh rMesh)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
-            IntPtr geoDataCpp = Rhino.Runtime.InteropWrappers.SimpleArraySurfacePointer();
 
-            CppIGM.IGM_heat_geodesic_precompute(pMesh, geoData);
+            return CppIGM.IGM_heat_geodesic_precompute(pMesh);
         }
 
         public static List<double> getHeatGeodesicDist(IntPtr geoData, ref List<int> gamma)
