@@ -163,3 +163,10 @@ RH_C_FUNCTION
 void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
                              ON_SimpleArray<int>* gamma,
                              ON_SimpleArray<double>* D);
+
+RH_C_FUNCTION
+void IGM_quad_planarity(ON_Mesh* pMesh, ON_SimpleArray<double>* P);
+
+RH_C_FUNCTION
+void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres,
+                             ON_3dPointArray* Vout);

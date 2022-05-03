@@ -36,7 +36,9 @@
 #include <igl/per_edge_normals.h>
 #include <igl/per_face_normals.h>
 #include <igl/per_vertex_normals.h>
+#include <igl/planarize_quad_mesh.h>
 #include <igl/principal_curvature.h>
+//#include <igl/quad_planarity.h>
 #include <igl/random_points_on_mesh.h>
 #include <igl/read_triangle_mesh.h>
 #include <igl/setdiff.h>

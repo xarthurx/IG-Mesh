@@ -28,7 +28,8 @@ void cvtOn_PtArrayToEigen(ON_3dPointArray* V, MatrixXd& matV) {
   }
 }
 
-void cvtMeshToEigen(ON_Mesh* pMesh, MatrixXd& matV, MatrixXi& matF) {
+void cvtMeshToEigen(ON_Mesh* pMesh, MatrixXd& matV, MatrixXi& matF,
+                    bool quad = false) {
   auto& mV = pMesh->m_dV;
   if (!pMesh->HasDoublePrecisionVertices()) {
     mV = pMesh->m_V;
@@ -40,9 +41,16 @@ void cvtMeshToEigen(ON_Mesh* pMesh, MatrixXd& matV, MatrixXi& matF) {
   }
 
   auto& mF = pMesh->m_F;
-  matF.resize(mF.Count(), 3);
-  for (size_t i = 0; i < mF.Count(); i++) {
-    matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
+  if (!quad) {
+    matF.resize(mF.Count(), 3);
+    for (size_t i = 0; i < mF.Count(); i++) {
+      matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2];
+    }
+  } else {
+    matF.resize(mF.Count(), 4);
+    for (size_t i = 0; i < mF.Count(); i++) {
+      matF.row(i) << mF[i].vi[0], mF[i].vi[1], mF[i].vi[2], mF[i].vi[3];
+    }
   }
 }
 
@@ -573,4 +581,50 @@ void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
   Eigen::VectorXd disCpp;
   igl::heat_geodesics_solve(*data, gammaCpp, disCpp);
   cvtEigenVToON_Array(disCpp, D);
+}
+
+void IGM_quad_planarity(ON_Mesh* pMesh, ON_SimpleArray<double>* P) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF, true);
+
+  VectorXd Pcpp;
+  igl::quad_planarity(matV, matF, Pcpp);
+
+  cvtEigenVToON_Array(Pcpp, P);
+}
+
+void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres,
+                             ON_3dPointArray* Vout) {
+  MatrixXd VQC;
+  MatrixXi FQC;
+  Eigen::MatrixXi FQCtri;
+  Eigen::MatrixXd PQC0, PQC1, PQC2, PQC3;
+
+  cvtMeshToEigen(pMesh, VQC, FQC, true);
+
+  // Planarized quad mesh
+  Eigen::MatrixXd VQCplan;
+  Eigen::MatrixXi FQCtriplan;
+  Eigen::MatrixXd PQC0plan, PQC1plan, PQC2plan, PQC3plan;
+
+  // Convert it in a triangle mesh
+  FQCtri.resize(2 * FQC.rows(), 3);
+  FQCtri << FQC.col(0), FQC.col(1), FQC.col(2), FQC.col(2), FQC.col(3),
+      FQC.col(0);
+  igl::slice(VQC, FQC.col(0).eval(), 1, PQC0);
+  igl::slice(VQC, FQC.col(1).eval(), 1, PQC1);
+  igl::slice(VQC, FQC.col(2).eval(), 1, PQC2);
+  igl::slice(VQC, FQC.col(3).eval(), 1, PQC3);
+
+  // Planarize it
+  igl::planarize_quad_mesh(VQC, FQC, 100, 0.005, VQCplan);
+
+  // Convert the planarized mesh to triangles
+  igl::slice(VQCplan, FQC.col(0).eval(), 1, PQC0plan);
+  igl::slice(VQCplan, FQC.col(1).eval(), 1, PQC1plan);
+  igl::slice(VQCplan, FQC.col(2).eval(), 1, PQC2plan);
+  igl::slice(VQCplan, FQC.col(3).eval(), 1, PQC3plan);
+
+
 }
