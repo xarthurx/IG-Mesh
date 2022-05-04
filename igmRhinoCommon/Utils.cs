@@ -785,5 +785,28 @@ namespace IGMRhinoCommon
 
             return D;
         }
+
+        public static List<double> getQuadPlanarity(ref Mesh rMesh)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+            var PlanarityCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
+
+            CppIGM.IGM_quad_planarity(pMesh, PlanarityCpp.NonConstPointer());
+
+            List<double> P = new List<double>(PlanarityCpp.ToArray());
+
+            return P;
+        }
+
+        public static void planarizeQuadMesh(ref Mesh rMesh, int maxIter, double thres)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            // notice: we will modify the mesh, so use nonConst ptr.
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            CppIGM.IGM_planarize_quad_mesh(pMesh, maxIter, thres);
+        }
+
     }
 }

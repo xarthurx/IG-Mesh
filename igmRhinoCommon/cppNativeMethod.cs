@@ -182,5 +182,18 @@ namespace IGMRhinoCommon
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_heat_geodesic_solve(IntPtr data, IntPtr gamma, IntPtr D);
+
+        /// <summary>
+        /// compute planarity of a quad mesh 
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_quad_planarity(IntPtr pMesh, IntPtr P);
+
+        /// <summary>
+        /// planarize a quad mesh 
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_planarize_quad_mesh(IntPtr pMesh, int maxIter, double thres);
     }
+
 }

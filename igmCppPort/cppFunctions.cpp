@@ -594,37 +594,29 @@ void IGM_quad_planarity(ON_Mesh* pMesh, ON_SimpleArray<double>* P) {
   cvtEigenVToON_Array(Pcpp, P);
 }
 
-void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres,
-                             ON_3dPointArray* Vout) {
+void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres) {
+  // original quad mesh
   MatrixXd VQC;
   MatrixXi FQC;
   Eigen::MatrixXi FQCtri;
-  Eigen::MatrixXd PQC0, PQC1, PQC2, PQC3;
 
+  // get the quad mesh
   cvtMeshToEigen(pMesh, VQC, FQC, true);
 
   // Planarized quad mesh
   Eigen::MatrixXd VQCplan;
-  Eigen::MatrixXi FQCtriplan;
-  Eigen::MatrixXd PQC0plan, PQC1plan, PQC2plan, PQC3plan;
+  igl::planarize_quad_mesh(VQC, FQC, maxIter, thres, VQCplan);
 
-  // Convert it in a triangle mesh
-  FQCtri.resize(2 * FQC.rows(), 3);
-  FQCtri << FQC.col(0), FQC.col(1), FQC.col(2), FQC.col(2), FQC.col(3),
-      FQC.col(0);
-  igl::slice(VQC, FQC.col(0).eval(), 1, PQC0);
-  igl::slice(VQC, FQC.col(1).eval(), 1, PQC1);
-  igl::slice(VQC, FQC.col(2).eval(), 1, PQC2);
-  igl::slice(VQC, FQC.col(3).eval(), 1, PQC3);
+  // convert back into the mesh
+  auto& mV = pMesh->m_V;
+  for (size_t i = 0; i < mV.Count(); i++) {
+    mV[i].Set(VQCplan(i, 0), VQCplan(i, 1), VQCplan(i, 2));
+  }
 
-  // Planarize it
-  igl::planarize_quad_mesh(VQC, FQC, 100, 0.005, VQCplan);
-
-  // Convert the planarized mesh to triangles
-  igl::slice(VQCplan, FQC.col(0).eval(), 1, PQC0plan);
-  igl::slice(VQCplan, FQC.col(1).eval(), 1, PQC1plan);
-  igl::slice(VQCplan, FQC.col(2).eval(), 1, PQC2plan);
-  igl::slice(VQCplan, FQC.col(3).eval(), 1, PQC3plan);
-
-
+  if (pMesh->HasDoublePrecisionVertices()) {
+    auto& mV = pMesh->m_dV;
+    for (size_t i = 0; i < mV.Count(); i++) {
+      mV[i].Set(VQCplan(i, 0), VQCplan(i, 1), VQCplan(i, 2));
+    }
+  }
 }

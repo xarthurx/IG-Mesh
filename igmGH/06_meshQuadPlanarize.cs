@@ -3,14 +3,14 @@ using System;
 
 namespace igmGH
 {
-    public class IGM_random_points_on_mesh : GH_Component
+    public class IGM_quad_planarize : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_random_points_on_mesh()
-          : base("Random Pt On Mesh", "igRndPt",
-              "Randomly sample N points on surface of the given mesh with random/uniform distribution.",
+        public IGM_quad_planarize()
+          : base("Planarize Quad Mesh", "igQuadPlanarize",
+              "Planarize the quad faces in a quad mesh.",
               "IG-Mesh", "06|Util")
         {
         }
@@ -18,7 +18,7 @@ namespace igmGH
         /// <summary>
         /// icon position in a category
         /// </summary>
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -26,9 +26,8 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Number", "N", "Number of sampled points.", GH_ParamAccess.item, 0);
-            // the uniform method uses a blue-noise (Poisson's disk) approach to sample the points.
-            pManager.AddIntegerParameter("Method", "M", "The method used for sampling: 0-random; 1-uniform.", GH_ParamAccess.item, 0);
+            pManager.AddIntegerParameter("Iter", "I", "Max iteration for planarization.", GH_ParamAccess.item, 100);
+            pManager.AddNumberParameter("Thres", "T", "Threshould to stop the planarization.", GH_ParamAccess.item, 0.005);
 
             pManager[1].Optional = true;
             pManager[2].Optional = true;
@@ -39,8 +38,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddPointParameter("Sampled Points", "P", "The N sampled points.", GH_ParamAccess.list);
-            pManager.AddIntegerParameter("Face Index", "FI", "The corresponding face indices of the sampled points.", GH_ParamAccess.list);
+            pManager.AddMeshParameter("Mesh", "M", "THe planarized quad mesh.", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -54,18 +52,17 @@ namespace igmGH
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            int N = 1;
-            if (!DA.GetData(1, ref N) || N == 0) { return; }
+            int maxIter = 100;
+            if (!DA.GetData(1, ref maxIter) || maxIter < 0) { return; }
+            double thres = 0.005;
+            if (!DA.GetData(2, ref thres) || thres <= 0) { return; }
 
-            int M = 0;
-            if (!DA.GetData(2, ref M)) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (p, fi) = IGMRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N, M);
+            IGMRhinoCommon.Utils.planarizeQuadMesh(ref mesh, maxIter, thres);
 
             // output
-            DA.SetDataList(0, p);
-            DA.SetDataList(1, fi);
+            DA.SetData(0, mesh);
         }
 
         /// <summary>
@@ -86,7 +83,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("5819dc11-ccff-41eb-b126-96c34911ddc1"); }
+            get { return new Guid("923f1d6e-e4b0-46e2-b913-e78545bfd7ab"); }
         }
     }
 }
