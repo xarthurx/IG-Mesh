@@ -50,8 +50,11 @@ RH_C_FUNCTION
 void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
-void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
-                                   int* adjVFI, int& sz);
+void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
+                                   ON_SimpleArray<int>* adjVFI,
+                                   ON_SimpleArray<int>* adjNum);
+// void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
+//                                   int* adjVFI, int& sz);
 
 RH_C_FUNCTION
 void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI);
@@ -164,9 +167,8 @@ void IGM_heat_geodesic_solve(igl::HeatGeodesicsData<double>* data,
                              ON_SimpleArray<int>* gamma,
                              ON_SimpleArray<double>* D);
 
-
 // ! --------------------------------
-// ! Quad Mesh Tool 
+// ! Quad Mesh Tool
 // ! --------------------------------
 RH_C_FUNCTION
 void IGM_quad_planarity(ON_Mesh* pMesh, ON_SimpleArray<double>* P);

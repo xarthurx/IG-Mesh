@@ -165,38 +165,55 @@ void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
                                     });
 }
 
-void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
-                                   int* adjVFI, int& sz) {
+void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
+                                   ON_SimpleArray<int>* adjVFI,
+                                   ON_SimpleArray<int>* adjNum) {
+  Eigen::MatrixXd matV;
   Eigen::MatrixXi matF;
-  cvtArrayToEigenXt(F, nF, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
   vector<vector<int>> VF, VFI;
-  igl::vertex_triangle_adjacency(nV, matF, VF, VFI);
+  igl::vertex_triangle_adjacency(matV, matF, VF, VFI);
 
-  vector<int> tmpVF(0), tmpVFI(0);
-  for_each(VF.begin(), VF.end(), [&](vector<int>& vec) {
-    tmpVF.push_back(vec.size());  // size as indicator
-    std::copy(vec.begin(), vec.end(),
-              std::back_inserter(tmpVF));  // copy all values
-  });
-
-  std::copy(tmpVF.begin(), tmpVF.end(), adjVF);
-
-  for_each(VFI.begin(), VFI.end(), [&](vector<int>& vec) {
-    tmpVF.push_back(vec.size());  // size as indicator
-    std::copy(vec.begin(), vec.end(),
-              std::back_inserter(tmpVFI));  // copy all values
-  });
-
-  std::copy(tmpVFI.begin(), tmpVFI.end(), adjVFI);
-
-  // the total # of neighbouring vert + the # of vert (as indicator of each
-  // vector's size)
-  sz = VF.size() + std::accumulate(VF.begin(), VF.end(), (size_t)0,
-                                   [&](int res, vector<int>& vec) {
-                                     return res + vec.size();
-                                   });  // same for VF and VFI
+  for (size_t i = 0; i < VF.size(); i++) {
+    adjVF->Append(VF[i].size(), VF[i].data());
+    adjVFI->Append(VFI[i].size(), VFI[i].data());
+    adjNum->Append(VF[i].size());
+  }
 }
+
+// void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
+//                                   int* adjVFI, int& sz) {
+//  Eigen::MatrixXi matF;
+//  cvtArrayToEigenXt(F, nF, matF);
+//
+//  vector<vector<int>> VF, VFI;
+//  igl::vertex_triangle_adjacency(nV, matF, VF, VFI);
+//
+//  vector<int> tmpVF(0), tmpVFI(0);
+//  for_each(VF.begin(), VF.end(), [&](vector<int>& vec) {
+//    tmpVF.push_back(vec.size());  // size as indicator
+//    std::copy(vec.begin(), vec.end(),
+//              std::back_inserter(tmpVF));  // copy all values
+//  });
+//
+//  std::copy(tmpVF.begin(), tmpVF.end(), adjVF);
+//
+//  for_each(VFI.begin(), VFI.end(), [&](vector<int>& vec) {
+//    tmpVF.push_back(vec.size());  // size as indicator
+//    std::copy(vec.begin(), vec.end(),
+//              std::back_inserter(tmpVFI));  // copy all values
+//  });
+//
+//  std::copy(tmpVFI.begin(), tmpVFI.end(), adjVFI);
+//
+//  // the total # of neighbouring vert + the # of vert (as indicator of each
+//  // vector's size)
+//  sz = VF.size() + std::accumulate(VF.begin(), VF.end(), (size_t)0,
+//                                   [&](int res, vector<int>& vec) {
+//                                     return res + vec.size();
+//                                   });  // same for VF and VFI
+//}
 
 void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
   MatrixXi matF;

@@ -36,7 +36,8 @@ namespace IGMRhinoCommon
         /// Compute mesh vertex-triangle adjacency list
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_vertex_triangle_adjacency(int nV, IntPtr F, int nF, IntPtr adjVTFromCpp, IntPtr adjVTIFromCpp, out int sz);
+        internal static extern void IGM_vertex_triangle_adjacency(IntPtr pMesh, IntPtr cppAdjVT, IntPtr cppAdjVTI, IntPtr cppAdjNum);
+        //internal static extern void IGM_vertex_triangle_adjacency(int nV, IntPtr F, int nF, IntPtr adjVTFromCpp, IntPtr adjVTIFromCpp, out int sz);
 
         /// <summary>
         /// Compute mesh triangle-triangle adjacency list

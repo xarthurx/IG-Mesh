@@ -29,7 +29,7 @@ namespace IGMRhinoCommon
     public static class Utils
     {
 
-        public static bool getMesh(string fileName, out Mesh rMesh)
+        public static bool GetMesh(string fileName, out Mesh rMesh)
         {
             rMesh = new Mesh();
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rMesh);
@@ -38,26 +38,35 @@ namespace IGMRhinoCommon
             return res;
         }
 
-        public static bool saveMesh(ref Mesh rMesh, string fileName)
+        public static bool SaveMesh(ref Mesh rMesh, string fileName)
         {
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rMesh);
             return CppIGM.IGM_write_triangle_mesh(fileName, pMesh);
 
         }
 
-        public static (List<Point3d>, List<List<int>>, Point3d, double) getMeshInfo(ref Mesh rhinoMesh)
+        public static (List<Point3d>, List<List<int>>, Point3d, double) GetMeshInfo(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // mesh V, F
             var V = new List<Point3d>(rhinoMesh.Vertices.ToPoint3dArray());
-            var mF = rhinoMesh.Faces.ToIntArray(true);
+            //var mF = rhinoMesh.Faces.ToIntArray(true);
             List<List<int>> F = new List<List<int>>();
-            for (int i = 0; i < mF.Length / 3; i++)
+            foreach (var f in rhinoMesh.Faces)
             {
-                F.Add(new List<int> { mF[i * 3], mF[i * 3 + 1], mF[i * 3 + 2] });
+                // check if quad mesh or not
+                if (f.C == f.D)
+                    F.Add(new List<int> { f.A, f.B, f.C });
+                else
+                    F.Add(new List<int> { f.A, f.B, f.C, f.D });
+
             }
+            //for (int i = 0; i < mF.Length / 3; i++)
+            //{
+            //    F.Add(new List<int> { mF[i * 3], mF[i * 3 + 1], mF[i * 3 + 2] });
+            //}
 
             var Ccpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
             // igl for mesh centroid
@@ -71,7 +80,7 @@ namespace IGMRhinoCommon
             return (V, F, cen, vol);
         }
 
-        public static List<double> remapFtoV(ref Mesh rMesh, List<double> scalarV)
+        public static List<double> RemapFtoV(ref Mesh rMesh, List<double> scalarV)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -89,7 +98,7 @@ namespace IGMRhinoCommon
             return mappedV;
         }
 
-        public static List<double> remapVtoF(ref Mesh rMesh, List<double> scalarF)
+        public static List<double> RemapVtoF(ref Mesh rMesh, List<double> scalarF)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -107,7 +116,7 @@ namespace IGMRhinoCommon
             return mappedF;
         }
 
-        public static List<List<int>> getAdjacencyLst(ref Mesh rhinoMesh)
+        public static List<List<int>> GetAdjacencyLst(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
 
@@ -125,8 +134,7 @@ namespace IGMRhinoCommon
             IntPtr adjLstFromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * numEle);
 
             // call the c++ func
-            int sz;
-            CppIGM.IGM_adjacency_list(meshF, nF, adjLstFromCpp, out sz);
+            CppIGM.IGM_adjacency_list(meshF, nF, adjLstFromCpp, out int sz);
 
             int[] processedAdjLst = new int[numEle];
             Marshal.Copy(adjLstFromCpp, processedAdjLst, 0, numEle);
@@ -154,7 +162,7 @@ namespace IGMRhinoCommon
             return adjLst;
         }
 
-        public static (List<List<int>>, List<List<int>>) getAdjacencyTT(ref Mesh rhinoMesh)
+        public static (List<List<int>>, List<List<int>>) GetAdjacencyTT(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
             //IntPtr p_mesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rhinoMesh);
@@ -199,66 +207,84 @@ namespace IGMRhinoCommon
             return (adjTT, adjTTI);
         }
 
-        public static (List<List<int>>, List<List<int>>) getAdjacencyVT(ref Mesh rhinoMesh)
+        public static (List<List<int>>, List<List<int>>) GetAdjacencyVT(ref Mesh rMesh)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
-            // initialize the pointer and pass data
-            int nV = rhinoMesh.Vertices.Count;
-            int nF = rhinoMesh.Faces.Count;
+            var cppAdjVT = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var cppAdjVTI = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var cppAdjNum = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
 
-            int nEle = nV * 20; // assume vertex valance at most 20
+            //// initialize the pointer and pass data
+            //int nV = rhinoMesh.Vertices.Count;
+            //int nF = rhinoMesh.Faces.Count;
+
+            //int nEle = nV * 20; // assume vertex valance at most 20
 
             // copy data into the IntPtr
             //float[] V = rhino_mesh.Vertices.ToFloatArray();
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
+            //int[] F = rhinoMesh.Faces.ToIntArray(true);
+            //IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
+            //Marshal.Copy(F, 0, meshF, F.Length);
 
-            // assume each vert has most 10 neighbours
-            IntPtr adjVT_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
-            IntPtr adjVTI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
+            //// assume each vert has most 10 neighbours
+            //IntPtr adjVT_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
+            //IntPtr adjVTI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
 
             // call the c++ func
-            int sz;
-            CppIGM.IGM_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out sz);
+            CppIGM.IGM_vertex_triangle_adjacency(pMesh, cppAdjVT.NonConstPointer(), cppAdjVTI.NonConstPointer(), cppAdjNum.NonConstPointer());
+            //CppIGM.IGM_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out int sz);
 
-            int[] resVT = new int[nEle];
-            int[] resVTI = new int[nEle];
-            Marshal.Copy(adjVT_cpp, resVT, 0, nEle);
-            Marshal.Copy(adjVTI_cpp, resVTI, 0, nEle);
+            //int[] resVT = new int[nEle];
+            //int[] resVTI = new int[nEle];
+            //Marshal.Copy(adjVT_cpp, resVT, 0, nEle);
+            //Marshal.Copy(adjVTI_cpp, resVTI, 0, nEle);
 
-            // free memory
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(adjVT_cpp);
-            Marshal.FreeHGlobal(adjVTI_cpp);
+            //// free memory
+            //Marshal.FreeHGlobal(meshF);
+            //Marshal.FreeHGlobal(adjVT_cpp);
+            //Marshal.FreeHGlobal(adjVTI_cpp);
 
             List<List<int>> adjVT = new List<List<int>>();
             List<List<int>> adjVTI = new List<List<int>>();
-            int cnt = 0;
-            while (cnt < sz)
-            {
-                int num = resVT[cnt];
-                cnt++;
 
-                List<int> tmpVT = new List<int>();
-                List<int> tmpVTI = new List<int>();
-                for (int i = 0; i < num; i++)
-                {
-                    tmpVT.Add(resVT[cnt]);
-                    tmpVTI.Add(resVTI[cnt]);
-                    cnt++;
-                }
-                adjVT.Add(tmpVT);
-                adjVTI.Add(tmpVTI);
+            // convert to c# list
+            int idCnt = 0;
+            var vt = new List<int>(cppAdjVT.ToArray());
+            var vti = new List<int>(cppAdjVTI.ToArray());
+            var adjNum = new List<int>(cppAdjNum.ToArray());
+            foreach (var num in adjNum)
+            {
+                adjVT.Add(new List<int>(vt.GetRange(idCnt, num)));
+                adjVTI.Add(new List<int>(vti.GetRange(idCnt, num)));
+                idCnt += num;
             }
+
+            //int cnt = 0;
+            //while (cnt < sz)
+            //{
+            //    int num = resVT[cnt];
+            //    cnt++;
+
+            //    List<int> tmpVT = new List<int>();
+            //    List<int> tmpVTI = new List<int>();
+            //    for (int i = 0; i < num; i++)
+            //    {
+            //        tmpVT.Add(resVT[cnt]);
+            //        tmpVTI.Add(resVTI[cnt]);
+            //        cnt++;
+            //    }
+            //    adjVT.Add(tmpVT);
+            //    adjVTI.Add(tmpVTI);
+            //}
 
             // compute from cpp side.
             return (adjVT, adjVTI);
 
         }
 
-        public static List<List<int>> getBoundaryLoop(ref Mesh rhinoMesh)
+        public static List<List<int>> GetBoundaryLoop(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
 
@@ -276,8 +302,7 @@ namespace IGMRhinoCommon
             IntPtr boundLoopFromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * numEle);
 
             // call the c++ func
-            int sz;
-            CppIGM.IGM_boundary_loop(meshF, nF, boundLoopFromCpp, out sz);
+            CppIGM.IGM_boundary_loop(meshF, nF, boundLoopFromCpp, out int sz);
 
             int[] processedBoundLoop = new int[numEle];
             Marshal.Copy(boundLoopFromCpp, processedBoundLoop, 0, numEle);
@@ -305,7 +330,7 @@ namespace IGMRhinoCommon
             return boundLoop;
         }
 
-        public static (List<Line>, List<List<int>>, List<int>) getBoundaryEdge(ref Mesh rhinoMesh)
+        public static (List<Line>, List<List<int>>, List<int>) GetBoundaryEdge(ref Mesh rhinoMesh)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
 
@@ -323,8 +348,7 @@ namespace IGMRhinoCommon
             IntPtr bndTriIdx = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nF);
 
             // call the c++ func
-            int sz;
-            CppIGM.IGM_boundary_facet(meshF, nF, bndEdge, bndTriIdx, out sz);
+            CppIGM.IGM_boundary_facet(meshF, nF, bndEdge, bndTriIdx, out int sz);
 
             int[] resBndEdge = new int[nF * 2];
             Marshal.Copy(bndEdge, resBndEdge, 0, nF * 2);
@@ -351,7 +375,7 @@ namespace IGMRhinoCommon
             return (edgeGeo, boundEdge, boundTriIdx);
         }
 
-        public static List<Point3d> getBarycenter(ref Mesh rhinoMesh)
+        public static List<Point3d> GetBarycenter(ref Mesh rhinoMesh)
         {
             //initialize the pointer and pass data
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -372,7 +396,7 @@ namespace IGMRhinoCommon
             return BC;
         }
 
-        public static List<Vector3d> getNormalsVert(ref Mesh rhinoMesh)
+        public static List<Vector3d> GetNormalsVert(ref Mesh rhinoMesh)
         {
 
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -393,7 +417,7 @@ namespace IGMRhinoCommon
             return VN;
         }
 
-        public static List<Vector3d> getNormalsFace(ref Mesh rhinoMesh)
+        public static List<Vector3d> GetNormalsFace(ref Mesh rhinoMesh)
         {
 
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -414,7 +438,7 @@ namespace IGMRhinoCommon
             return FN;
         }
 
-        public static List<List<Vector3d>> getNormalsCorner(ref Mesh rhinoMesh, double thre_deg)
+        public static List<List<Vector3d>> GetNormalsCorner(ref Mesh rhinoMesh, double thre_deg)
         {
 
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -437,7 +461,7 @@ namespace IGMRhinoCommon
 
         }
 
-        public static (List<Vector3d>, List<List<int>>, List<int>) getNormalsEdge(ref Mesh rhinoMesh, int wT)
+        public static (List<Vector3d>, List<List<int>>, List<int>) GetNormalsEdge(ref Mesh rhinoMesh, int wT)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
@@ -464,57 +488,10 @@ namespace IGMRhinoCommon
 
             var EMAP = new List<int>(EMAPcpp.ToArray());
 
-
-
-            //initialize the pointer and pass data
-            //int nV = rhinoMesh.Vertices.Count;
-            //int nF = rhinoMesh.Faces.Count;
-            //int nE = rhinoMesh.TopologyEdges.Count * 2;
-
-            ////// copy data into the intptr
-            ////float[] v = rhinomesh.vertices.tofloatarray();
-            ////intptr meshv = marshal.allochglobal(marshal.sizeof(typeof(float)) * v.length);
-            ////marshal.copy(v, 0, meshv, v.length);
-
-            ////int[] f = rhinomesh.faces.tointarray(true);
-            ////intptr meshf = marshal.allochglobal(marshal.sizeof(typeof(int)) * f.length);
-            ////marshal.copy(f, 0, meshf, f.length);
-
-            ////// call the cpp func
-            ////intptr en_cpp = marshal.allochglobal(marshal.sizeof(typeof(float)) * 3 * ne);
-            ////intptr ei_cpp = marshal.allochglobal(marshal.sizeof(typeof(int)) * 2 * ne);
-            ////intptr emap_cpp = marshal.allochglobal(marshal.sizeof(typeof(int)) * ne);
-
-            //int sz;
-            //CppIGM.IGM_edge_normals(meshV, nV, meshF, nF, wT, EN_cpp, EI_cpp, EMAP_cpp, out sz);
-
-            //float[] resEN = new float[nE * 3];
-            //int[] resEI = new int[nE * 2];
-            //int[] resEMAP = new int[nE];
-            //Marshal.Copy(EN_cpp, resEN, 0, nE * 3);
-            //Marshal.Copy(EMAP_cpp, resEMAP, 0, nE);
-
-            //if (meshV != IntPtr.Zero) Marshal.FreeHGlobal(meshV);
-            //if (meshF != IntPtr.Zero) Marshal.FreeHGlobal(meshF);
-            //if (EN_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EN_cpp);
-            //if (EI_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EI_cpp);
-            //if (EMAP_cpp != IntPtr.Zero) Marshal.FreeHGlobal(EMAP_cpp);
-
-            // send back to RhinoCommon type
-            //List<Vector3d> EN = new List<Vector3d>();
-            //List<List<int>> EI = new List<List<int>>();
-            //List<int> EMAP = new List<int>(EMAPcpp);
-
-            //for (int i = 0; i < sz; i++)
-            //{
-            //    EN.Add(new Vector3d(resEN[i * 3], resEN[i * 3 + 1], resEN[i * 3 + 2]));
-            //    EI.Add(new List<int> { resEI[i * 2], resEI[i * 2 + 1] });
-            //}
-
             return (EN, EI, EMAP);
         }
 
-        public static List<double> getConstrainedScalar(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val)
+        public static List<double> GetConstrainedScalar(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             if (con_idx.Count != con_val.Count) throw new OverflowException();
@@ -535,7 +512,7 @@ namespace IGMRhinoCommon
             return scalarV;
         }
 
-        public static List<List<Point3d>> getIsolineFromScalar(ref Mesh rMesh, ref List<double> meshScalar, ref List<double> iso_t)
+        public static List<List<Point3d>> GetIsolineFromScalar(ref Mesh rMesh, ref List<double> meshScalar, ref List<double> iso_t)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
 
@@ -565,7 +542,7 @@ namespace IGMRhinoCommon
             return isoP;
         }
 
-        public static (List<List<Point3d>>, List<double>) getIsolinePts(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val, ref List<double> iso_t)
+        public static (List<List<Point3d>>, List<double>) GetIsolinePts(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val, ref List<double> iso_t)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             if (con_idx.Count != con_val.Count) throw new OverflowException();
@@ -600,7 +577,7 @@ namespace IGMRhinoCommon
         }
 
 
-        public static List<float> getLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val)
+        public static List<float> GetLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val)
         {
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
 
@@ -646,7 +623,7 @@ namespace IGMRhinoCommon
             return laplacianV;
         }
 
-        public static (List<Point3d> P, List<int> FI) getRandomPointsOnMesh(ref Mesh rhinoMesh, int N, int M)
+        public static (List<Point3d> P, List<int> FI) GetRandomPointsOnMesh(ref Mesh rhinoMesh, int N, int M)
         {
 
             if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
@@ -668,7 +645,7 @@ namespace IGMRhinoCommon
             return (P, FI);
         }
 
-        public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2) getPrincipalCurvature(ref Mesh rMesh, uint r)
+        public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2) GetPrincipalCurvature(ref Mesh rMesh, uint r)
         {
 
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
@@ -705,7 +682,7 @@ namespace IGMRhinoCommon
             return (PD1, PD2, PV1, PV2);
         }
 
-        public static List<double> getGaussianCurvature(ref Mesh rMesh)
+        public static List<double> GetGaussianCurvature(ref Mesh rMesh)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -718,7 +695,7 @@ namespace IGMRhinoCommon
             return K;
         }
 
-        public static List<double> getFastWindingNumber(ref Mesh rMesh, ref List<Point3d> Q)
+        public static List<double> GetFastWindingNumber(ref Mesh rMesh, ref List<Point3d> Q)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -740,7 +717,7 @@ namespace IGMRhinoCommon
             return W;
         }
 
-        public static (List<double> SD, List<int> FI, List<Point3d> CP) getSignedDistance(ref Mesh rMesh, ref List<Point3d> Q, int signed_type)
+        public static (List<double> SD, List<int> FI, List<Point3d> CP) GetSignedDistance(ref Mesh rMesh, ref List<Point3d> Q, int signed_type)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -767,7 +744,7 @@ namespace IGMRhinoCommon
             return (SD, FI, CP);
         }
 
-        public static IntPtr getHeatGeodesicPrecomputedData(ref Mesh rMesh)
+        public static IntPtr GetHeatGeodesicPrecomputedData(ref Mesh rMesh)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -775,7 +752,7 @@ namespace IGMRhinoCommon
             return CppIGM.IGM_heat_geodesic_precompute(pMesh);
         }
 
-        public static List<double> getHeatGeodesicDist(IntPtr geoData, ref List<int> gamma)
+        public static List<double> GetHeatGeodesicDist(IntPtr geoData, ref List<int> gamma)
         {
             var gammaCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayInt(gamma);
             var disCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
@@ -786,7 +763,7 @@ namespace IGMRhinoCommon
             return D;
         }
 
-        public static List<double> getQuadPlanarity(ref Mesh rMesh)
+        public static List<double> GetQuadPlanarity(ref Mesh rMesh)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -799,7 +776,7 @@ namespace IGMRhinoCommon
             return P;
         }
 
-        public static void planarizeQuadMesh(ref Mesh rMesh, int maxIter, double thres)
+        public static void PlanarizeQuadMesh(ref Mesh rMesh, int maxIter, double thres)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             // notice: we will modify the mesh, so use nonConst ptr.
