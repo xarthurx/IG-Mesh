@@ -63,11 +63,11 @@ namespace igmGH
             var meshSame = (heat_mesh != null && Rhino.Geometry.InstanceReferenceGeometry.GeometryEquals(mesh, heat_mesh));
             if (redo || geoData == IntPtr.Zero || !meshSame)
             {
-                geoData = IGMRhinoCommon.Utils.getHeatGeodesicPrecomputedData(ref mesh);
+                geoData = IGMRhinoCommon.Utils.GetHeatGeodesicPrecomputedData(ref mesh);
                 heat_mesh = mesh;
             }
 
-            var D = IGMRhinoCommon.Utils.getHeatGeodesicDist(geoData, ref gamma);
+            var D = IGMRhinoCommon.Utils.GetHeatGeodesicDist(geoData, ref gamma);
 
             // output
             DA.SetDataList(0, D);

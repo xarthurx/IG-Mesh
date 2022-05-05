@@ -46,7 +46,7 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var res = IGMRhinoCommon.Utils.getBarycenter(ref mesh);
+            var res = IGMRhinoCommon.Utils.GetBarycenter(ref mesh);
 
             // output
             DA.SetDataList(0, res);

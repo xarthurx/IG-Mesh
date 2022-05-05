@@ -63,7 +63,7 @@ namespace igmGH
             }
 
             // call the cpp function to solve the adjacency list
-            var isoPts = IGMRhinoCommon.Utils.getIsolineFromScalar(ref mesh, ref mesh_scalar, ref iso_t);
+            var isoPts = IGMRhinoCommon.Utils.GetIsolineFromScalar(ref mesh, ref mesh_scalar, ref iso_t);
 
             // construct the index & pt tree from the adjacency list
             Grasshopper.DataTree<Point3d> ptTree = new Grasshopper.DataTree<Point3d>();

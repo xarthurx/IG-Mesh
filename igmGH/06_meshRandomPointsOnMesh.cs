@@ -61,7 +61,7 @@ namespace igmGH
             if (!DA.GetData(2, ref M)) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (p, fi) = IGMRhinoCommon.Utils.getRandomPointsOnMesh(ref mesh, N, M);
+            var (p, fi) = IGMRhinoCommon.Utils.GetRandomPointsOnMesh(ref mesh, N, M);
 
             // output
             DA.SetDataList(0, p);

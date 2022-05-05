@@ -48,7 +48,7 @@ namespace igmGH
             if (scalarF.Count != mesh.Vertices.Count) { return; }
 
             // call the cpp function to solve the adjacency list
-            var sf = IGMRhinoCommon.Utils.remapVtoF(ref mesh, scalarF);
+            var sf = IGMRhinoCommon.Utils.RemapVtoF(ref mesh, scalarF);
 
             // output
             DA.SetDataList(0, sf);

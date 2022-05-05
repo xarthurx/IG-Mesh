@@ -59,7 +59,7 @@ namespace igmGH
 
 
             // call the cpp function to solve the adjacency list
-            IGMRhinoCommon.Utils.planarizeQuadMesh(ref mesh, maxIter, thres);
+            IGMRhinoCommon.Utils.PlanarizeQuadMesh(ref mesh, maxIter, thres);
 
             // output
             DA.SetData(0, mesh);

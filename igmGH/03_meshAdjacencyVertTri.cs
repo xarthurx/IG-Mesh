@@ -44,7 +44,7 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (vt, vi) = IGMRhinoCommon.Utils.getAdjacencyVT(ref mesh);
+            var (vt, vi) = IGMRhinoCommon.Utils.GetAdjacencyVT(ref mesh);
 
             Grasshopper.DataTree<int> adjVT = new Grasshopper.DataTree<int>();
             Grasshopper.DataTree<int> adjVTI = new Grasshopper.DataTree<int>();

@@ -50,7 +50,7 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // call the cpp function 
-            var (bndE_geo, bndE, bndTi) = IGMRhinoCommon.Utils.getBoundaryEdge(ref mesh);
+            var (bndE_geo, bndE, bndTi) = IGMRhinoCommon.Utils.GetBoundaryEdge(ref mesh);
 
             // construct the edge tree from the list
             Grasshopper.DataTree<int> evArray = new Grasshopper.DataTree<int>();

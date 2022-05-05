@@ -48,7 +48,7 @@ namespace igmGH
             if (!mesh.IsValid) { return; }
 
             // call the cpp function to solve the adjacency list
-            var P = IGMRhinoCommon.Utils.getQuadPlanarity(ref mesh);
+            var P = IGMRhinoCommon.Utils.GetQuadPlanarity(ref mesh);
 
             // output
             DA.SetDataList(0, P);

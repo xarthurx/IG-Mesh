@@ -59,7 +59,7 @@ namespace igmGH
             }
 
             // call the cpp function to solve the adjacency list
-            var (en, ei, emap) = IGMRhinoCommon.Utils.getNormalsEdge(ref mesh, w);
+            var (en, ei, emap) = IGMRhinoCommon.Utils.GetNormalsEdge(ref mesh, w);
 
             Grasshopper.DataTree<int> eiTree = new Grasshopper.DataTree<int>();
             for (int i = 0; i < ei.Count; i++)

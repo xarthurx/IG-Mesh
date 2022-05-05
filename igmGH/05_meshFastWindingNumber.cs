@@ -48,7 +48,7 @@ namespace igmGH
             if (!DA.GetDataList(1, Q)) { return; }
 
             // call the cpp function to solve the adjacency list
-            var w = IGMRhinoCommon.Utils.getFastWindingNumber(ref mesh, ref Q);
+            var w = IGMRhinoCommon.Utils.GetFastWindingNumber(ref mesh, ref Q);
 
             // output
             DA.SetDataList(0, w);

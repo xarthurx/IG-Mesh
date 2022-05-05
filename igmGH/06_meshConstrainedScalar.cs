@@ -79,7 +79,7 @@ namespace igmGH
             }
 
             // call the cpp function to solve the constrained scalar field.
-            var scalarV = IGMRhinoCommon.Utils.getConstrainedScalar(ref mesh, ref con_idx, ref con_val);
+            var scalarV = IGMRhinoCommon.Utils.GetConstrainedScalar(ref mesh, ref con_idx, ref con_val);
 
             // assign to the output
             DA.SetDataList(0, scalarV);
