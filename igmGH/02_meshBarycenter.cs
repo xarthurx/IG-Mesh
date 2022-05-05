@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_barycenter()
           : base("Barycenter", "igBarycenter",
               "compute the barycenter of each triangle of the given mesh.",
-              "IG-Mesh", "02|Properties")
+              "IG-Mesh", "02::Properties")
         {
         }
 

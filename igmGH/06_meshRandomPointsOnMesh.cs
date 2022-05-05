@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_random_points_on_mesh()
           : base("Random Pt On Mesh", "igRndPt",
               "Randomly sample N points on surface of the given mesh with random/uniform distribution.",
-              "IG-Mesh", "06|Util")
+              "IG-Mesh", "06::Utils")
         {
         }
 

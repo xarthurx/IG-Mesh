@@ -46,26 +46,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="00_igm_Info.cs" />
-    <Compile Include="01_ioReadTriMesh.cs" />
-    <Compile Include="01_ioWriteTriMesh.cs" />
+    <Compile Include="01_meshIO.cs" />
     <Compile Include="01_meshInfo.cs" />
-    <Compile Include="02_meshNormalFace.cs" />
-    <Compile Include="02_meshNormalsCorner.cs" />
-    <Compile Include="02_meshNormalsEdge.cs" />
-    <Compile Include="02_meshNormalsVertex.cs" />
+    <Compile Include="02_meshNormals.cs" />
     <Compile Include="02_meshBarycenter.cs" />
-    <Compile Include="03_meshBoundEdge.cs" />
-    <Compile Include="05_meshCurvaturePrincipal.cs" />
-    <Compile Include="05_meshCurvatureGaussian.cs" />
-    <Compile Include="03_meshAdjacentVertVert.cs" />
-    <Compile Include="03_meshBoundLoop.cs" />
-    <Compile Include="03_meshAdjacencyTriTri.cs" />
-    <Compile Include="03_meshAdjacencyVertTri.cs" />
+    <Compile Include="05_meshCurvature.cs" />
+    <Compile Include="03_meshAdjacency.cs" />
+    <Compile Include="03_meshBounds.cs" />
     <Compile Include="04_scalarRemapFtoV.cs" />
     <Compile Include="04_scalarRemapVtoF.cs" />
-    <Compile Include="06_meshHeatGeoPrecompute.cs" />
-    <Compile Include="06_meshQuadPlanarity.cs" />
-    <Compile Include="06_meshQuadPlanarize.cs" />
+    <Compile Include="06_meshHeatGeodesics.cs" />
+    <Compile Include="06_meshQuadPlanarization.cs" />
     <Compile Include="06_meshRandomPointsOnMesh.cs" />
     <Compile Include="05_meshSignedDistance.cs" />
     <Compile Include="05_meshFastWindingNumber.cs" />

@@ -1,17 +1,21 @@
 ﻿using Grasshopper.Kernel;
 using System;
+using System.Collections.Generic;
 
 namespace igmGH
 {
-    public class IGM_principal_curvature : GH_Component
+    public class IGM_heat_geodesic_dist : GH_Component
     {
+        Rhino.Geometry.Mesh heat_mesh;
+        static IntPtr geoData;
+
         /// <summary>
-        /// Initializes the new instance of the corner_normals class.
+        /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_principal_curvature()
-          : base("Principal Curvature", "igCurvaturePrincipal",
-              "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-              "IG-Mesh", "05|Measure")
+        public IGM_heat_geodesic_dist()
+          : base("HeatGeo Distance", "igGeoDist",
+              "Compute geodesic distance of multiple sources on a mesh using the heat-transfer-inspired fast approximation method.",
+              "IG-Mesh", "06::Utils")
         {
         }
 
@@ -26,8 +30,8 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("radius", "r", "controls the size of the neighbourhood used, 1 = average edge length.", GH_ParamAccess.item, 5);
-            pManager[1].Optional = true;
+            pManager.AddIntegerParameter("Source", "S", "Source vertex list to compute distance from.", GH_ParamAccess.list);
+            pManager.AddBooleanParameter("Re-compute", "B", "Recompute the whole process.", GH_ParamAccess.item, false);
         }
 
         /// <summary>
@@ -35,10 +39,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddVectorParameter("Principal Dir 1", "PD1", "Maximal curvature direction for each vertex.", GH_ParamAccess.list);
-            pManager.AddVectorParameter("Principal Dir 2", "PD2", "Minimal curvature direction for each vertex.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Principal Value 1", "PV1", "Maximal curvature value for each vertex.", GH_ParamAccess.list);
-            pManager.AddNumberParameter("Principal Value 2", "PV2", "Minimal curvature value for each vertex.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Distance", "D", "The computed distance list of each vertex.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -52,20 +53,26 @@ namespace igmGH
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            // use default threshold if not given by the user
-            int r = 5;
-            if (!DA.GetData(1, ref r)) { }
-            if (r < 1) { r = 1; } // make sure the value is unit
 
-            // call the cpp function to solve the adjacency list
-            var (PD1, PD2, PV1, PV2) = IGMRhinoCommon.Utils.GetPrincipalCurvature(ref mesh, (uint)r);
+            List<int> gamma = new List<int>();
+            if (!DA.GetDataList(1, gamma) || gamma.Count == 0) { return; }
+
+            bool redo = false;
+            if (!DA.GetData(2, ref redo)) { return; }
+
+            var meshSame = (heat_mesh != null && Rhino.Geometry.InstanceReferenceGeometry.GeometryEquals(mesh, heat_mesh));
+            if (redo || geoData == IntPtr.Zero || !meshSame)
+            {
+                geoData = IGMRhinoCommon.Utils.GetHeatGeodesicPrecomputedData(ref mesh);
+                heat_mesh = mesh;
+            }
+
+            var D = IGMRhinoCommon.Utils.GetHeatGeodesicDist(geoData, ref gamma);
 
             // output
-            DA.SetDataList(0, PD1);
-            DA.SetDataList(1, PD2);
-            DA.SetDataList(2, PV1);
-            DA.SetDataList(3, PV2);
+            DA.SetDataList(0, D);
         }
+
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -75,7 +82,8 @@ namespace igmGH
             get
             {
                 //You can add image files to your project resources and access them like this:
-                return Properties.Resources.meshCurvaturePrincipal;
+                // return Resources.IconForThisComponent;
+                return Properties.Resources.meshRandomPtsOnMesh;
             }
         }
 
@@ -84,7 +92,8 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("ab67cd8c-b15b-40b4-b052-e8d39ccc1ea5"); }
+            get { return new Guid("449dc8bc-4b60-412e-aa5e-9fea06532c6d"); }
         }
     }
 }
+
