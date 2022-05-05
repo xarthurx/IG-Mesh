@@ -195,7 +195,6 @@ namespace IGMRhinoCommon
             {
                 adjTT.Add(new List<int>(tt.GetRange(3 * i, 3)));
                 adjTTI.Add(new List<int>(tti.GetRange(3 * i, 3)));
-
             }
 
             // compute from cpp side.
