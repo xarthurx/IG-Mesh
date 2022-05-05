@@ -2,14 +2,14 @@
 
 #include "geolib.h"
 
-using RowMajMatXd = Matrix<double, Dynamic, Dynamic, RowMajor>;
-using RowMajMatXf = Matrix<float, Dynamic, Dynamic, RowMajor>;
-using RowMajMatXi = Matrix<int, Dynamic, Dynamic, RowMajor>;
+using RowMajMatXd = Matrix<double, -1, -1, RowMajor>;
+using RowMajMatXf = Matrix<float, -1, -1, RowMajor>;
+using RowMajMatXi = Matrix<int, -1, -1, RowMajor>;
 
 // helper function
 template <typename T>
 void cvtArrayToEigenXt(T* inputArray, int sz,
-                       Eigen::Matrix<T, Dynamic, Dynamic>& outputEigen) {
+                       Eigen::Matrix<T, -1, -1>& outputEigen) {
   int cnt = 0;
   outputEigen.resize(sz, 3);
 
@@ -166,7 +166,7 @@ void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
 //}
 
 void IGM_vertex_vertex_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVV,
-                                   ON_SimpleArray<int>* adjNum) {
+                                 ON_SimpleArray<int>* adjNum) {
   Eigen::MatrixXd matV;
   Eigen::MatrixXi matF;
   cvtMeshToEigen(pMesh, matV, matF);
@@ -197,15 +197,18 @@ void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
   }
 }
 
-void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
+void IGM_triangle_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjTT,
+                                     ON_SimpleArray<int>* adjTTI) {
+  MatrixXd matV;
   MatrixXi matF;
-  cvtArrayToEigenXt(F, nF, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
-  MatrixXi matTT, matTTI;
-  igl::triangle_triangle_adjacency(matF, matTT, matTTI);
+  // to output c-array row-by-row, we need to defin row-major mat.
+  RowMajMatXi TT, TTI; 
+  igl::triangle_triangle_adjacency(matF, TT, TTI);
 
-  RowMajMatXi::Map(adjTT, matTT.rows(), matTT.cols()) = matTT;
-  RowMajMatXi::Map(adjTTI, matTTI.rows(), matTTI.cols()) = matTTI;
+  adjTT->Append(TT.size(), TT.data());
+  adjTTI->Append(TTI.size(), TTI.data());
 }
 
 void IGM_boundary_loop(int* F, int nF, int* adjLst, int& sz) {

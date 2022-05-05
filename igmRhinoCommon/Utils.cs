@@ -181,7 +181,7 @@ namespace IGMRhinoCommon
 
             var cppAdjTT = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
             var cppAdjTTI = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
-
+                
             // call the c++ func
             CppIGM.IGM_triangle_triangle_adjacency(pMesh, cppAdjTT.NonConstPointer(), cppAdjTTI.NonConstPointer());
 
