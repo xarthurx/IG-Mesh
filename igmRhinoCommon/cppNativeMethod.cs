@@ -30,20 +30,19 @@ namespace IGMRhinoCommon
         /// Compute mesh adjacency list
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_adjacency_list(IntPtr F, int nF, IntPtr adjLstFromCpp, out int sz);
+        internal static extern void IGM_vertex_vertex_adjacency(IntPtr pMesh, IntPtr cppAdjVV, IntPtr cppAdjNum);
 
         /// <summary>
         /// Compute mesh vertex-triangle adjacency list
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void IGM_vertex_triangle_adjacency(IntPtr pMesh, IntPtr cppAdjVT, IntPtr cppAdjVTI, IntPtr cppAdjNum);
-        //internal static extern void IGM_vertex_triangle_adjacency(int nV, IntPtr F, int nF, IntPtr adjVTFromCpp, IntPtr adjVTIFromCpp, out int sz);
 
         /// <summary>
         /// Compute mesh triangle-triangle adjacency list
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_triangle_triangle_adjacency(IntPtr F, int nF, IntPtr adjTTFromCpp, IntPtr adjTTIFromCpp);
+        internal static extern void IGM_triangle_triangle_adjacency(IntPtr pMesh, IntPtr cppAdjTT, IntPtr cppAdjTTI);
 
         /// <summary>
         /// Compute mesh boundary loop

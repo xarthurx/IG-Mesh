@@ -47,14 +47,14 @@ void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC);
 // ! adjacency funcs
 // ! --------------------------------
 RH_C_FUNCTION
-void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz);
+void IGM_vertex_vertex_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVV,
+                                 ON_SimpleArray<int>* adjNum);
+// void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz);
 
 RH_C_FUNCTION
 void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
                                    ON_SimpleArray<int>* adjVFI,
                                    ON_SimpleArray<int>* adjNum);
-// void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
-//                                   int* adjVFI, int& sz);
 
 RH_C_FUNCTION
 void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI);

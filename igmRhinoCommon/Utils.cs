@@ -116,95 +116,31 @@ namespace IGMRhinoCommon
             return mappedF;
         }
 
-        public static List<List<int>> GetAdjacencyLst(ref Mesh rhinoMesh)
+        public static List<List<int>> GetAdjacencyVV(ref Mesh rMesh)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
-            // initialize the pointer and pass data
-            int nF = rhinoMesh.Faces.Count;
-            int numEle = 3 * rhinoMesh.Vertices.Count * 20;
-
-            // copy data into the IntPtr
-            //float[] V = rhino_mesh.Vertices.ToFloatArray();
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
-
-            // assume each vert has most 10 neighbours
-            IntPtr adjLstFromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * numEle);
+            var cppAdjVV = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var cppAdjNum = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
 
             // call the c++ func
-            CppIGM.IGM_adjacency_list(meshF, nF, adjLstFromCpp, out int sz);
+            CppIGM.IGM_vertex_vertex_adjacency(pMesh, cppAdjVV.NonConstPointer(), cppAdjNum.NonConstPointer());
 
-            int[] processedAdjLst = new int[numEle];
-            Marshal.Copy(adjLstFromCpp, processedAdjLst, 0, numEle);
+            List<List<int>> adjVV = new List<List<int>>();
 
-            // free memory
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(adjLstFromCpp);
-
-            List<List<int>> adjLst = new List<List<int>>();
-            int cnt = 0;
-            while (cnt < sz)
+            // convert to c# list
+            int idCnt = 0;
+            var vv = new List<int>(cppAdjVV.ToArray());
+            var adjNum = new List<int>(cppAdjNum.ToArray());
+            foreach (var num in adjNum)
             {
-                int num = processedAdjLst[cnt];
-                cnt++;
-
-                List<int> transferLst = new List<int>();
-                for (int i = 0; i < num; i++)
-                {
-                    transferLst.Add(processedAdjLst[cnt++]);
-                }
-                adjLst.Add(transferLst);
+                adjVV.Add(new List<int>(vv.GetRange(idCnt, num)));
+                idCnt += num;
             }
 
             // compute from cpp side.
-            return adjLst;
-        }
-
-        public static (List<List<int>>, List<List<int>>) GetAdjacencyTT(ref Mesh rhinoMesh)
-        {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
-            //IntPtr p_mesh = Rhino.Runtime.Interop.NativeGeometryNonConstPointer(rhinoMesh);
-
-            //// initialize the pointer and pass data
-            //int nV = rhinoMesh.Vertices.Count;
-            int nF = rhinoMesh.Faces.Count;
-
-            //// copy data into the IntPtr
-            ////float[] V = rhino_mesh.Vertices.ToFloatArray();
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
-
-            // assume each vert has most 10 neighbours
-            IntPtr adjTT_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 3 * nF);
-            IntPtr adjTTI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 3 * nF);
-
-            // call the c++ func
-            CppIGM.IGM_triangle_triangle_adjacency(meshF, nF, adjTT_cpp, adjTTI_cpp);
-
-            int[] resTT = new int[nF * 3];
-            int[] resTTI = new int[nF * 3];
-            Marshal.Copy(adjTT_cpp, resTT, 0, nF * 3);
-            Marshal.Copy(adjTTI_cpp, resTTI, 0, nF * 3);
-
-            // free memory
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(adjTT_cpp);
-            Marshal.FreeHGlobal(adjTTI_cpp);
-
-            List<List<int>> adjTT = new List<List<int>>();
-            List<List<int>> adjTTI = new List<List<int>>();
-
-            for (int i = 0; i < nF; i++)
-            {
-                adjTT.Add(new List<int> { resTT[i * 3], resTT[i * 3 + 1], resTT[i * 3 + 2] });
-                adjTTI.Add(new List<int> { resTTI[i * 3], resTTI[i * 3 + 1], resTTI[i * 3 + 2] });
-            }
-
-            // compute from cpp side.
-            return (adjTT, adjTTI);
+            return adjVV;
         }
 
         public static (List<List<int>>, List<List<int>>) GetAdjacencyVT(ref Mesh rMesh)
@@ -216,35 +152,8 @@ namespace IGMRhinoCommon
             var cppAdjVTI = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
             var cppAdjNum = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
 
-            //// initialize the pointer and pass data
-            //int nV = rhinoMesh.Vertices.Count;
-            //int nF = rhinoMesh.Faces.Count;
-
-            //int nEle = nV * 20; // assume vertex valance at most 20
-
-            // copy data into the IntPtr
-            //float[] V = rhino_mesh.Vertices.ToFloatArray();
-            //int[] F = rhinoMesh.Faces.ToIntArray(true);
-            //IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            //Marshal.Copy(F, 0, meshF, F.Length);
-
-            //// assume each vert has most 10 neighbours
-            //IntPtr adjVT_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
-            //IntPtr adjVTI_cpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nEle);
-
             // call the c++ func
             CppIGM.IGM_vertex_triangle_adjacency(pMesh, cppAdjVT.NonConstPointer(), cppAdjVTI.NonConstPointer(), cppAdjNum.NonConstPointer());
-            //CppIGM.IGM_vertex_triangle_adjacency(nV, meshF, nF, adjVT_cpp, adjVTI_cpp, out int sz);
-
-            //int[] resVT = new int[nEle];
-            //int[] resVTI = new int[nEle];
-            //Marshal.Copy(adjVT_cpp, resVT, 0, nEle);
-            //Marshal.Copy(adjVTI_cpp, resVTI, 0, nEle);
-
-            //// free memory
-            //Marshal.FreeHGlobal(meshF);
-            //Marshal.FreeHGlobal(adjVT_cpp);
-            //Marshal.FreeHGlobal(adjVTI_cpp);
 
             List<List<int>> adjVT = new List<List<int>>();
             List<List<int>> adjVTI = new List<List<int>>();
@@ -261,28 +170,38 @@ namespace IGMRhinoCommon
                 idCnt += num;
             }
 
-            //int cnt = 0;
-            //while (cnt < sz)
-            //{
-            //    int num = resVT[cnt];
-            //    cnt++;
-
-            //    List<int> tmpVT = new List<int>();
-            //    List<int> tmpVTI = new List<int>();
-            //    for (int i = 0; i < num; i++)
-            //    {
-            //        tmpVT.Add(resVT[cnt]);
-            //        tmpVTI.Add(resVTI[cnt]);
-            //        cnt++;
-            //    }
-            //    adjVT.Add(tmpVT);
-            //    adjVTI.Add(tmpVTI);
-            //}
-
             // compute from cpp side.
             return (adjVT, adjVTI);
-
         }
+
+        public static (List<List<int>>, List<List<int>>) GetAdjacencyTT(ref Mesh rMesh)
+        {
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            var cppAdjTT = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var cppAdjTTI = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+
+            // call the c++ func
+            CppIGM.IGM_triangle_triangle_adjacency(pMesh, cppAdjTT.NonConstPointer(), cppAdjTTI.NonConstPointer());
+
+            List<List<int>> adjTT = new List<List<int>>();
+            List<List<int>> adjTTI = new List<List<int>>();
+
+            // convert to c# list
+            var tt = new List<int>(cppAdjTT.ToArray());
+            var tti = new List<int>(cppAdjTTI.ToArray());
+            for (int i = 0; i < rMesh.Faces.Count; i++)
+            {
+                adjTT.Add(new List<int>(tt.GetRange(3 * i, 3)));
+                adjTTI.Add(new List<int>(tti.GetRange(3 * i, 3)));
+
+            }
+
+            // compute from cpp side.
+            return (adjTT, adjTTI);
+        }
+
 
         public static List<List<int>> GetBoundaryLoop(ref Mesh rhinoMesh)
         {

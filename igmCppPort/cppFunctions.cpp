@@ -140,29 +140,44 @@ void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
   cvtEigenToON_Points(matBC, BC);
 }
 
-void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
-  Eigen::MatrixXi eigenF;
-  cvtArrayToEigenXt(F, nF, eigenF);
+// void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
+//  Eigen::MatrixXi eigenF;
+//  cvtArrayToEigenXt(F, nF, eigenF);
+//
+//  vector<vector<int>> lst;
+//  igl::adjacency_list(eigenF, lst);
+//
+//  vector<int> transferLst(0);
+//  for_each(lst.begin(), lst.end(), [&](vector<int>& vec) {
+//    // size as indicator
+//    transferLst.push_back(vec.size());
+//    // copy all values
+//    std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
+//  });
+//
+//  std::copy(transferLst.begin(), transferLst.end(), adjLst);
+//
+//  // the total # of neighbouring vert + the # of vert (as indicator of each
+//  // vector's size)
+//  sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
+//                                    [&](int res, vector<int>& vec) {
+//                                      return res + vec.size();
+//                                    });
+//}
 
-  vector<vector<int>> lst;
-  igl::adjacency_list(eigenF, lst);
+void IGM_vertex_vertex_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVV,
+                                   ON_SimpleArray<int>* adjNum) {
+  Eigen::MatrixXd matV;
+  Eigen::MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
 
-  vector<int> transferLst(0);
-  for_each(lst.begin(), lst.end(), [&](vector<int>& vec) {
-    // size as indicator
-    transferLst.push_back(vec.size());
-    // copy all values
-    std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-  });
+  vector<vector<int>> VV;
+  igl::adjacency_list(matF, VV);
 
-  std::copy(transferLst.begin(), transferLst.end(), adjLst);
-
-  // the total # of neighbouring vert + the # of vert (as indicator of each
-  // vector's size)
-  sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-                                    [&](int res, vector<int>& vec) {
-                                      return res + vec.size();
-                                    });
+  for (size_t i = 0; i < VV.size(); i++) {
+    adjVV->Append(VV[i].size(), VV[i].data());
+    adjNum->Append(VV[i].size());
+  }
 }
 
 void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
@@ -181,39 +196,6 @@ void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
     adjNum->Append(VF[i].size());
   }
 }
-
-// void IGM_vertex_triangle_adjacency(int nV, int* F, int nF, int* adjVF,
-//                                   int* adjVFI, int& sz) {
-//  Eigen::MatrixXi matF;
-//  cvtArrayToEigenXt(F, nF, matF);
-//
-//  vector<vector<int>> VF, VFI;
-//  igl::vertex_triangle_adjacency(nV, matF, VF, VFI);
-//
-//  vector<int> tmpVF(0), tmpVFI(0);
-//  for_each(VF.begin(), VF.end(), [&](vector<int>& vec) {
-//    tmpVF.push_back(vec.size());  // size as indicator
-//    std::copy(vec.begin(), vec.end(),
-//              std::back_inserter(tmpVF));  // copy all values
-//  });
-//
-//  std::copy(tmpVF.begin(), tmpVF.end(), adjVF);
-//
-//  for_each(VFI.begin(), VFI.end(), [&](vector<int>& vec) {
-//    tmpVF.push_back(vec.size());  // size as indicator
-//    std::copy(vec.begin(), vec.end(),
-//              std::back_inserter(tmpVFI));  // copy all values
-//  });
-//
-//  std::copy(tmpVFI.begin(), tmpVFI.end(), adjVFI);
-//
-//  // the total # of neighbouring vert + the # of vert (as indicator of each
-//  // vector's size)
-//  sz = VF.size() + std::accumulate(VF.begin(), VF.end(), (size_t)0,
-//                                   [&](int res, vector<int>& vec) {
-//                                     return res + vec.size();
-//                                   });  // same for VF and VFI
-//}
 
 void IGM_triangle_triangle_adjacency(int* F, int nF, int* adjTT, int* adjTTI) {
   MatrixXi matF;
