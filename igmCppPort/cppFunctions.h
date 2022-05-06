@@ -23,7 +23,7 @@
 #endif
 
 // ! --------------------------------
-// ! IO funcs
+// ! 01:: IO, property funcs
 // ! --------------------------------
 // construct openNURBS mesh directly in cpp and send it back to C#
 RH_C_FUNCTION
@@ -32,43 +32,16 @@ void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh);
 RH_C_FUNCTION
 bool IGM_write_triangle_mesh(char* filename, ON_Mesh* pMesh);
 
-// ! --------------------------------
-// ! property funcs
-// ! --------------------------------
-
 RH_C_FUNCTION
 void IGM_centroid(ON_Mesh* pMesh, ON_SimpleArray<double>* c);
 
+// ! --------------------------------
+// ! 02:: centre, normal funcs
+// ! --------------------------------
 // BC   barycenters of the mesh triangles
 RH_C_FUNCTION
 void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC);
 
-// ! --------------------------------
-// ! adjacency funcs
-// ! --------------------------------
-RH_C_FUNCTION
-void IGM_vertex_vertex_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVV,
-                                 ON_SimpleArray<int>* adjNum);
-
-RH_C_FUNCTION
-void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
-                                   ON_SimpleArray<int>* adjVFI,
-                                   ON_SimpleArray<int>* adjNum);
-
-RH_C_FUNCTION
-void IGM_triangle_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjTT,
-                                     ON_SimpleArray<int>* adjTTI);
-
-RH_C_FUNCTION
-void IGM_boundary_loop(int* F, int nF, int* adjLst, int& sz);
-// void IGM_boundary_loop(ON_Mesh* pMesh, int* adjLst, int& sz);
-
-RH_C_FUNCTION
-void IGM_boundary_facet(int* F, int nF, int* edge, int* triIdxLst, int& sz);
-
-// ! --------------------------------
-// ! normal funcs
-// ! --------------------------------
 /*
   due to the incomplete of Rhino.Runtime.InteropWrappers,
   we use pointarray to handle vectors
@@ -90,7 +63,31 @@ void IGM_edge_normals(ON_Mesh* pMesh, int weightingType, ON_3dPointArray* EN,
                       ON_SimpleArray<ON_2dex>* EI, ON_SimpleArray<int>* EMAP);
 
 // ! --------------------------------
-// ! mapping
+// ! 03:: adjacency, bound funcs
+// ! --------------------------------
+RH_C_FUNCTION
+void IGM_vertex_vertex_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVV,
+                                 ON_SimpleArray<int>* adjNum);
+
+RH_C_FUNCTION
+void IGM_vertex_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVF,
+                                   ON_SimpleArray<int>* adjVFI,
+                                   ON_SimpleArray<int>* adjNum);
+
+RH_C_FUNCTION
+void IGM_triangle_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjTT,
+                                     ON_SimpleArray<int>* adjTTI);
+
+RH_C_FUNCTION
+void IGM_boundary_loop(ON_Mesh* pMesh, ON_SimpleArray<int>* bndLp,
+                       ON_SimpleArray<int>* bndNum);
+
+RH_C_FUNCTION
+void IGM_boundary_facet(ON_Mesh* pMesh, ON_SimpleArray<int>* EL,
+                        ON_SimpleArray<int>* TL);
+
+// ! --------------------------------
+// ! 04:: mapping
 // ! --------------------------------
 
 RH_C_FUNCTION
@@ -102,7 +99,7 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res);
 
 // ! --------------------------------
-// ! measure
+// ! 05:: measure
 // ! --------------------------------
 RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
@@ -131,7 +128,7 @@ void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
                          ON_3dPointArray* C);
 
 // ! --------------------------------
-// ! utils
+// ! 06:: utils
 // ! --------------------------------
 
 RH_C_FUNCTION
@@ -158,7 +155,6 @@ void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
                               ON_SimpleArray<int>* FI);
 
 static igl::HeatGeodesicsData<double> geoData;
-
 RH_C_FUNCTION
 igl::HeatGeodesicsData<double>* IGM_heat_geodesic_precompute(ON_Mesh* pMesh);
 
@@ -174,4 +170,5 @@ RH_C_FUNCTION
 void IGM_quad_planarity(ON_Mesh* pMesh, ON_SimpleArray<double>* P);
 
 RH_C_FUNCTION
-void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres);
+void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres,
+                             ON_Mesh* oMesh);

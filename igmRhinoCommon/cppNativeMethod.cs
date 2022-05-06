@@ -48,14 +48,14 @@ namespace IGMRhinoCommon
         /// Compute mesh boundary loop
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_boundary_loop(IntPtr F, int nF, IntPtr bndLoopFromCpp, out int sz);
+        internal static extern void IGM_boundary_loop(IntPtr pMesh, IntPtr bndLp, IntPtr bndNum);
 
 
         /// <summary>
-        /// Compute mesh boundary edges, facets
+        /// Compute mesh boundary edges. TODO: facets for tets
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_boundary_facet(IntPtr F, int nF, IntPtr bndEdge, IntPtr bndTriIdx, out int sz);
+        internal static extern void IGM_boundary_facet(IntPtr pMesh, IntPtr bndEdge, IntPtr bndTriIdx);
 
         /// <summary>
         /// Compute mesh centroid
@@ -193,7 +193,7 @@ namespace IGMRhinoCommon
         /// planarize a quad mesh 
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void IGM_planarize_quad_mesh(IntPtr pMesh, int maxIter, double thres);
+        internal static extern void IGM_planarize_quad_mesh(IntPtr pMesh, int maxIter, double thres, IntPtr oMesh);
     }
 
 }

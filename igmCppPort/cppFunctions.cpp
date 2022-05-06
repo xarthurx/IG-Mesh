@@ -204,52 +204,44 @@ void IGM_triangle_triangle_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjTT,
   cvtMeshToEigen(pMesh, matV, matF);
 
   // to output c-array row-by-row, we need to defin row-major mat.
-  RowMajMatXi TT, TTI; 
+  RowMajMatXi TT, TTI;
   igl::triangle_triangle_adjacency(matF, TT, TTI);
 
   adjTT->Append(TT.size(), TT.data());
   adjTTI->Append(TTI.size(), TTI.data());
 }
 
-void IGM_boundary_loop(int* F, int nF, int* adjLst, int& sz) {
-  Eigen::MatrixXi eigenF;
-  cvtArrayToEigenXt(F, nF, eigenF);
+void IGM_boundary_loop(ON_Mesh* pMesh, ON_SimpleArray<int>* bndLp,
+                       ON_SimpleArray<int>* bndNum) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
 
   vector<vector<int>> lst;
-  igl::boundary_loop(eigenF, lst);
+  igl::boundary_loop(matF, lst);
 
-  vector<int> transferLst(0);
-  for_each(lst.begin(), lst.end(), [&](vector<int>& vec) {
-    // size as indicator
-    transferLst.push_back(vec.size());
-    // copy all values
-    std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-  });
-
-  std::copy(transferLst.begin(), transferLst.end(), adjLst);
-
-  // the total # of boundary loops + the # of vert (as indicator of each
-  // vector's size)
-  sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-                                    [&](int res, vector<int>& vec) {
-                                      return res + vec.size();
-                                    });
+  for (size_t i = 0; i < lst.size(); i++) {
+    bndLp->Append(lst[i].size(), lst[i].data());
+    bndNum->Append(lst[i].size());
+  }
 }
 
-void IGM_boundary_facet(int* F, int nF, int* edge, int* triIdx, int& sz) {
-  // cvt mesh
+void IGM_boundary_facet(ON_Mesh* pMesh, ON_SimpleArray<int>* EL,
+                        ON_SimpleArray<int>* TL) {
+  MatrixXd matV;
   MatrixXi matF;
-  cvtArrayToEigenXt(F, nF, matF);
+  cvtMeshToEigen(pMesh, matV, matF);
 
-  // compute
-  MatrixXi bF;
+  // F  list of bound-faces, n by 3 (2), where n is the number of bound-faces
+  // J  list of indices into T, n by 1
+  // K  list of indices revealing across from which vertex is this facet
+
+  RowMajMatXi F;  // edge for triangle mesh
   VectorXi J, K;
-  igl::boundary_facets(matF, bF, J, K);
+  igl::boundary_facets(matF, F, J, K);
 
-  // cvt back
-  RowMajMatXi::Map(edge, bF.rows(), bF.cols()) = bF;
-  VectorXi::Map(triIdx, J.size()) = J;
-  sz = J.size();
+  EL->Append(F.size(), F.data());
+  TL->Append(J.size(), J.data());
 }
 
 void IGM_vert_normals(ON_Mesh* pMesh, ON_3dPointArray* VN) {
@@ -596,7 +588,8 @@ void IGM_quad_planarity(ON_Mesh* pMesh, ON_SimpleArray<double>* P) {
   cvtEigenVToON_Array(Pcpp, P);
 }
 
-void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres) {
+void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres,
+                             ON_Mesh* oMesh) {
   // original quad mesh
   MatrixXd VQC;
   MatrixXi FQC;
@@ -610,13 +603,13 @@ void IGM_planarize_quad_mesh(ON_Mesh* pMesh, int maxIter, double thres) {
   igl::planarize_quad_mesh(VQC, FQC, maxIter, thres, VQCplan);
 
   // convert back into the mesh
-  auto& mV = pMesh->m_V;
+  auto& mV = oMesh->m_V;
   for (size_t i = 0; i < mV.Count(); i++) {
     mV[i].Set(VQCplan(i, 0), VQCplan(i, 1), VQCplan(i, 2));
   }
 
   if (pMesh->HasDoublePrecisionVertices()) {
-    auto& mV = pMesh->m_dV;
+    auto& mV = oMesh->m_dV;
     for (size_t i = 0; i < mV.Count(); i++) {
       mV[i].Set(VQCplan(i, 0), VQCplan(i, 1), VQCplan(i, 2));
     }

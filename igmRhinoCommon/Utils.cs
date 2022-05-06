@@ -181,7 +181,7 @@ namespace IGMRhinoCommon
 
             var cppAdjTT = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
             var cppAdjTTI = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
-                
+
             // call the c++ func
             CppIGM.IGM_triangle_triangle_adjacency(pMesh, cppAdjTT.NonConstPointer(), cppAdjTTI.NonConstPointer());
 
@@ -202,95 +202,58 @@ namespace IGMRhinoCommon
         }
 
 
-        public static List<List<int>> GetBoundaryLoop(ref Mesh rhinoMesh)
+        public static List<List<int>> GetBoundaryLoop(ref Mesh rMesh)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
-            // initialize the pointer and pass data
-            int nF = rhinoMesh.Faces.Count;
-            int numEle = 3 * rhinoMesh.Vertices.Count * 20;
-
-            // copy data into the IntPtr
-            //float[] V = rhino_mesh.Vertices.ToFloatArray();
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
-
-            // assume each vert has most 10 neighbours
-            IntPtr boundLoopFromCpp = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * numEle);
+            var cppBndLoop = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var cppBndNum = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
 
             // call the c++ func
-            CppIGM.IGM_boundary_loop(meshF, nF, boundLoopFromCpp, out int sz);
+            CppIGM.IGM_boundary_loop(pMesh, cppBndLoop.NonConstPointer(), cppBndNum.NonConstPointer());
 
-            int[] processedBoundLoop = new int[numEle];
-            Marshal.Copy(boundLoopFromCpp, processedBoundLoop, 0, numEle);
-
-            // free memory
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(boundLoopFromCpp);
+            int idCnt = 0;
+            var bndLp = new List<int>(cppBndLoop.ToArray());
+            var bndNum = new List<int>(cppBndNum.ToArray());
 
             List<List<int>> boundLoop = new List<List<int>>();
-            int cnt = 0;
-            while (cnt < sz)
-            {
-                int num = processedBoundLoop[cnt];
-                cnt++;
 
-                List<int> transferLst = new List<int>();
-                for (int i = 0; i < num; i++)
-                {
-                    transferLst.Add(processedBoundLoop[cnt++]);
-                }
-                boundLoop.Add(transferLst);
+            foreach (var num in bndNum)
+            {
+                boundLoop.Add(new List<int>(bndLp.GetRange(idCnt, num)));
+                idCnt += num;
             }
 
-            // compute from cpp side.
             return boundLoop;
         }
 
-        public static (List<Line>, List<List<int>>, List<int>) GetBoundaryEdge(ref Mesh rhinoMesh)
+        public static (List<Line>, List<List<int>>, List<int>) GetBoundaryEdge(ref Mesh rMesh)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
-            // initialize the pointer and pass data
-            int nF = rhinoMesh.Faces.Count;
-
-            // copy data into the IntPtr
-            //float[] V = rhino_mesh.Vertices.ToFloatArray();
-            int[] F = rhinoMesh.Faces.ToIntArray(true);
-            IntPtr meshF = Marshal.AllocHGlobal(Marshal.SizeOf(F[0]) * F.Length);
-            Marshal.Copy(F, 0, meshF, F.Length);
-
-            // assume each vert has most 10 neighbours
-            IntPtr bndEdge = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * 2 * nF);
-            IntPtr bndTriIdx = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(int)) * nF);
+            var cppEL = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
+            var cppTL = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
 
             // call the c++ func
-            CppIGM.IGM_boundary_facet(meshF, nF, bndEdge, bndTriIdx, out int sz);
+            CppIGM.IGM_boundary_facet(pMesh, cppEL.NonConstPointer(), cppTL.NonConstPointer());
 
-            int[] resBndEdge = new int[nF * 2];
-            Marshal.Copy(bndEdge, resBndEdge, 0, nF * 2);
-            int[] resBndTriIdx = new int[nF];
-            Marshal.Copy(bndTriIdx, resBndTriIdx, 0, nF);
+            var EL = new List<int>(cppEL.ToArray());
+            var bdTI = new List<int>(cppTL.ToArray());
 
-            // free memory
-            Marshal.FreeHGlobal(meshF);
-            Marshal.FreeHGlobal(bndEdge);
-            Marshal.FreeHGlobal(bndTriIdx);
+            List<Line> bdEGeo = new List<Line>();
+            List<List<int>> bdEI = new List<List<int>>();
 
-            // convert back to C# types
-            List<Line> edgeGeo = new List<Line>();
-            List<List<int>> boundEdge = new List<List<int>>();
-            List<int> boundTriIdx = new List<int>();
-            for (int i = 0; i < sz; i++)
+            for (int i = 0; i < bdTI.Count; i++)
             {
-                int pt0 = resBndEdge[i * 2];
-                int pt1 = resBndEdge[i * 2 + 1];
-                edgeGeo.Add(new Line(rhinoMesh.Vertices[pt0], rhinoMesh.Vertices[pt1]));
-                boundEdge.Add(new List<int> { pt0, pt1 });
-                boundTriIdx.Add(resBndTriIdx[i]);
+                int pt0 = EL[i * 2];
+                int pt1 = EL[i * 2 + 1];
+                bdEI.Add(new List<int> { pt0, pt1 });
+                bdEGeo.Add(new Line(rMesh.Vertices[pt0], rMesh.Vertices[pt1]));
             }
-            return (edgeGeo, boundEdge, boundTriIdx);
+
+            return (bdEGeo, bdEI, bdTI);
         }
 
         public static List<Point3d> GetBarycenter(ref Mesh rhinoMesh)
@@ -694,13 +657,14 @@ namespace IGMRhinoCommon
             return P;
         }
 
-        public static void PlanarizeQuadMesh(ref Mesh rMesh, int maxIter, double thres)
+        public static void PlanarizeQuadMesh(ref Mesh rMesh, int maxIter, double thres, ref Mesh oMesh)
         {
             if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
             // notice: we will modify the mesh, so use nonConst ptr.
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+            IntPtr poMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(oMesh);
 
-            CppIGM.IGM_planarize_quad_mesh(pMesh, maxIter, thres);
+            CppIGM.IGM_planarize_quad_mesh(pMesh, maxIter, thres, poMesh);
         }
 
     }

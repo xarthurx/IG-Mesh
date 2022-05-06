@@ -1,31 +1,33 @@
 ﻿using Grasshopper.Kernel;
 using System;
+using System.Collections.Generic;
 
 namespace igmGH
 {
-    public class IGM_quad_planarity : GH_Component
+    public class IGM_remap_VtoF : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_quad_planarity()
-          : base("Quad Mesh Planarity", "igQuadPlanarity",
-              "Compute the planarity of the quad faces in a quad mesh.",
-              "IG-Mesh", "06::Utils")
+        public IGM_remap_VtoF()
+          : base("Remap Vertices To Faces", "igRemapVF",
+              "Move a scalar field defined on vertices to faces by averaging.",
+              "IG-Mesh", "04::Mapping")
         {
         }
 
         /// <summary>
         /// icon position in a category
         /// </summary>
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
+            pManager.AddMeshParameter("Mesh", "M", "Base mesh.", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Scalar", "S", "Scalar defined on vertices.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddNumberParameter("Face Planarity", "FP", "The planarity of the quad faces.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Remaped Scalar", "SF", "The remapped valuse on faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -42,16 +44,19 @@ namespace igmGH
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
+            List<double> scalarF = new List<double>();
+            if (!DA.GetDataList<double>(1, scalarF)) { return; }
+            if (scalarF.Count != mesh.Vertices.Count) { return; }
+
             // call the cpp function to solve the adjacency list
-            var P = IGMRhinoCommon.Utils.GetQuadPlanarity(ref mesh);
+            var sf = IGMRhinoCommon.Utils.RemapVtoF(ref mesh, scalarF);
 
             // output
-            DA.SetDataList(0, P);
+            DA.SetDataList(0, sf);
         }
 
         /// <summary>
@@ -63,7 +68,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.meshRandomPtsOnMesh;
+                return Properties.Resources.scalarRemapVtoF;
             }
         }
 
@@ -72,38 +77,34 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("cc0fea73-0311-4a62-a383-a9423a0b314c"); }
+            get { return new Guid("b2743097-03cb-4897-968f-bdcc3e0f95fc"); }
         }
     }
 
-    public class IGM_quad_planarize : GH_Component
+    public class IGM_remap_FtoV : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_quad_planarize()
-          : base("Planarize Quad Mesh", "igQuadPlanarize",
-              "Planarize the quad faces in a quad mesh.",
-              "IG-Mesh", "06::Utils")
+        public IGM_remap_FtoV()
+          : base("Remap Faces To Vertices", "igRemapFV",
+              "Move a scalar field defined on faces to vertices by averaging.",
+              "IG-Mesh", "04::Mapping")
         {
         }
 
         /// <summary>
         /// icon position in a category
         /// </summary>
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Iter", "I", "Max iteration for planarization.", GH_ParamAccess.item, 100);
-            pManager.AddNumberParameter("Thres", "T", "Threshould to stop the planarization.", GH_ParamAccess.item, 0.005);
-
-            pManager[1].Optional = true;
-            pManager[2].Optional = true;
+            pManager.AddMeshParameter("Mesh", "M", "Base mesh.", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Scalar", "S", "Scalar defined on faces.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddMeshParameter("Mesh", "M", "THe planarized quad mesh.", GH_ParamAccess.item);
+            pManager.AddNumberParameter("Remaped Scalar", "SV", "The remapped valuse on vertices.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -120,23 +121,19 @@ namespace igmGH
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-
             Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
-            int maxIter = 100;
-            if (!DA.GetData(1, ref maxIter) || maxIter < 0) { return; }
-            double thres = 0.005;
-            if (!DA.GetData(2, ref thres) || thres <= 0) { return; }
+            List<double> scalarV = new List<double>();
+            if (!DA.GetDataList<double>(1, scalarV)) { return; }
+            if (scalarV.Count != mesh.Faces.Count) { return; }
 
-
-            var oMesh = mesh.DuplicateMesh();
             // call the cpp function to solve the adjacency list
-            IGMRhinoCommon.Utils.PlanarizeQuadMesh(ref mesh, maxIter, thres, ref oMesh);
+            var sv = IGMRhinoCommon.Utils.RemapFtoV(ref mesh, scalarV);
 
             // output
-            DA.SetData(0, oMesh);
+            DA.SetDataList(0, sv);
         }
 
         /// <summary>
@@ -148,7 +145,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.meshRandomPtsOnMesh;
+                return Properties.Resources.scalarRemapFtoV;
             }
         }
 
@@ -157,7 +154,9 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("923f1d6e-e4b0-46e2-b913-e78545bfd7ab"); }
+            get { return new Guid("a0ee589c-082d-4ca1-bdfe-f5e3a3ddd6c8"); }
         }
     }
+
+
 }

@@ -50,11 +50,11 @@
     <Compile Include="01_meshInfo.cs" />
     <Compile Include="02_meshNormals.cs" />
     <Compile Include="02_meshBarycenter.cs" />
+    <Compile Include="04_meshColourFace.cs" />
     <Compile Include="05_meshCurvature.cs" />
     <Compile Include="03_meshAdjacency.cs" />
     <Compile Include="03_meshBounds.cs" />
-    <Compile Include="04_scalarRemapFtoV.cs" />
-    <Compile Include="04_scalarRemapVtoF.cs" />
+    <Compile Include="04_scalarRemap.cs" />
     <Compile Include="06_meshHeatGeodesics.cs" />
     <Compile Include="06_meshQuadPlanarization.cs" />
     <Compile Include="06_meshRandomPointsOnMesh.cs" />
