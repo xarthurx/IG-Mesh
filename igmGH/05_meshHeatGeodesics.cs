@@ -15,14 +15,14 @@ namespace igmGH
         public IGM_heat_geodesic_dist()
           : base("HeatGeo Distance", "igGeoDist",
               "Compute geodesic distance of multiple sources on a mesh using the heat-transfer-inspired fast approximation method.",
-              "IG-Mesh", "06::Utils")
+              "IG-Mesh", "05::Measure")
         {
         }
 
         /// <summary>
         /// icon position in a category
         /// </summary>
-        public override GH_Exposure Exposure => GH_Exposure.secondary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -83,7 +83,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.meshRandomPtsOnMesh;
+                return Properties.Resources.meshHeatGeodesic;
             }
         }
 

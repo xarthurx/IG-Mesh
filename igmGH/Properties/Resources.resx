@@ -142,6 +142,9 @@
   <data name="meshBoundLoop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshBoundLoop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="meshColourFace" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshColourFace.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="meshConstrainedScalar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshConstrainedScalar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -151,6 +154,9 @@
   <data name="meshCurvaturePrincipal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshCurvaturePrincipal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="meshHeatGeodesic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshHeatGeodesic.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="meshInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -159,6 +165,9 @@
   </data>
   <data name="meshNormalCorner" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshNormalCorner.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="meshNormalEdge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\meshNormalEdge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="meshNormalFace" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshNormalFace.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

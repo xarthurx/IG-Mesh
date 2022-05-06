@@ -143,6 +143,16 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap meshColourFace {
+            get {
+                object obj = ResourceManager.GetObject("meshColourFace", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meshConstrainedScalar {
             get {
                 object obj = ResourceManager.GetObject("meshConstrainedScalar", resourceCulture);
@@ -173,6 +183,16 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap meshHeatGeodesic {
+            get {
+                object obj = ResourceManager.GetObject("meshHeatGeodesic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meshInfo {
             get {
                 object obj = ResourceManager.GetObject("meshInfo", resourceCulture);
@@ -196,6 +216,16 @@ namespace igmGH.Properties {
         internal static System.Drawing.Bitmap meshNormalCorner {
             get {
                 object obj = ResourceManager.GetObject("meshNormalCorner", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshNormalEdge {
+            get {
+                object obj = ResourceManager.GetObject("meshNormalEdge", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

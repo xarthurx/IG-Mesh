@@ -55,7 +55,7 @@
     <Compile Include="03_meshAdjacency.cs" />
     <Compile Include="03_meshBounds.cs" />
     <Compile Include="04_scalarRemap.cs" />
-    <Compile Include="06_meshHeatGeodesics.cs" />
+    <Compile Include="05_meshHeatGeodesics.cs" />
     <Compile Include="06_meshQuadPlanarization.cs" />
     <Compile Include="06_meshRandomPointsOnMesh.cs" />
     <Compile Include="05_meshSignedDistance.cs" />
@@ -155,6 +155,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\icons\meshCurvaturePrincipal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshColourFace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshHeatGeodesic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\icons\meshNormalEdge.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
