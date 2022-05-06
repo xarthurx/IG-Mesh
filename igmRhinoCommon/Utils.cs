@@ -666,6 +666,5 @@ namespace IGMRhinoCommon
 
             CppIGM.IGM_planarize_quad_mesh(pMesh, maxIter, thres, poMesh);
         }
-
     }
 }

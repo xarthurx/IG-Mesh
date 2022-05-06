@@ -253,6 +253,26 @@ namespace igmGH.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap meshPlanarity {
+            get {
+                object obj = ResourceManager.GetObject("meshPlanarity", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap meshPlanarize {
+            get {
+                object obj = ResourceManager.GetObject("meshPlanarize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap meshRandomPtsOnMesh {
             get {
                 object obj = ResourceManager.GetObject("meshRandomPtsOnMesh", resourceCulture);

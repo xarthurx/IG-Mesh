@@ -63,7 +63,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.meshRandomPtsOnMesh;
+                return Properties.Resources.meshPlanarity;
             }
         }
 
@@ -82,7 +82,7 @@ namespace igmGH
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public IGM_quad_planarize()
-          : base("Planarize Quad Mesh", "igQuadPlanarize",
+          : base("Quad Mesh Planarize", "igQuadPlanarize",
               "Planarize the quad faces in a quad mesh.",
               "IG-Mesh", "06::Utils")
         {
@@ -148,7 +148,7 @@ namespace igmGH
             {
                 //You can add image files to your project resources and access them like this:
                 // return Resources.IconForThisComponent;
-                return Properties.Resources.meshRandomPtsOnMesh;
+                return Properties.Resources.meshPlanarize;
             }
         }
 
