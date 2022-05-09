@@ -104,7 +104,7 @@ Below is an incomplete list of functions that `IG-Mesh` plans to provide. The li
 - voxel (tet-based) processing functionality
 
 
-# Contribution
+## Contribution
 
 You need `Visual Studio 2017` or above and the `.NET` framework to compile the project.
 
@@ -132,7 +132,7 @@ In the `NuGet` package manager of `Visual Studio`, you should install the follow
 You should now be able to build the whole solution and generate the `.gha` and `.dll` files.
 
 
-# Acknowledgement and License
+## Acknowledgement and License
 
 Many of the base functions are converted from the geometry processing library [libigl](https://libigl.github.io), and ported into C# environment through the [PInvoke](https://www.grasshopper3d.com/forum/topics/link-use-c-code-or-c-lib-with-new-gh-plugin) methods and [openNURBS](https://github.com/mcneel/opennurbs).
 
@@ -143,7 +143,7 @@ The author would like to pay his deepest gratitude to the developers for this li
 **The library is released under the [GPL licence](https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE).**
 
 ---
-# Credit & Citation 
+## Credit & Citation 
 Author: [Zhao Ma](https://beyond-disciplines.com)
 
 If `IG-Mesh` contributes to an academic publication, please cite it as:
