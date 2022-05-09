@@ -1,3 +1,4 @@
+<!-- title img and links -->
 ![](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/title_img.png)
 
 <h1 align="center">IG-Mesh</h1>
@@ -11,10 +12,12 @@
 </div> 
 
 
+<!-- shields.io stuff -->
 <div align="center">
-<a href="https://github.com/xarthurx/IG-Mesh/blob/main/LICENSE" ><img src="https://img.shields.io/github/license/NvChad/NvChad?style=flat-square&logo=GNU&label=License&color=df967f" alt="License" /> </a>
+<a href="https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE" >
+<img alt="License" src="https://img.shields.io/github/license/xarthurx/IG-Mesh?style=flat-square">
+</a>
 
-  <p></p>
 </div> 
 
 ## A mesh processing library for Grasshopper (Rhino)
