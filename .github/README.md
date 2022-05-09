@@ -42,20 +42,19 @@ The library features tools for extracting both low-level information (e.g. verte
   <img src="https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/demo.gif" alt="demo.gif"/>
 </p>
 
-<!-- ### Component Showcase -->
-<!---->
-<!-- <details><summary> <b>Images</b> (Click to expand!)</summary> -->
-<!---->
-<!-- ![Universal Random Points](https://user-images.githubusercontent.com/59060246/130129880-59ab1ad5-9aa6-4f50-9ddd-d8dde0c16257.png) -->
-<!---->
-<!-- </details> -->
+
+<details><summary> <b>Component Showcase</b> (Click to expand!)</summary>
+
+![Mesh Isoline](https://user-images.githubusercontent.com/59060246/130129880-59ab1ad5-9aa6-4f50-9ddd-d8dde0c16257.png)
+
+</details>
 
 
 ## Installation 
 
 ### Install with **PackageManager** (Rhino 7+)
 1. Open Rhino and run command `PackageManager`.
-2. Search for "IG-Mesh".
+2. Search for "**IG-Mesh**".
 3. Install the plugin and restart Rhino.
 
 ### Food4Rhino 
@@ -64,7 +63,7 @@ The [Project Page](https://www.food4rhino.com/en/app/ig-mesh) on Food4Rhino also
 ### Pre-compiled release
 Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
 
-1. Download the `.zip` file for your OS from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
+1. Download the `.zip` file from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
 2. Unzip the `.zip` file and put the folder into you *Grasshopper Component Folder*.
 3. Restart *Rhino* and *Grasshopper*.
 
@@ -130,10 +129,7 @@ Many of the base functions are converted from the geometry processing library [l
 
 The author would like to pay his deepest gratitude to the developers for this library and the responsive Q\&A during the past years[^1].
 
-The rest funcitons are developed by the author in `C++` and ported to `C#` in the same manner.
-
 [^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io) library.*
-
 
 **The library is released under the [GPL licence](https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE).**
 
