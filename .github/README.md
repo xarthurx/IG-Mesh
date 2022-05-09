@@ -43,11 +43,28 @@ The library features tools for extracting both low-level information (e.g. verte
 </p>
 
 
-<details><summary> <b>Component Showcase</b> (Click to expand!)</summary>
+### Highlighted Components
+#### universal random points (blue noise)
+![Universal Random Distribution](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_randomPts.png)
 
-![Mesh Isoline](https://user-images.githubusercontent.com/59060246/130129880-59ab1ad5-9aa6-4f50-9ddd-d8dde0c16257.png)
+<details><summary> More (Click to expand!)... </summary>
+
+#### mesh isoline
+![Mesh Isoline](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_isoline.png)
+
+
+#### quad-mesh planarization
+![Quad Planarization](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_planarization.png)
+
 
 </details>
+
+## ALPHA-phase and Use case collection
+**This library is currently under the alpha-phase for initial public test. To further improve it, your contribution is needed.**
+
+Please submit an issue and describe what your mesh processing task requires and what type of functions are missing.
+
+I will add the corresponding functions to the library after evaluation, ASAP.
 
 
 ## Installation 
@@ -70,23 +87,15 @@ Pre-compiled releases are available on the [GitHub repo](https://github.com/xart
 *Releases with minor updates will only be published as pre-compiled releases and be hosted on github.*
 
 
-# Alpha-phase and Use case collection
-**This library is currently under the alpha-phase for initial public test. To further improve it, your contribution is needed.**
-
-Please submit an issue and describe what your mesh processing task requires and what type of functions are missing.
-
-I will add the corresponding functions to the library after evaluation, ASAP.
-
-
-# Planned Feature 
-## TODO
+## Planned Feature 
+### TODO
 Below are the current planned features to be added in the next release:
 - ~~planarization using [*Shape-Up*](https://lgg.epfl.ch/publications/2012/shapeup/index.php)~~ (done in v0.2)
 - Half-Edge structure
 - ~~Fast geodesic distance based on the "Heat-kernel" method~~ (done in v0.2)
 
 
-## Future Plan (Non-Goal TODO)
+### Future Plan (Non-Goal TODO)
 Below is an incomplete list of functions that `IG-Mesh` plans to provide. The list is constantly adjusted based on feedback:
 
 - edge-related functions for vector fields operation 
