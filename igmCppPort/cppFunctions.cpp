@@ -140,31 +140,6 @@ void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC) {
   cvtEigenToON_Points(matBC, BC);
 }
 
-// void IGM_adjacency_list(int* F, int nF, int* adjLst, int& sz) {
-//  Eigen::MatrixXi eigenF;
-//  cvtArrayToEigenXt(F, nF, eigenF);
-//
-//  vector<vector<int>> lst;
-//  igl::adjacency_list(eigenF, lst);
-//
-//  vector<int> transferLst(0);
-//  for_each(lst.begin(), lst.end(), [&](vector<int>& vec) {
-//    // size as indicator
-//    transferLst.push_back(vec.size());
-//    // copy all values
-//    std::copy(vec.begin(), vec.end(), std::back_inserter(transferLst));
-//  });
-//
-//  std::copy(transferLst.begin(), transferLst.end(), adjLst);
-//
-//  // the total # of neighbouring vert + the # of vert (as indicator of each
-//  // vector's size)
-//  sz = lst.size() + std::accumulate(lst.begin(), lst.end(), (size_t)0,
-//                                    [&](int res, vector<int>& vec) {
-//                                      return res + vec.size();
-//                                    });
-//}
-
 void IGM_vertex_vertex_adjacency(ON_Mesh* pMesh, ON_SimpleArray<int>* adjVV,
                                  ON_SimpleArray<int>* adjNum) {
   Eigen::MatrixXd matV;

@@ -12,7 +12,6 @@
 #define RH_C_FUNCTION extern "C" __declspec(dllexport)
 
 #else
-
 /* Using XIGLLIB as a Windows DLL - import classes, functions, and globals */
 #define RH_CPP_CLASS __declspec(dllimport)
 #define RH_CPP_FUNCTION __declspec(dllimport)
@@ -46,11 +45,9 @@ void IGM_barycenter(ON_Mesh* pMesh, ON_3dPointArray* BC);
   due to the incomplete of Rhino.Runtime.InteropWrappers,
   we use pointarray to handle vectors
 */
-// ! VN   vertex normals
 RH_C_FUNCTION
 void IGM_vert_normals(ON_Mesh* pMesh, ON_3dPointArray* VN);
 
-// ! FN   face normals
 RH_C_FUNCTION
 void IGM_face_normals(ON_Mesh* pMesh, ON_3dPointArray* FN);
 
@@ -154,6 +151,7 @@ RH_C_FUNCTION
 void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,
                               ON_SimpleArray<int>* FI);
 
+// heat geodesic methods and corresponding pre-compute class
 static igl::HeatGeodesicsData<double> geoData;
 RH_C_FUNCTION
 igl::HeatGeodesicsData<double>* IGM_heat_geodesic_precompute(ON_Mesh* pMesh);
