@@ -14,19 +14,25 @@
 
 <!-- shields.io stuff -->
 <div align="center">
+
+<a href="https://www.rhino3d.com/7/" >
+<img alt="License" src="https://img.shields.io/badge/Rhino-7.0-9cf?style=flat-square"> </a>
+
+<a href="https://www.grasshopper3d.com" >
+<img alt="License" src="https://img.shields.io/badge/Grasshopper-1.0-brightgreen?style=flat-square"> </a>
+
 <a href="https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE" >
-<img alt="License" src="https://img.shields.io/github/license/xarthurx/IG-Mesh?style=flat-square">
-</a>
+<img alt="License" src="https://img.shields.io/github/license/xarthurx/IG-Mesh?style=flat-square"> </a>
 
 </div> 
 
-## A mesh processing library for Grasshopper (Rhino)
+## A mesh processing library for Grasshopper & Rhino
 
-`IG-Mesh`, standing for `I Got a Mesh` or `Igl-Grasshopper Mesh`, is a grasshopper plugin for low-level triangular mesh processing.
+`IG-Mesh`, standing for `I Got a Mesh` or `Igl-Grasshopper Mesh`, is a grasshopper plugin for both low-level and advanced mesh processing.
 
-The library features tools for extracting both low-level information (e.g. vertex, edge, face relationship) and high-level properties (e.g. isolines) that many mesh processing plugins do not provide.
+The library features tools for extracting both low-level information (e.g. vertex, edge, face relationship) and high-level properties (e.g. isolines, quad-planarization) that many mesh processing plugins do not provide.
 
-`IG-Mesh` is developed for the general architecture, design, and fabrication community, hoping to provide solutions for advanced mesh operations. The goal is to resolve the long-lasting pain of interactive mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
+`IG-Mesh` is developed for the general architecture, design, and fabrication community, hoping to fill the gap of mesh operations in any design-to-fabrication pipelines. The goal is to resolve the long-lasting pain of interactive mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 ### Components Overview
 ![](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/overview_img.png)
@@ -100,7 +106,7 @@ You need `Visual Studio 2017` or above and the `.NET` framework to compile the p
 
 2. Modify the corresponding dir in the `stdafx.h` file under project `igm_cppPort`.
 
-* Compared to the bare-bone `PInvoke` method, this library depends on the advanced geometry data contrainers from the `openNURBS` library to avoid potential memory leak.
+Note: *Compared to the bare-bone `PInvoke` method, this library depends on the advanced geometry data contrainers from `openNURBS` to avoid potential memory leak.*
 
 #### `libigl`
 
@@ -109,13 +115,13 @@ You need `Visual Studio 2017` or above and the `.NET` framework to compile the p
 
 #### `nuget` 
 In the `NuGet` package manager of `Visual Studio`, you should install the following packages for the solution:
-- `Grasshopper`
-- `RhinoCommon`
 - `System.Collections`
 - `System.Runtime`
+- `Grasshopper`
+- `RhinoCommon`
 
 ### Build
-After the above two steps, you should now be able to build the whole solution and generate the `.gha` and `.dll` file.
+You should now be able to build the whole solution and generate the `.gha` and `.dll` files.
 
 
 # Acknowledgement and License
@@ -129,7 +135,7 @@ The rest funcitons are developed by the author in `C++` and ported to `C#` in th
 [^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io) library.*
 
 
-**The library is released under the [MIT licence](./LICENSE).**
+**The library is released under the [GPL licence](https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE).**
 
 ---
 # Credit & Citation 
@@ -142,7 +148,7 @@ If `IG-Mesh` contributes to an academic publication, please cite it as:
   author = {Zhao Ma},
   url = {https://github.com/xarthurx/IG-Mesh},
   doi = {10.5281/zenodo.6499203},
-  version = {0.1.0}
+  version = {0.2.0}
   year = {2022}
 }
 ```
