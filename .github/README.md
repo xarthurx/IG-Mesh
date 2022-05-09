@@ -49,6 +49,10 @@ The library features tools for extracting both low-level information (e.g. verte
 
 <details><summary> More (Click to expand!)... </summary>
 
+#### fast geodesic distance
+![Heat Geodesics](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_heatGeodesic.png)
+
+
 #### mesh isoline
 ![Mesh Isoline](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_isoline.png)
 
