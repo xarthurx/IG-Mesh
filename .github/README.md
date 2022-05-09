@@ -1,6 +1,23 @@
-![](./graphics/title_img.png)
+![](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/title_img.png)
 
-# A mesh processing library for Grasshopper (Rhino)
+<h1 align="center">IG-Mesh</h1>
+<div align="center">
+	<a href="https://github.com/xarthurx/IG-Mesh/">Home</a>
+  <span> • </span>
+	<a href="https://github.com/xarthurx/IG-Mesh/#Installation">Install</a>
+  <span> • </span>
+       	<a href="https://github.com/xarthurx/IG-Mesh/#Contribution">Contribute</a>
+  <p></p>
+</div> 
+
+
+<div align="center">
+<a href="https://github.com/xarthurx/IG-Mesh/blob/main/LICENSE" ><img src="https://img.shields.io/github/license/NvChad/NvChad?style=flat-square&logo=GNU&label=License&color=df967f" alt="License" /> </a>
+
+  <p></p>
+</div> 
+
+## A mesh processing library for Grasshopper (Rhino)
 
 `IG-Mesh`, standing for `I Got a Mesh` or `Igl-Grasshopper Mesh`, is a grasshopper plugin for low-level triangular mesh processing.
 
@@ -9,16 +26,23 @@ The library features tools for extracting both low-level information (e.g. verte
 `IG-Mesh` is developed for the general architecture, design, and fabrication community, hoping to provide solutions for advanced mesh operations. The goal is to resolve the long-lasting pain of interactive mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 ### Components Overview
-![](./graphics/overview_img.png)
+![](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/overview_img.png)
 
-### Demo
+### Showcase 
 <p align="center">
-  <img src="./graphics/demo.gif" alt="demo.gif"/>
+  <img src="https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/demo.gif" alt="demo.gif"/>
 </p>
-<!-- ![](./graphics/demo.gif) -->
+
+### Component Showcase
+
+<details><summary> <b>Images</b> (Click to expand!)</summary>
+
+![Universal Random Points](https://user-images.githubusercontent.com/59060246/130129880-59ab1ad5-9aa6-4f50-9ddd-d8dde0c16257.png)
+
+</details>
 
 
-# Installation 
+## Installation 
 
 ### Install with **PackageManager** (Rhino 7+)
 1. Open Rhino and run command `PackageManager`.
@@ -28,14 +52,14 @@ The library features tools for extracting both low-level information (e.g. verte
 ### Food4Rhino 
 The [project page on Food4Rhino](https://www.food4rhino.com/en/app/ig-mesh) also holds major release versions of this library.
 
-### pre-compiled release
+### Pre-compiled release
 Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
 
 1. Download the `.zip` file for your OS from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
-2. Unzip the `.zip` file and put the folder into you "Grasshopper Component Folder".
-3. Restart Rhino.
+2. Unzip the `.zip` file and put the folder into you *Grasshopper Component Folder*.
+3. Restart *Rhino* and *Grasshopper*.
 
-*Releases with minor updates will only be published as pre-compiled release and be hosted on github.*
+*Releases with minor updates will only be published as pre-compiled releases and be hosted on github.*
 
 
 # Alpha-phase and Use case collection
@@ -49,9 +73,9 @@ I will add the corresponding functions to the library after evaluation, ASAP.
 # Planned Feature 
 ## TODO
 Below are the current planned features to be added in the next release:
-- planarization using [*Shape-Up*](https://lgg.epfl.ch/publications/2012/shapeup/index.php)
+- ~~planarization using [*Shape-Up*](https://lgg.epfl.ch/publications/2012/shapeup/index.php)~~ (done in v0.2)
 - Half-Edge structure
-- Fast geodesic distance based on the "Heat-kernel" method
+- ~~Fast geodesic distance based on the "Heat-kernel" method~~ (done in v0.2)
 
 
 ## Future Plan (Non-Goal TODO)
