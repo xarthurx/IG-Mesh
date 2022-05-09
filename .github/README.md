@@ -42,13 +42,13 @@ The library features tools for extracting both low-level information (e.g. verte
   <img src="https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/demo.gif" alt="demo.gif"/>
 </p>
 
-### Component Showcase
-
-<details><summary> <b>Images</b> (Click to expand!)</summary>
-
-![Universal Random Points](https://user-images.githubusercontent.com/59060246/130129880-59ab1ad5-9aa6-4f50-9ddd-d8dde0c16257.png)
-
-</details>
+<!-- ### Component Showcase -->
+<!---->
+<!-- <details><summary> <b>Images</b> (Click to expand!)</summary> -->
+<!---->
+<!-- ![Universal Random Points](https://user-images.githubusercontent.com/59060246/130129880-59ab1ad5-9aa6-4f50-9ddd-d8dde0c16257.png) -->
+<!---->
+<!-- </details> -->
 
 
 ## Installation 
@@ -59,7 +59,7 @@ The library features tools for extracting both low-level information (e.g. verte
 3. Install the plugin and restart Rhino.
 
 ### Food4Rhino 
-The [project page on Food4Rhino](https://www.food4rhino.com/en/app/ig-mesh) also holds major release versions of this library.
+The [Project Page](https://www.food4rhino.com/en/app/ig-mesh) on Food4Rhino also holds major release versions of this library.
 
 ### Pre-compiled release
 Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
