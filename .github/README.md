@@ -157,7 +157,7 @@ If `IG-Mesh` contributes to an academic publication, please cite it as:
   author = {Zhao Ma},
   url = {https://github.com/xarthurx/IG-Mesh},
   doi = {10.5281/zenodo.6499203},
-  version = {0.2.0}
+  version = {0.2.6}
   year = {2022}
 }
 ```
