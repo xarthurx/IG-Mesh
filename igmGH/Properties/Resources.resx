@@ -190,6 +190,9 @@
   <data name="meshWindingNumber" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\meshWindingNumber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="pluginIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\pluginIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="scalarRemapFtoV" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\scalarRemapFtoV.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
