@@ -34,4 +34,4 @@ using System.Runtime.InteropServices;
 
 // controls the dll version
 [assembly: AssemblyVersion("0.2.*")]
-[assembly: AssemblyFileVersion("0.2.6")]
+[assembly: AssemblyFileVersion("0.2.7")]

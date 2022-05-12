@@ -86,9 +86,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Grasshopper">
-      <Version>7.17.22102.5001</Version>
-    </PackageReference>
     <PackageReference Include="System.Collections">
       <Version>4.3.0</Version>
     </PackageReference>
