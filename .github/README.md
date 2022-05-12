@@ -44,20 +44,20 @@ The library features tools for extracting both low-level information (e.g. verte
 
 
 ### Highlighted Components
-#### universal random points (blue noise)
+#### <u>universal random points (blue noise)</u>:
 ![Universal Random Distribution](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_randomPts.png)
 
 <details><summary> More (Click to expand!)... </summary>
 
-#### fast geodesic distance
+#### <u>fast geodesic distance</u>:
 ![Heat Geodesics](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_heatGeodesics.png)
 
 
-#### mesh isoline
+#### <u>mesh isoline</u>:
 ![Mesh Isoline](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_isoline.png)
 
 
-#### quad-mesh planarization
+#### <u>quad-mesh planarization</u>:
 ![Quad Planarization](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_planarization.png)
 
 
