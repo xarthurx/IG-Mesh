@@ -102,7 +102,7 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(TargetDir) $(SolutionDir)igmGH\bin *CppPort.dll
+      <Command>robocopy $(TargetDir) $(SolutionDir)bin *CppPort.dll
 if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

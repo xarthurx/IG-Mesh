@@ -28,7 +28,7 @@
 
 ## A mesh processing library for Grasshopper & Rhino
 
-[**IG-Mesh**](https://github.com/xarthurx/IG-Mesh/) (standing for "I Got a Mesh" or "Igl-Grasshopper Mesh") is a grasshopper plugin for both low-level and advanced mesh processing.
+[**IG-Mesh**](https://github.com/xarthurx/IG-Mesh/) (standing for "I Get a Mesh..." or "Igl-Grasshopper Mesh") is a grasshopper plugin for both low-level and advanced mesh processing.
 
 The library features tools for extracting both low-level information (e.g. vertex, edge, face relationship) and high-level properties (e.g. isolines, quad-planarization) that many mesh processing plugins do not provide.
 
@@ -157,7 +157,7 @@ If `IG-Mesh` contributes to an academic publication, please cite it as:
   author = {Zhao Ma},
   url = {https://github.com/xarthurx/IG-Mesh},
   doi = {10.5281/zenodo.6499203},
-  version = {0.2.6}
+  version = {0.2.8}
   year = {2022}
 }
 ```
