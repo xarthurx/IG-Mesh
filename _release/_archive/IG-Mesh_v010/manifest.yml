@@ -1,0 +1,13 @@
+---
+name: IG-Mesh
+version: 0.1.2
+authors:
+- Zhao Ma
+description: IG-Mesh is a one-stop solution for low-level (vertex-based, edge-based) mesh processing. It transplants many functions available in the computer graphics community to the Rhino+GH platform.
+url: https://github.com/xarthurx/IG-Mesh
+
+keywords:
+- mesh
+- trimesh
+- geometry
+- processing
