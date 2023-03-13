@@ -10,9 +10,9 @@
 //#include "rhinoSdk.h"
 
 // defining OPENNURBS_PUBLIC_INSTALL_DIR enables automatic linking using pragmas
-#define OPENNURBS_PUBLIC_INSTALL_DIR "C:/Libraries/opennurbs"
+#define OPENNURBS_PUBLIC_INSTALL_DIR "C:/xLibraries/opennurbs"
 
-#include "C:/Libraries/opennurbs/opennurbs_public.h"
+#include "C:/xLibraries/opennurbs/opennurbs_public.h"
 
 // -------------------------------------
 // IGL includes

@@ -10,5 +10,7 @@
     <StartAction>Program</StartAction>
     <StartWorkingDirectory>C:\Users\xarthur\source\repo\IG-Mesh\igmGH\bin\</StartWorkingDirectory>
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <RemoteDebugEnabled>false</RemoteDebugEnabled>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
 </Project>
