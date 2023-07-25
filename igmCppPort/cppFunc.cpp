@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "cppFunctions.h"
+#include "cppFunc.h"
 #include "geolib.h"
+
 
 using RowMajMatXd = Matrix<double, -1, -1, RowMajor>;
 using RowMajMatXf = Matrix<float, -1, -1, RowMajor>;
