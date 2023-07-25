@@ -95,8 +95,8 @@ Pre-compiled releases are available on the [GitHub repo](https://github.com/xart
 ### TODO
 Below are the current planned features to be added in the next release:
 - ~~planarization using [*Shape-Up*](https://lgg.epfl.ch/publications/2012/shapeup/index.php)~~ (done in v0.2)
-- Half-Edge structure
 - ~~Fast geodesic distance based on the "Heat-kernel" method~~ (done in v0.2)
+- Half-Edge structure
 
 
 ### Future Plan (Non-Goal TODO)
@@ -110,20 +110,24 @@ Below is an incomplete list of functions that `IG-Mesh` plans to provide. The li
 
 ## Contribution
 
-You need `Visual Studio 2017` or above and the `.NET` framework to compile the project.
+You need `Visual Studio 2019` (2022 is not supported by McNeel) and the `.NET` framework to compile the project.
 
 ### Dependence
 #### `openNURBS`
-1. Download the [openNURBS](https://github.com/mcneel/opennurbs) library to your local desk, and build it (both `debug` and `Release`) following the instructions.
+1. Install the official [Rhino SDK](https://www.rhino3d.com/download/Rhino-SDK/7.0/latest/).
+2. Build the `iglCpp` project -- if no error occurs, the SDK is installed successfully.
 
-2. Modify the corresponding dir in the `stdafx.h` file under project `igm_cppPort`.
-
-Note: *Compared to the bare-bone `PInvoke` method, this library depends on the advanced geometry data contrainers from `openNURBS` to avoid potential memory leak.*
 
 #### `libigl`
 
 1. Download the [libigl](https://libigl.github.io) library to your local desk. 
-2. Add the `include` dir in the Property Page of `igm_cppPort`.
+2. Add the `include` dir in the Property Page of `igmCpp`.
+![](./cppIGL-setting.png)
+
+
+#### `Eigen`
+Both `IG-Mesh` and `libigl` requires `Eigen3`. The `vcpkg` approach is recommended, though you can also manually link the library in the Solution Property Page.
+
 
 #### `nuget` 
 In the `NuGet` package manager of `Visual Studio`, you should install the following packages for the solution:
