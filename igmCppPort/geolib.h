@@ -1,9 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-using namespace Eigen;
-using namespace std;
-
 namespace GeoLib {
 // solve the constrained scalar field of a mesh
 template <typename T>

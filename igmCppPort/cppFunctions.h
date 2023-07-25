@@ -1,25 +1,24 @@
 #pragma once
 #include "stdafx.h"
 
-#if defined(RH_DLL_EXPORTS)
-
-/* Compiling XIGLLIB as a Windows DLL - export classes, functions, and globals
- */
+// Windows build
+#if defined(_WIN32)
 #define RH_CPP_CLASS __declspec(dllexport)
 #define RH_CPP_FUNCTION __declspec(dllexport)
-#define RH_CPP_DATA __declspec(dllexport)
-
 #define RH_C_FUNCTION extern "C" __declspec(dllexport)
-
-#else
-/* Using XIGLLIB as a Windows DLL - import classes, functions, and globals */
-#define RH_CPP_CLASS __declspec(dllimport)
-#define RH_CPP_FUNCTION __declspec(dllimport)
-#define RH_CPP_DATA __declspec(dllimport)
-
-#define RH_C_FUNCTION extern "C" __declspec(dllimport)
-
 #endif
+
+// Apple build
+#if defined(__APPLE__)
+#define RH_CPP_CLASS __attribute__((visibility("default")))
+#define RH_CPP_FUNCTION __attribute__((visibility("default")))
+#define RH_C_FUNCTION extern "C" __attribute__((visibility("default")))
+#endif  // __APPLE__
+
+// ! testing func for cpp/c# integration
+extern "C" {
+__declspec(dllexport) double IGM_simple_addition(double a, double b);
+}
 
 // ! --------------------------------
 // ! 01:: IO, property funcs

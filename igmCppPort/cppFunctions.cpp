@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "cppFunctions.h"
-
 #include "geolib.h"
 
 using RowMajMatXd = Matrix<double, -1, -1, RowMajor>;
@@ -87,6 +87,8 @@ void cvtEigenToON_Vectors(const Matrix<T, Dynamic, Dynamic>& matV,
     V->Append(ON_3dVector(matV(i, 0), matV(i, 1), matV(i, 2)));
   }
 }
+
+double IGM_simple_addition(double a, double b) { return a + b; }
 
 void IGM_read_triangle_mesh(char* filename, ON_Mesh* pMesh) {
   MatrixXd matV;

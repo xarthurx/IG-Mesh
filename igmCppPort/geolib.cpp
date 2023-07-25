@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "geolib.h"
 
 template <typename T>
