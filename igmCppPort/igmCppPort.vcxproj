@@ -97,6 +97,13 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>robocopy $(TargetDir) $(SolutionDir)bin *CppPort.dll
+if %errorlevel% leq 1 exit 0 else exit %errorlevel%
+
+robocopy $(TargetDir) $(SolutionDir)bin *CppPort.lib
+if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -122,6 +129,13 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>robocopy $(TargetDir) $(SolutionDir)bin *CppPort.dll
+if %errorlevel% leq 1 exit 0 else exit %errorlevel%
+
+robocopy $(TargetDir) $(SolutionDir)bin *CppPort.lib
+if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
