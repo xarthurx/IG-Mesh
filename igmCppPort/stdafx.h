@@ -122,6 +122,8 @@
 #include <igl/triangle_triangle_adjacency.h>
 #include <igl/unique.h>
 #include <igl/write_triangle_mesh.h>
+#include <igl/map_vertices_to_circle.h>
+#include <igl/harmonic.h>
 
 // -------------------------------------
 // common headers and namespace

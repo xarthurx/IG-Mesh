@@ -1,7 +1,10 @@
-#include "stdafx.h"
 #include "cppFunc.h"
-#include "geolib.h"
 
+#include <igl/harmonic.h>
+#include <igl/map_vertices_to_circle.h>
+
+#include "geolib.h"
+#include "stdafx.h"
 
 using RowMajMatXd = Matrix<double, -1, -1, RowMajor>;
 using RowMajMatXf = Matrix<float, -1, -1, RowMajor>;
@@ -512,6 +515,23 @@ void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
   cvtEigenVToON_Array(vecS, S);
   cvtEigenVToON_Array(vecI, I);
   cvtEigenToON_Points(matC, C);
+}
+
+void IGM_param_harmonic(ON_Mesh* pMesh, ON_3dPointArray* Vuv, int k = 1) {
+  MatrixXd matV;
+  MatrixXi matF;
+  cvtMeshToEigen(pMesh, matV, matF);
+
+  VectorXi bnd;
+  igl::boundary_loop(matF, bnd);
+
+  MatrixXd bnd_uv;
+  igl::map_vertices_to_circle(matV, bnd, bnd_uv);
+
+  MatrixXd matV_uv;
+  igl::harmonic(matV, matF, bnd, bnd_uv, k, matV_uv);
+
+  cvtEigenToON_Points(matV_uv, Vuv);
 }
 
 void IGM_random_point_on_mesh(ON_Mesh* pMesh, int N, ON_3dPointArray* P,

@@ -47,7 +47,8 @@ namespace IGMRhinoCommon
 
         public static (List<Point3d>, List<List<int>>, Point3d, double) GetMeshInfo(ref Mesh rhinoMesh)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // mesh V, F
@@ -82,7 +83,8 @@ namespace IGMRhinoCommon
 
         public static List<double> RemapFtoV(ref Mesh rMesh, List<double> scalarV)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var valCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(scalarV);
@@ -100,7 +102,8 @@ namespace IGMRhinoCommon
 
         public static List<double> RemapVtoF(ref Mesh rMesh, List<double> scalarF)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var valCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble(scalarF);
@@ -118,7 +121,8 @@ namespace IGMRhinoCommon
 
         public static List<List<int>> GetAdjacencyVV(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var cppAdjVV = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
@@ -145,7 +149,8 @@ namespace IGMRhinoCommon
 
         public static (List<List<int>>, List<List<int>>) GetAdjacencyVT(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var cppAdjVT = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
@@ -176,7 +181,8 @@ namespace IGMRhinoCommon
 
         public static (List<List<int>>, List<List<int>>) GetAdjacencyTT(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var cppAdjTT = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
@@ -204,7 +210,8 @@ namespace IGMRhinoCommon
 
         public static List<List<int>> GetBoundaryLoop(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var cppBndLoop = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
@@ -230,7 +237,8 @@ namespace IGMRhinoCommon
 
         public static (List<Line>, List<List<int>>, List<int>) GetBoundaryEdge(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var cppEL = new Rhino.Runtime.InteropWrappers.SimpleArrayInt();
@@ -259,7 +267,8 @@ namespace IGMRhinoCommon
         public static List<Point3d> GetBarycenter(ref Mesh rhinoMesh)
         {
             //initialize the pointer and pass data
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
@@ -280,7 +289,8 @@ namespace IGMRhinoCommon
         public static List<Vector3d> GetNormalsVert(ref Mesh rhinoMesh)
         {
 
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
@@ -301,7 +311,8 @@ namespace IGMRhinoCommon
         public static List<Vector3d> GetNormalsFace(ref Mesh rhinoMesh)
         {
 
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
@@ -322,7 +333,8 @@ namespace IGMRhinoCommon
         public static List<List<Vector3d>> GetNormalsCorner(ref Mesh rhinoMesh, double thre_deg)
         {
 
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
@@ -344,7 +356,8 @@ namespace IGMRhinoCommon
 
         public static (List<Vector3d>, List<List<int>>, List<int>) GetNormalsEdge(ref Mesh rhinoMesh, int wT)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
@@ -374,8 +387,10 @@ namespace IGMRhinoCommon
 
         public static List<double> GetConstrainedScalar(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
-            if (con_idx.Count != con_val.Count) throw new OverflowException();
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
+            if (con_idx.Count != con_val.Count)
+                throw new OverflowException();
 
             // input
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -395,7 +410,8 @@ namespace IGMRhinoCommon
 
         public static List<List<Point3d>> GetIsolineFromScalar(ref Mesh rMesh, ref List<double> meshScalar, ref List<double> iso_t)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
 
             // input
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -425,8 +441,10 @@ namespace IGMRhinoCommon
 
         public static (List<List<Point3d>>, List<double>) GetIsolinePts(ref Mesh rMesh, ref List<int> con_idx, ref List<double> con_val, ref List<double> iso_t)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
-            if (con_idx.Count != con_val.Count) throw new OverflowException();
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
+            if (con_idx.Count != con_val.Count)
+                throw new OverflowException();
 
             // input
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
@@ -460,7 +478,8 @@ namespace IGMRhinoCommon
 
         public static List<float> GetLapacianScalar(ref Mesh rhinoMesh, ref List<int> con_idx, ref List<float> con_val)
         {
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
 
             float[] V = rhinoMesh.Vertices.ToFloatArray();
             int[] F = rhinoMesh.Faces.ToIntArray(true);
@@ -507,7 +526,8 @@ namespace IGMRhinoCommon
         public static (List<Point3d> P, List<int> FI) GetRandomPointsOnMesh(ref Mesh rhinoMesh, int N, int M)
         {
 
-            if (rhinoMesh == null) throw new ArgumentNullException(nameof(rhinoMesh));
+            if (rhinoMesh == null)
+                throw new ArgumentNullException(nameof(rhinoMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rhinoMesh);
 
             // call the cpp func
@@ -529,7 +549,8 @@ namespace IGMRhinoCommon
         public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2) GetPrincipalCurvature(ref Mesh rMesh, uint r)
         {
 
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             // call the cpp func
@@ -565,7 +586,8 @@ namespace IGMRhinoCommon
 
         public static List<double> GetGaussianCurvature(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             var Kcpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
@@ -578,7 +600,8 @@ namespace IGMRhinoCommon
 
         public static List<double> GetFastWindingNumber(ref Mesh rMesh, ref List<Point3d> Q)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             List<double> Qarray = new List<double>();
@@ -600,7 +623,8 @@ namespace IGMRhinoCommon
 
         public static (List<double> SD, List<int> FI, List<Point3d> CP) GetSignedDistance(ref Mesh rMesh, ref List<Point3d> Q, int signed_type)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             List<double> Qarray = new List<double>();
@@ -625,9 +649,23 @@ namespace IGMRhinoCommon
             return (SD, FI, CP);
         }
 
+        public static List<Point3d> GetParamHarmonic(ref Mesh rMesh, int k)
+        {
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
+            IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
+
+            var VuvCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayPoint3d();
+            CppIGM.IGM_param_harmonic(pMesh, VuvCpp.NonConstPointer(), k);
+
+            List<Point3d> VuvP = new List<Point3d>(VuvCpp.ToArray());
+            return VuvP;
+        }
+
         public static IntPtr GetHeatGeodesicPrecomputedData(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
 
             return CppIGM.IGM_heat_geodesic_precompute(pMesh);
@@ -646,7 +684,8 @@ namespace IGMRhinoCommon
 
         public static List<double> GetQuadPlanarity(ref Mesh rMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
             var PlanarityCpp = new Rhino.Runtime.InteropWrappers.SimpleArrayDouble();
 
@@ -659,7 +698,8 @@ namespace IGMRhinoCommon
 
         public static void PlanarizeQuadMesh(ref Mesh rMesh, int maxIter, double thres, ref Mesh oMesh)
         {
-            if (rMesh == null) throw new ArgumentNullException(nameof(rMesh));
+            if (rMesh == null)
+                throw new ArgumentNullException(nameof(rMesh));
             // notice: we will modify the mesh, so use nonConst ptr.
             IntPtr pMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(rMesh);
             IntPtr poMesh = Rhino.Runtime.Interop.NativeGeometryConstPointer(oMesh);

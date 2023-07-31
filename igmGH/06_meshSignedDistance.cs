@@ -4,25 +4,17 @@ using System.Collections.Generic;
 
 namespace igmGH
 {
-    public class IGM_heat_geodesic_dist : GH_Component
+    public class IGM_signed_distance : GH_Component
     {
-        Rhino.Geometry.Mesh heat_mesh;
-        static IntPtr geoData;
-
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
-        public IGM_heat_geodesic_dist()
-          : base("HeatGeo Distance", "igGeoDist",
-              "Compute geodesic distance of multiple sources on a mesh using the heat-transfer-inspired fast approximation method.",
-              "IG-Mesh", "05::Measure")
+        public IGM_signed_distance()
+          : base("Signed Distance", "igSignedDist",
+              "Compute the signed distance for the query pts to the given mesh.",
+              "IG-Mesh", "06::measure")
         {
         }
-
-        /// <summary>
-        /// icon position in a category
-        /// </summary>
-        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -30,8 +22,9 @@ namespace igmGH
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
-            pManager.AddIntegerParameter("Source", "S", "Source vertex list to compute distance from.", GH_ParamAccess.list);
-            pManager.AddBooleanParameter("Re-compute", "B", "Recompute the whole process.", GH_ParamAccess.item, false);
+            pManager.AddPointParameter("QueryPoints", "P", "The points to be queried.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("signed_type", "st", "The method used for computing signed distance: 1-winding number; 2-default; 3-unsigned; 4-fast winding number (default).", GH_ParamAccess.item, 4);
+            pManager[2].Optional = true;
         }
 
         /// <summary>
@@ -39,7 +32,9 @@ namespace igmGH
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddNumberParameter("Distance", "D", "The computed distance list of each vertex.", GH_ParamAccess.list);
+            pManager.AddNumberParameter("Signed Distance", "SD", "The smallest signed distances of the queried points.", GH_ParamAccess.list);
+            pManager.AddIntegerParameter("Closest Face Index", "FI", "Face indices corresponding to the smallest distances.", GH_ParamAccess.list);
+            pManager.AddPointParameter("Closest Point", "CP", "Closest Points to the queried points.", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -53,26 +48,20 @@ namespace igmGH
             if (!DA.GetData(0, ref mesh)) { return; }
             if (!mesh.IsValid) { return; }
 
+            List<Rhino.Geometry.Point3d> Q = new List<Rhino.Geometry.Point3d>();
+            if (!DA.GetDataList(1, Q)) { return; }
 
-            List<int> gamma = new List<int>();
-            if (!DA.GetDataList(1, gamma) || gamma.Count == 0) { return; }
+            int st = new int();
+            if (!DA.GetData(2, ref st)) { return; }
 
-            bool redo = false;
-            if (!DA.GetData(2, ref redo)) { return; }
-
-            var meshSame = (heat_mesh != null && Rhino.Geometry.InstanceReferenceGeometry.GeometryEquals(mesh, heat_mesh));
-            if (redo || geoData == IntPtr.Zero || !meshSame)
-            {
-                geoData = IGMRhinoCommon.Utils.GetHeatGeodesicPrecomputedData(ref mesh);
-                heat_mesh = mesh;
-            }
-
-            var D = IGMRhinoCommon.Utils.GetHeatGeodesicDist(geoData, ref gamma);
+            // call the cpp function to solve the adjacency list
+            var (sd, fi, cp) = IGMRhinoCommon.Utils.GetSignedDistance(ref mesh, ref Q, st);
 
             // output
-            DA.SetDataList(0, D);
+            DA.SetDataList(0, sd);
+            DA.SetDataList(1, fi);
+            DA.SetDataList(2, cp);
         }
-
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -82,8 +71,7 @@ namespace igmGH
             get
             {
                 //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
-                return Properties.Resources.meshHeatGeodesic;
+                return Properties.Resources.meshSignedDist;
             }
         }
 
@@ -92,8 +80,7 @@ namespace igmGH
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("449dc8bc-4b60-412e-aa5e-9fea06532c6d"); }
+            get { return new Guid("864f0192-bba2-487c-85ec-0118e564d69d"); }
         }
     }
 }
-

@@ -5,6 +5,7 @@
 #if defined(_WIN32)
 #define RH_CPP_CLASS __declspec(dllexport)
 #define RH_CPP_FUNCTION __declspec(dllexport)
+#define RH_FUNCTION __declspec(dllexport)
 #define RH_C_FUNCTION extern "C" __declspec(dllexport)
 #endif
 
@@ -95,7 +96,7 @@ void IGM_remapVtoF(ON_Mesh* pMesh, ON_SimpleArray<double>* val,
                    ON_SimpleArray<double>* res);
 
 // ! --------------------------------
-// ! 05:: measure
+// ! 06:: measure
 // ! --------------------------------
 RH_C_FUNCTION
 void IGM_laplacian(ON_Mesh* pMesh, ON_SimpleArray<int>* con_idx,
@@ -124,7 +125,16 @@ void IGM_signed_distance(ON_Mesh* pMesh, ON_SimpleArray<double>* Q, int type,
                          ON_3dPointArray* C);
 
 // ! --------------------------------
-// ! 06:: utils
+// ! 07:: parametrization
+// ! --------------------------------
+
+extern "C" {
+RH_FUNCTION
+void IGM_param_harmonic(ON_Mesh* pMesh, ON_3dPointArray* Vuv, int k = 1);
+}
+
+// ! --------------------------------
+// ! 09:: utils
 // ! --------------------------------
 
 RH_C_FUNCTION

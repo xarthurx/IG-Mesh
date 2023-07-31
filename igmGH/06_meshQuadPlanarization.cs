@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_quad_planarity()
           : base("Quad Mesh Planarity", "igQuadPlanarity",
               "Compute the planarity of the quad faces in a quad mesh.",
-              "IG-Mesh", "06::Utils")
+              "IG-Mesh", "09::Utils")
         {
         }
 
@@ -84,7 +84,7 @@ namespace igmGH
         public IGM_quad_planarize()
           : base("Quad Mesh Planarize", "igQuadPlanarize",
               "Planarize the quad faces in a quad mesh.",
-              "IG-Mesh", "06::Utils")
+              "IG-Mesh", "09::Utils")
         {
         }
 

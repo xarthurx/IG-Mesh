@@ -13,7 +13,7 @@ namespace igmGH
         public IGM_constrained_scalar()
           : base("Constrained Scalar", "igConstrainedScalar",
               "Compute a scalar field based on any vertex-based constraints.",
-              "IG-Mesh", "06::Utils")
+              "IG-Mesh", "09::Utils")
         {
         }
 

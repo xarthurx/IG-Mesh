@@ -172,6 +172,13 @@ namespace IGMRhinoCommon
         internal static extern void IGM_signed_distance(IntPtr pMesh, IntPtr Q, int type, IntPtr S, IntPtr I, IntPtr C);
 
         /// <summary>
+        /// harmonic parametrization 
+        /// </summary>
+        [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void IGM_param_harmonic(IntPtr pMesh, IntPtr Vuv, int k);
+
+
+        /// <summary>
         /// compute geodesic pre-computed data
         /// </summary>
         [DllImport(Import.cppLib, CallingConvention = CallingConvention.Cdecl)]

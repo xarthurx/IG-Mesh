@@ -11,7 +11,7 @@ namespace igmGH
         public IGM_principal_curvature()
           : base("Principal Curvature", "igCurvaturePrincipal",
               "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-              "IG-Mesh", "05::Measure")
+              "IG-Mesh", "06::measure")
         {
         }
 
@@ -96,7 +96,7 @@ namespace igmGH
         public IGM_gaussian_curvature()
           : base("Gaussian Curvature", "igCurvatureGaussian",
               "Compute integral of gaussian curvature of the given mesh.",
-              "IG-Mesh", "05::Measure")
+              "IG-Mesh", "06::measure")
         {
         }
 
