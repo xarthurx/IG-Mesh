@@ -10,7 +10,7 @@ namespace igmGH
         public override Bitmap Icon => Properties.Resources.pluginIcon;
         public override Bitmap AssemblyIcon => Properties.Resources.pluginIcon;
         public override string Description => "IG-Mesh is a one-stop solution for low-level (vertex-based, edge-based) mesh processing, featuring many advanced algorithms from computer graphics community.";
-        public override string AuthorName => "Zhao MA";
+        public override string AuthorName => "Dr. Zhao MA";
         public override string AuthorContact => "https://github.com/xarthurx/IG-Mesh";
         // controls the package manager version.
         public override string Version => System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;

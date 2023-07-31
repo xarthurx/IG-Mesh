@@ -1,13 +1,22 @@
 
-Remove-Item manifest.yml
+if (Test-Path "manifest.yml")
+{
+  Remove-Item manifest.yml
+}
+
+Copy-Item -Path "..\..\bin\*.dll" -Destination ".\" -Recurse
+Copy-Item -Path "..\..\bin\*.gha" -Destination ".\" -Recurse
+
 &'C:\Program Files\Rhino 7\System\Yak.exe' spec
 
-Add-Content manifest.yml "`nicon_url: https://i.imgur.com/9eJy5Bs.png `n"
-Add-Content manifest.yml "keywords: `n - drawing `n - climate `n - soil `n - language"
+# Add-Content manifest.yml "`nicon: `"https://i.imgur.com/WABE4LN.png`""
+Add-Content manifest.yml "`nicon: packageManagerIcon.png"
+Add-Content manifest.yml "`nkeywords: `n - geometry-processing `n - mesh-processing `n - mesh"
 
 Write-Host "========================="
 Write-Host "Modified Manifest File:"
 Write-Host "========================="
+
 Get-Content manifest.yml
 
 
