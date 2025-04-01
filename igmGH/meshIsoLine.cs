@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Grasshopper.Kernel;
+using Rhino.Geometry;
 
 namespace igmGH
 {
@@ -79,7 +81,7 @@ namespace igmGH
             if (!DA.GetDataList(3, iso_t)) { return; }
 
             // call the cpp function to solve the adjacency list
-            var (isoPts, scalarV) = IGMRhinoCommon.Utils.getIsolinePts(ref mesh, ref con_idx, ref con_val, ref iso_t);
+            var (isoPts, scalarV) = IGMRhinoCommon.Utils.GetIsolinePts(ref mesh, ref con_idx, ref con_val, ref iso_t);
 
             // construct the index & pt tree from the adjacency list
             Grasshopper.DataTree<Point3d> ptTree = new Grasshopper.DataTree<Point3d>();

@@ -59,7 +59,7 @@ namespace igmGH
 
 
             // call the cpp function to solve the adjacency list
-            var res = IGMRhinoCommon.Utils.getLapacianScalar(ref mesh, ref con_idx, ref con_val);
+            var res = IGMRhinoCommon.Utils.GetLapacianScalar(ref mesh, ref con_idx, ref con_val);
 
 
             DA.SetDataList(0, res);
