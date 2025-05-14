@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33920.266
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igmRhinoCommon", "igmRhinoCommon\igmRhinoCommon.csproj", "{FD9F533F-D593-4911-8567-DA682C80E658}"
 	ProjectSection(ProjectDependencies) = postProject
