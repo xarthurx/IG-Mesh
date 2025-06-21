@@ -1,0 +1,7 @@
+include "base.fbs";
+
+namespace GSP.FB;
+
+table PointArrayData { points:[Vec3]; }
+root_type PointArrayData;
+

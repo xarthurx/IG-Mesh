@@ -1,0 +1,6 @@
+include "base.fbs";
+
+namespace GSP.FB;
+
+table PointData { point: Vec3; }
+root_type PointData;

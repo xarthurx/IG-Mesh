@@ -1,0 +1,4 @@
+namespace GSP.FB;
+
+struct Vec3 { x:double; y:double; z:double; }
+struct Vec3i { x:int; y:int; z:int; }

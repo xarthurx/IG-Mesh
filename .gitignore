@@ -8,3 +8,6 @@ igmRhinoCommon/bin
 igmRhinoCommon/obj
 github_release_upload
 *.ai
+GeoSharPlusNET/bin
+GeoSharPlusNET/obj
+GeoSharPlusCPP/build

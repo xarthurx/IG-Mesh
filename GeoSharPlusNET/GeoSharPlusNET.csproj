@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
+		<PackageReference Include="RhinoCommon" Version="8.0.23304.9001" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\generated\GSP_FB\csharp\**\*.cs">
+			<Link>Generated\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
+
+</Project>
