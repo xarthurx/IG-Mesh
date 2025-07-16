@@ -17,4 +17,8 @@
 		</Compile>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\GeoSharPlusCPP\build\GeoSharPlusCPP.vcxproj" />
+	</ItemGroup>
+
 </Project>
