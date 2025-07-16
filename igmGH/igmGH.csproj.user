@@ -3,13 +3,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartWorkingDirectory>C:\Users\xarthurx\source\repo\IG-Mesh\igmGH\bin\</StartWorkingDirectory>
-    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartProgram>C:\Program Files\Rhino 8\System\Rhino.exe</StartProgram>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartWorkingDirectory>C:\Users\xarthurx\source\repo\IG-Mesh\igmGH\bin\</StartWorkingDirectory>
-    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartProgram>C:\Program Files\Rhino 8\System\Rhino.exe</StartProgram>
     <RemoteDebugEnabled>false</RemoteDebugEnabled>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
