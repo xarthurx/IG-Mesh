@@ -1,5 +1,7 @@
 #include "GeoSharPlusCPP/API/BridgeAPI.h"
 
+#include <igl/centroid.h>
+
 #include <iostream>
 #include <memory>
 
@@ -80,6 +82,29 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL mesh_roundtrip(const uint8_t* inBuffer,
     return false;
   }
 
+  return true;
+}
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL mesh_centroid(const uint8_t* inBuffer,
+                                                    int inSize,
+                                                    uint8_t** outBuffer,
+                                                    int* outSize) {
+  *outBuffer = nullptr;
+  *outSize = 0;
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  Eigen::Vector3d cen;
+  igl::centroid(mesh.V, mesh.F, cen);
+
+  // Serialize the centroid into the allocated buffer
+  if (!GS::serializePoint(cen, *outBuffer, *outSize)) {
+    if (*outBuffer) delete[] *outBuffer;  // Cleanup
+    *outBuffer = nullptr;
+    *outSize = 0;
+    return false;
+  }
   return true;
 }
 }  // namespace GeoSharPlusCPP::Serialization

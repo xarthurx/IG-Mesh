@@ -18,6 +18,7 @@ struct Mesh {
   Eigen::VectorXd C;
 
   bool validate() const;
+  Eigen::Vector3d centroid() const;
   std::pair<Vector3d, Vector3d> boundingBox() const;
 };
-}  // namespace GeomBridgeCPP
+}  // namespace GeoSharPlusCPP
