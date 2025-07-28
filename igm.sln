@@ -10,13 +10,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igmRhinoCommon", "igmRhinoC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igmGH", "igmGH\igmGH.csproj", "{210A633A-A5BB-47F8-A464-821D8525F7FD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1EC315D3-12F5-4A85-AAAF-D1AA28050EBC}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "igmCppPort", "igmCppPort\igmCppPort.vcxproj", "{72D4D6AA-1702-404D-97D6-CC62973D3AB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoSharPlusNET", "GeoSharPlusNET\GeoSharPlusNET.csproj", "{3B28B1D8-B5C5-797E-E33D-B8C763F758CD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeoSharPlusCPP", "GeoSharPlusCPP\build\GeoSharPlusCPP.vcxproj", "{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeoSharPlusCPP", "GeoSharPlusCPP\build\GeoSharPlusCPP.vcxproj", "{3CF9C053-154C-3259-A3FB-413CF17561CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,14 +50,14 @@ Global
 		{3B28B1D8-B5C5-797E-E33D-B8C763F758CD}.Release|x64.Build.0 = Release|Any CPU
 		{3B28B1D8-B5C5-797E-E33D-B8C763F758CD}.Release|x86.ActiveCfg = Release|Any CPU
 		{3B28B1D8-B5C5-797E-E33D-B8C763F758CD}.Release|x86.Build.0 = Release|Any CPU
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Debug|x64.ActiveCfg = Debug|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Debug|x64.Build.0 = Debug|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Debug|x86.ActiveCfg = Debug|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Debug|x86.Build.0 = Debug|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Release|x64.ActiveCfg = Release|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Release|x64.Build.0 = Release|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Release|x86.ActiveCfg = Release|x64
-		{36AB55DC-5F6B-3DC9-8FEF-06E05B10F19A}.Release|x86.Build.0 = Release|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Debug|x64.ActiveCfg = Debug|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Debug|x64.Build.0 = Debug|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Debug|x86.ActiveCfg = Debug|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Debug|x86.Build.0 = Debug|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Release|x64.ActiveCfg = Release|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Release|x64.Build.0 = Release|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Release|x86.ActiveCfg = Release|x64
+		{3CF9C053-154C-3259-A3FB-413CF17561CD}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
