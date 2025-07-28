@@ -9,11 +9,14 @@ namespace GeoSharPlusCPP::Serialization {
 bool serializePoint(const Vector3d& point, uint8_t*& resBuffer, int& resSize);
 bool deserializePoint(const uint8_t* buffer, int size, Vector3d& point);
 
-// Point array serialization
-bool serializePointArray(const std::vector<Vector3d>& points,
-                         uint8_t*& resBuffer, int& resSize);
+// Point array (de)serialization
+template <typename PointContainer>
+bool serializePointArray(const PointContainer& points, uint8_t*& resBuffer,
+                         int& resSize);
+// Point array deserialization template declaration
+template <typename PointContainer>
 bool deserializePointArray(const uint8_t* data, int size,
-                           std::vector<Vector3d>& pointArray);
+                           PointContainer& pointArray);
 
 // Mesh serialization
 bool serializeMesh(const Mesh& mesh, uint8_t*& resBuffer, int& resSize);

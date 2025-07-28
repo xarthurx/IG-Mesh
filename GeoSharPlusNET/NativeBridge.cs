@@ -77,11 +77,11 @@ namespace GSP {
     }
 
     // Mesh Centroid -- calculates the centroid of a mesh
-    [DllImport(WinLibName, EntryPoint = "mesh_centroid",
+    [DllImport(WinLibName, EntryPoint = "IGM_centroid",
                CallingConvention = CallingConvention.Cdecl)]
     private static extern bool MeshCentroidWin(byte[] inBuffer, int inSize, out IntPtr outBuffer,
                                                out int outSize);
-    [DllImport(MacLibName, EntryPoint = "mesh_centroid",
+    [DllImport(MacLibName, EntryPoint = "IGM_centroid",
                CallingConvention = CallingConvention.Cdecl)]
     private static extern bool MeshCentroidMac(byte[] inBuffer, int inSize, out IntPtr outBuffer,
                                                out int outSize);

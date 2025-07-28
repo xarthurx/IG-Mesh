@@ -10,6 +10,12 @@ struct Polyline {
 };
 
 struct Mesh {
+  Mesh() = default;
+
+  // Constructor to initialize mesh with vertices and faces
+  Mesh(const MatrixX3d& vertices, const MatrixX3i& faces)
+      : V(vertices), F(faces) {}
+
   // Mesh data: V - vertices, F - faces (triangles or quads)
   MatrixX3d V;
   MatrixX3i F;

@@ -43,15 +43,26 @@ bool deserializePoint(const uint8_t* buffer, int size, Vector3d& point) {
   return true;
 }
 
-bool serializePointArray(const std::vector<Vector3d>& points,
-                         uint8_t*& resBuffer, int& resSize) {
+// Template function to handle both vector<Vector3d> and MatrixXd
+template <typename PointContainer>
+bool serializePointArray(const PointContainer& points, uint8_t*& resBuffer,
+                         int& resSize) {
   flatbuffers::FlatBufferBuilder builder;
 
-  // Convert Eigen data to FlatBuffer vectors
+  // Convert data to FlatBuffer vectors
   std::vector<GSP::FB::Vec3> pointVector;
-  pointVector.reserve(points.size());
-  for (const auto& p : points) {
-    pointVector.emplace_back(p.x(), p.y(), p.z());
+  if constexpr (std::is_same_v<PointContainer, std::vector<Vector3d>>) {
+    // Handle std::vector<Vector3d>
+    pointVector.reserve(points.size());
+    for (const auto& p : points) {
+      pointVector.emplace_back(p.x(), p.y(), p.z());
+    }
+  } else if constexpr (std::is_same_v<PointContainer, Eigen::MatrixXd>) {
+    // Handle Eigen::MatrixXd
+    pointVector.reserve(points.rows());
+    for (Eigen::Index i = 0; i < points.rows(); ++i) {
+      pointVector.emplace_back(points(i, 0), points(i, 1), points(i, 2));
+    }
   }
 
   auto vecVector = builder.CreateVectorOfStructs(pointVector);
@@ -68,9 +79,10 @@ bool serializePointArray(const std::vector<Vector3d>& points,
 
   return true;
 }
-
+// Template function to handle both vector<Vector3d> and MatrixXd output types
+template <typename PointContainer>
 bool deserializePointArray(const uint8_t* data, int size,
-                           std::vector<Vector3d>& pointArray) {
+                           PointContainer& pointArray) {
   // Verify the buffer integrity
   flatbuffers::Verifier verifier(data, size);
   if (!verifier.VerifyBuffer<GSP::FB::PointArrayData>()) {
@@ -84,17 +96,31 @@ bool deserializePointArray(const uint8_t* data, int size,
   }
 
   auto points = ptArrayData->points();
-  // Clear the output vector and reserve space
-  pointArray.clear();
 
-  // Convert each FlatBuffers Vec3 to an Eigen Vector3d
-  for (size_t i = 0; i < points->size(); i++) {
-    auto point = points->Get(i);
-    pointArray.emplace_back(point->x(), point->y(), point->z());
+  if constexpr (std::is_same_v<PointContainer, std::vector<Vector3d>>) {
+    // Clear the output vector and reserve space for better performance
+    pointArray.clear();
+    pointArray.reserve(points->size());
+
+    // Convert each FlatBuffers Vec3 to an Eigen Vector3d
+    for (size_t i = 0; i < points->size(); i++) {
+      auto point = points->Get(i);
+      pointArray.emplace_back(point->x(), point->y(), point->z());
+    }
+  } else if constexpr (std::is_same_v<PointContainer, Eigen::MatrixXd>) {
+    // Resize the matrix to hold all points
+    pointArray.resize(points->size(), 3);
+
+    // Fill the matrix with point data
+    for (size_t i = 0; i < points->size(); i++) {
+      auto point = points->Get(i);
+      pointArray.row(i) << point->x(), point->y(), point->z();
+    }
   }
 
   return true;
 }
+
 bool serializeMesh(const Mesh& mesh, uint8_t*& resBuffer, int& resSize) {
   flatbuffers::FlatBufferBuilder builder;
 
@@ -196,4 +222,16 @@ bool deserializeMesh(const uint8_t* data, int size, Mesh& mesh) {
 
   return true;
 }
+
+// Explicit instantiations to ensure the template is compiled for these types
+template bool serializePointArray(const std::vector<Vector3d>& points,
+                                  uint8_t*& resBuffer, int& resSize);
+template bool serializePointArray(const Eigen::MatrixXd& points,
+                                  uint8_t*& resBuffer, int& resSize);
+
+// Explicit instantiations to ensure the template is compiled for these types
+template bool deserializePointArray(const uint8_t* data, int size,
+                                    std::vector<Vector3d>& pointArray);
+template bool deserializePointArray(const uint8_t* data, int size,
+                                    Eigen::MatrixXd& pointArray);
 }  // namespace GeoSharPlusCPP::Serialization
