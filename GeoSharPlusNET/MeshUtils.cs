@@ -82,5 +82,23 @@ namespace GeoSharpNET {
 
       return success;
     }
+
+    public static List<Point3d> GetBarycenter(ref Mesh rMesh) {
+      // initialize the pointer and pass data
+      if (rMesh == null)
+        throw new ArgumentNullException(nameof(rMesh));
+
+      var meshBuffer = Wrapper.ToMeshBuffer(rMesh);
+      NativeBridge.IGM_barycenter(meshBuffer, meshBuffer.Length, out IntPtr outBuffer,
+                                  out int outSize);
+
+      // Copy the result from unmanaged memory to a managed byte array
+      var byteArray = new byte[outSize];
+      Marshal.Copy(outBuffer, byteArray, 0, outSize);
+      Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+      var outPt = Wrapper.FromPointArrayBuffer(byteArray).ToList();
+
+      return outPt;
+    }
   }
-}

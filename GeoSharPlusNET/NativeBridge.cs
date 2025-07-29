@@ -62,6 +62,23 @@ namespace GSP {
     // IG-MESH native functions
     //----------------------------------
 
+    // Mesh Centroid -- calculates the centroid of a mesh
+    [DllImport(WinLibName, EntryPoint = "IGM_centroid",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool MeshCentroidWin(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                               out int outSize);
+    [DllImport(MacLibName, EntryPoint = "IGM_centroid",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool MeshCentroidMac(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                               out int outSize);
+
+    public static bool MeshCentroid(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                    out int outSize) {
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        return MeshCentroidWin(inBuffer, inSize, out outBuffer, out outSize);
+      else
+        return MeshCentroidMac(inBuffer, inSize, out outBuffer, out outSize);
+    }
     // Load Mesh -- basic function to get a mesh from the native library
     [DllImport(WinLibName, EntryPoint = "IGM_read_triangle_mesh",
                CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -90,22 +107,21 @@ namespace GSP {
         return SaveMeshMac(inBuffer, inSize, fileName);
     }
 
-    // Mesh Centroid -- calculates the centroid of a mesh
     [DllImport(WinLibName, EntryPoint = "IGM_centroid",
                CallingConvention = CallingConvention.Cdecl)]
-    private static extern bool MeshCentroidWin(byte[] inBuffer, int inSize, out IntPtr outBuffer,
-                                               out int outSize);
+    private static extern bool IGM_barycenterWin(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                                 out int outSize);
     [DllImport(MacLibName, EntryPoint = "IGM_centroid",
                CallingConvention = CallingConvention.Cdecl)]
-    private static extern bool MeshCentroidMac(byte[] inBuffer, int inSize, out IntPtr outBuffer,
-                                               out int outSize);
+    private static extern bool IGM_barycenterMac(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                                 out int outSize);
 
-    public static bool MeshCentroid(byte[] inBuffer, int inSize, out IntPtr outBuffer,
-                                    out int outSize) {
+    public static bool IGM_barycenter(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                      out int outSize) {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        return MeshCentroidWin(inBuffer, inSize, out outBuffer, out outSize);
+        return IGM_barycenterWin(inBuffer, inSize, out outBuffer, out outSize);
       else
-        return MeshCentroidMac(inBuffer, inSize, out outBuffer, out outSize);
+        return IGM_barycenterMac(inBuffer, inSize, out outBuffer, out outSize);
     }
   }
 }
