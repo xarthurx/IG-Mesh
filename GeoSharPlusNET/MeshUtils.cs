@@ -50,5 +50,22 @@ namespace GeoSharpNET {
 
       return (V, F, cen, vol);
     }
+
+    public static bool LoadMesh(string fileName, out Mesh mesh) {
+      mesh = new Mesh();
+      if (string.IsNullOrEmpty(fileName)) {
+        throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+        return false;
+      }
+      // Load the mesh using GeoSharPlusCPP
+      var success = NativeBridge.LoadMesh(fileName, out IntPtr meshPtr);
+      if (!success || meshPtr == IntPtr.Zero) {
+        throw new InvalidOperationException($"Failed to load mesh from {fileName}.");
+        return false;
+      }
+      // Convert the pointer to a Rhino Mesh object
+      mesh = Wrapper.FromMeshBuffer(meshPtr);
+      return true;
+    }
   }
 }
