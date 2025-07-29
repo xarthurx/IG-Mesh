@@ -62,18 +62,32 @@ namespace GSP {
     // IG-MESH native functions
     //----------------------------------
 
-    // Get Mesh -- basic function to get a mesh from the native library
-    [DllImport(WinLibName, EntryPoint = "get_mesh", CallingConvention = CallingConvention.Cdecl)]
-    private static extern bool GetMeshWin(byte[] inBuffer, int inSize, out IntPtr outBuffer,
-                                          out int outSize);
-    [DllImport(MacLibName, EntryPoint = "get_mesh", CallingConvention = CallingConvention.Cdecl)]
-    private static extern bool GetMeshMac(byte[] inBuffer, int inSize, out IntPtr outBuffer,
-                                          out int outSize);
-    public static bool GetMesh(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize) {
+    // Load Mesh -- basic function to get a mesh from the native library
+    [DllImport(WinLibName, EntryPoint = "IGM_read_triangle_mesh",
+               CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern bool LoadMeshWin(string fileName, out IntPtr outBuffer, out int outSize);
+    [DllImport(MacLibName, EntryPoint = "IGM_read_triangle_mesh",
+               CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private static extern bool LoadMeshMac(string fileName, out IntPtr outBuffer, out int outSize);
+    public static bool LoadMesh(string fileName, out IntPtr outBuffer, out int outSize) {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        return GetMeshWin(inBuffer, inSize, out outBuffer, out outSize);
+        return LoadMeshWin(fileName, out outBuffer, out outSize);
       else
-        return GetMeshMac(inBuffer, inSize, out outBuffer, out outSize);
+        return LoadMeshMac(fileName, out outBuffer, out outSize);
+    }
+
+    // Save Mesh -- basic function to export a mesh to local HDD
+    [DllImport(WinLibName, EntryPoint = "IGM_write_triangle_mesh",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool SaveMeshWin(byte[] inBuffer, int inSize, string fileName);
+    [DllImport(MacLibName, EntryPoint = "IGM_write_triangle_mesh",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool SaveMeshMac(byte[] inBuffer, int inSize, string fileName);
+    public static bool SaveMesh(byte[] inBuffer, int inSize, string fileName) {
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        return SaveMeshWin(inBuffer, inSize, fileName);
+      else
+        return SaveMeshMac(inBuffer, inSize, fileName);
     }
 
     // Mesh Centroid -- calculates the centroid of a mesh

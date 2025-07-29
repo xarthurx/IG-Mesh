@@ -54,18 +54,33 @@ namespace GeoSharpNET {
     public static bool LoadMesh(string fileName, out Mesh mesh) {
       mesh = new Mesh();
       if (string.IsNullOrEmpty(fileName)) {
-        throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
         return false;
       }
       // Load the mesh using GeoSharPlusCPP
-      var success = NativeBridge.LoadMesh(fileName, out IntPtr meshPtr);
-      if (!success || meshPtr == IntPtr.Zero) {
-        throw new InvalidOperationException($"Failed to load mesh from {fileName}.");
+      var success = NativeBridge.LoadMesh(fileName, out IntPtr outBuffer, out int outSize);
+      if (!success || outBuffer == IntPtr.Zero) {
         return false;
       }
+
+      // Copy the result from unmanaged memory to a managed byte array
+      var byteArray = new byte[outSize];
+      Marshal.Copy(outBuffer, byteArray, 0, outSize);
+      Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
       // Convert the pointer to a Rhino Mesh object
-      mesh = Wrapper.FromMeshBuffer(meshPtr);
+      mesh = Wrapper.FromMeshBuffer(byteArray);
       return true;
+    }
+
+    public static bool SaveMesh(ref Mesh mesh, string fileName) {
+      if (string.IsNullOrEmpty(fileName)) {
+        return false;
+      }
+
+      var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      var success = NativeBridge.SaveMesh(meshBuffer, meshBuffer.Length, fileName);
+
+      return success;
     }
   }
 }
