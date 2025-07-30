@@ -31,7 +31,7 @@ namespace igmGH {
         return;
       }
 
-      var vn = IGMRhinoCommon.Utils.GetNormalsVert(ref mesh);
+      var vn = GeoSharpNET.MeshUtils.GetNormalVert(ref mesh);
       DA.SetDataList(0, vn);
     }
   }
@@ -64,7 +64,7 @@ namespace igmGH {
         return;
       }
 
-      var fn = IGMRhinoCommon.Utils.GetNormalsFace(ref mesh);
+      var fn = GeoSharpNET.MeshUtils.GetNormalFace(ref mesh);
       DA.SetDataList(0, fn);
     }
   }
@@ -95,8 +95,9 @@ namespace igmGH {
       pManager.AddIntegerParameter("Edge End Index into Vertex List", "EI",
                                    "The end point indices from the vertex list.",
                                    GH_ParamAccess.tree);
-      pManager.AddIntegerParameter(
-          "Edge Index", "EMAP", "The edge indices from the global edge list.", GH_ParamAccess.list);
+      pManager.AddIntegerParameter("Edge Index", "EMAP",
+                                   "The edge indices from the global edge list (F x 3) to E.",
+                                   GH_ParamAccess.list);
     }
 
     protected override void SolveInstance(IGH_DataAccess DA) {
@@ -116,7 +117,7 @@ namespace igmGH {
         return;
       }
 
-      var (en, ei, emap) = IGMRhinoCommon.Utils.GetNormalsEdge(ref mesh, w);
+      var (en, ei, emap) = GeoSharpNET.MeshUtils.GetNormalEdge(ref mesh, w);
 
       Grasshopper.DataTree<int> eiTree = new Grasshopper.DataTree<int>();
       for (int i = 0; i < ei.Count; i++) {
@@ -168,7 +169,7 @@ namespace igmGH {
       if (!DA.GetData(1, ref t)) {
       }
 
-      var cn = IGMRhinoCommon.Utils.GetNormalsCorner(ref mesh, t);
+      var cn = GeoSharpNET.MeshUtils.GetNormalCorner(ref mesh, t);
 
       Grasshopper.DataTree<Vector3d> cnTree = new Grasshopper.DataTree<Vector3d>();
       for (int i = 0; i < cn.Count; i++) {

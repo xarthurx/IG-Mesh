@@ -310,5 +310,7 @@ IGM_edge_normals(const uint8_t* inBuffer, int inSize, int weightingType,
 
     return false;
   }
+
+  return true;
 }
 }  // namespace GeoSharPlusCPP::Serialization
