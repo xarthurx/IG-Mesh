@@ -56,11 +56,11 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_face_normals(const uint8_t* inBuffer,
                                                        uint8_t** outBuffer,
                                                        int* outSize);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_corner_normals(
-    const uint8_t* inBuffer, int inSize, uint8_t** outBuffer, int* outSize);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL
+IGM_corner_normals(const uint8_t* inBuffer, int inSize, double threshold_deg,
+                   uint8_t** outBuffer, int* outSize);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(const uint8_t* inBuffer,
-                                                       int inSize,
-                                                       uint8_t** outBuffer,
-                                                       int* outSize);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(
+    const uint8_t* inBuffer, int inSize, int weightingType, uint8_t** obEN,
+    int* obsEN, uint8_t** obEI, int* obsEI, uint8_t** obEMAP, int* obsEMAP);
 }

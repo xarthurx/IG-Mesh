@@ -1,0 +1,9 @@
+include "base.fbs";
+
+namespace GSP.FB;
+
+table DoublePairArrayData {
+  pairs:[Vec2];
+}
+
+root_type DoublePairArrayData;

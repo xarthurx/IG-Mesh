@@ -1,0 +1,7 @@
+namespace GSP.FB;
+
+table IntArrayData {
+  values:[int];
+}
+
+root_type IntArrayData;

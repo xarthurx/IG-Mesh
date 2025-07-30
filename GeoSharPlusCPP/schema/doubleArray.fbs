@@ -1,0 +1,7 @@
+namespace GSP.FB;
+
+table DoubleArrayData {
+  values:[double];
+}
+
+root_type DoubleArrayData;
