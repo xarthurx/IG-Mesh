@@ -63,4 +63,10 @@ IGM_corner_normals(const uint8_t* inBuffer, int inSize, double threshold_deg,
 GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(
     const uint8_t* inBuffer, int inSize, int weightingType, uint8_t** obEN,
     int* obsEN, uint8_t** obEI, int* obsEI, uint8_t** obEMAP, int* obsEMAP);
+
+// ! --------------------------------
+// ! 03:: adjacency funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(
+    const uint8_t* inBuffer, int inSize, uint8_t** outBuffer, int* outSize);
 }

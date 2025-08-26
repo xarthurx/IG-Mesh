@@ -1,5 +1,6 @@
 #include "GeoSharPlusCPP/API/BridgeAPI.h"
 
+#include <igl/adjacency_list.h>
 #include <igl/barycenter.h>
 #include <igl/centroid.h>
 #include <igl/per_corner_normals.h>
@@ -313,4 +314,26 @@ IGM_edge_normals(const uint8_t* inBuffer, int inSize, int weightingType,
 
   return true;
 }
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(
+    const uint8_t* inBuffer, int inSize, uint8_t** outBuffer, int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+  std::vector<std::vector<int>> VV;
+  igl::adjacency_list(mesh.F, VV);
+
+  // Serialize the adjacency list into the allocated buffer
+  *outBuffer = nullptr;
+  *outSize = 0;
+  // if (!GS::serializeNumberArray(VV, *outBuffer, *outSize)) {
+  //   if (*outBuffer) delete[] *outBuffer;  // Cleanup
+  //   *outBuffer = nullptr;
+  //   *outSize = 0;
+  //   return false;
+  // }
+  return true;
+}
+}  // extern "C"
 }  // namespace GeoSharPlusCPP::Serialization

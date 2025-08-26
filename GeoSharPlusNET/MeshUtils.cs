@@ -256,5 +256,31 @@ namespace GeoSharpNET {
 
       return (edgeNormals, edgeIndices, edgeMap);
     }
+
+    /// <summary>
+    /// Gets the vertex-vertex adjacency list for a mesh.
+    /// </summary>
+    /// <param name="mesh"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static List<List<int>> GetAdjacencyVV(ref Mesh mesh) {
+      if (mesh == null)
+        throw new ArgumentNullException(nameof(mesh));
+      // Serialize mesh to buffer
+      var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      // Call the native function to get vertex-vertex adjacency
+      var success = NativeBridge.IGM_vert_vert_adjacency(meshBuffer, meshBuffer.Length,
+                                                         out IntPtr outBuffer, out int outSize);
+      if (!success || outBuffer == IntPtr.Zero) {
+        return new List<List<int>>();
+      }
+      // Copy the result from unmanaged memory to a managed byte array
+      var byteArray = new byte[outSize];
+      Marshal.Copy(outBuffer, byteArray, 0, outSize);
+      Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+      // Deserialize the result into a list of lists of integers
+      var adjacencyList = Wrapper.FromIntArray2DBuffer(byteArray);
+      return adjacencyList;
+    }
   }
 }

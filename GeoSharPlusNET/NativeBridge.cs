@@ -284,6 +284,24 @@ namespace GSP {
                                    out obsEI, out obEMAP, out obsEMAP);
     }
 
+    [DllImport(WinLibName, EntryPoint = "IGM_vert_vert_adjacency",
+               CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool IGM_vert_vert_adjacencyWin(byte[] inBuffer, int inSize,
+                                                         out IntPtr outBuffer, out int outSize);
+
+    [DllImport(MacLibName, EntryPoint = "IGM_vert_vert_adjacency",
+               CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool IGM_vert_vert_adjacencyMac(byte[] inBuffer, int inSize,
+                                                         out IntPtr outBuffer, out int outSize);
+
+    public static bool IGM_vert_vert_adjacency(byte[] inBuffer, int inSize, out IntPtr outBuffer,
+                                               out int outSize) {
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        return IGM_vert_vert_adjacencyWin(inBuffer, inSize, out outBuffer, out outSize);
+      else
+        return IGM_vert_vert_adjacencyMac(inBuffer, inSize, out outBuffer, out outSize);
+    }
+
 #endregion
   }
 }
