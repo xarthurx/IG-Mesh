@@ -1,5 +1,6 @@
 ﻿using GSP;
 using Rhino.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -361,6 +362,88 @@ namespace GeoSharpNET {
       var ttiAdjacency = Wrapper.FromNestedIntArrayBuffer(byteArrayTTI);
       
       return (ttAdjacency, ttiAdjacency);
+    }
+
+    /// <summary>
+    /// Gets boundary loops for a mesh.
+    /// </summary>
+    /// <param name="mesh">Input mesh</param>
+    /// <returns>List of lists representing boundary loops</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static List<List<int>> GetBoundaryLoop(ref Mesh mesh) {
+      if (mesh == null)
+        throw new ArgumentNullException(nameof(mesh));
+        
+      // Serialize mesh to buffer
+      var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      
+      // Call the native function to get boundary loops
+      var success = NativeBridge.IGM_boundary_loop(meshBuffer, meshBuffer.Length,
+                                                   out IntPtr outBuffer, out int outSize);
+      if (!success || outBuffer == IntPtr.Zero) {
+        return new List<List<int>>();
+      }
+      
+      // Copy the result from unmanaged memory to a managed byte array
+      var byteArray = new byte[outSize];
+      Marshal.Copy(outBuffer, byteArray, 0, outSize);
+      Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+      
+      // Deserialize the result into a list of lists of integers
+      var boundaryLoops = Wrapper.FromNestedIntArrayBuffer(byteArray);
+      return boundaryLoops;
+    }
+
+    /// <summary>
+    /// Gets boundary edges for a mesh.
+    /// </summary>
+    /// <param name="mesh">Input mesh</param>
+    /// <returns>Tuple containing boundary edge geometry, edge indices, and triangle indices</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static (List<Line> EdgeGeometry, List<List<int>> EdgeIndices, List<int> TriangleIndices) 
+        GetBoundaryEdge(ref Mesh mesh) {
+      if (mesh == null)
+        throw new ArgumentNullException(nameof(mesh));
+        
+      // Serialize mesh to buffer
+      var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      
+      // Call the native function to get boundary facets
+      var success = NativeBridge.IGM_boundary_facet(meshBuffer, meshBuffer.Length,
+                                                    out IntPtr outBufferEL, out int outSizeEL,
+                                                    out IntPtr outBufferTL, out int outSizeTL);
+      if (!success || outBufferEL == IntPtr.Zero || outBufferTL == IntPtr.Zero) {
+        return (new List<Line>(), new List<List<int>>(), new List<int>());
+      }
+      
+      // Copy the EL result from unmanaged memory to a managed byte array
+      var byteArrayEL = new byte[outSizeEL];
+      Marshal.Copy(outBufferEL, byteArrayEL, 0, outSizeEL);
+      Marshal.FreeCoTaskMem(outBufferEL);  // Free the unmanaged memory
+      
+      // Copy the TL result from unmanaged memory to a managed byte array
+      var byteArrayTL = new byte[outSizeTL];
+      Marshal.Copy(outBufferTL, byteArrayTL, 0, outSizeTL);
+      Marshal.FreeCoTaskMem(outBufferTL);  // Free the unmanaged memory
+      
+      // Deserialize the results
+      var edgeList = Wrapper.FromIntArrayBufferToList(byteArrayEL);
+      var triangleIndices = Wrapper.FromIntArrayBufferToList(byteArrayTL);
+      
+      // Process edge list and create geometry
+      List<Line> edgeGeometry = new List<Line>();
+      List<List<int>> edgeIndices = new List<List<int>>();
+      
+      for (int i = 0; i < edgeList.Count; i += 2) {
+        if (i + 1 < edgeList.Count) {
+          int pt0 = edgeList[i];
+          int pt1 = edgeList[i + 1];
+          edgeIndices.Add(new List<int> { pt0, pt1 });
+          edgeGeometry.Add(new Line(mesh.Vertices[pt0], mesh.Vertices[pt1]));
+        }
+      }
+      
+      return (edgeGeometry, edgeIndices, triangleIndices);
     }
   }
 }

@@ -14,8 +14,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_roundtrip(const uint8_t* InBuffer,
                                                         uint8_t** outBuffer,
                                                         int* outSize);
 // Conduct a roundtrip serialization of a point array
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_array_roundtrip(
-    const uint8_t* inBuffer, int inSize, uint8_t** outBuffer, int* outSize);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_array_roundtrip(const uint8_t* inBuffer,
+                                                              int inSize,
+                                                              uint8_t** outBuffer,
+                                                              int* outSize);
 
 GEOSHARPLUS_API bool GEOSHARPLUS_CALL mesh_roundtrip(const uint8_t* inBuffer,
                                                      int inSize,
@@ -26,11 +28,13 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL mesh_roundtrip(const uint8_t* inBuffer,
 // ! 01:: IO, property funcs
 // ! --------------------------------
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL
-IGM_read_triangle_mesh(const char* filename, uint8_t** outBuffer, int* outSize);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_read_triangle_mesh(const char* filename,
+                                                             uint8_t** outBuffer,
+                                                             int* outSize);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_write_triangle_mesh(
-    const uint8_t* inBuffer, const int inSize, const char* filename);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_write_triangle_mesh(const uint8_t* inBuffer,
+                                                              const int inSize,
+                                                              const char* filename);
 
 // lculate the centroid of a mesh (igl function)
 GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_centroid(const uint8_t* inBuffer,
@@ -56,25 +60,53 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_face_normals(const uint8_t* inBuffer,
                                                        uint8_t** outBuffer,
                                                        int* outSize);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL
-IGM_corner_normals(const uint8_t* inBuffer, int inSize, double threshold_deg,
-                   uint8_t** outBuffer, int* outSize);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_corner_normals(
+    const uint8_t* inBuffer, int inSize, double threshold_deg, uint8_t** outBuffer, int* outSize);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(
-    const uint8_t* inBuffer, int inSize, int weightingType, uint8_t** obEN,
-    int* obsEN, uint8_t** obEI, int* obsEI, uint8_t** obEMAP, int* obsEMAP);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(const uint8_t* inBuffer,
+                                                       int inSize,
+                                                       int weightingType,
+                                                       uint8_t** obEN,
+                                                       int* obsEN,
+                                                       uint8_t** obEI,
+                                                       int* obsEI,
+                                                       uint8_t** obEMAP,
+                                                       int* obsEMAP);
 
 // ! --------------------------------
 // ! 03:: adjacency funcs
 // ! --------------------------------
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(
-    const uint8_t* inBuffer, int inSize, uint8_t** outBuffer, int* outSize);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(const uint8_t* inBuffer,
+                                                              int inSize,
+                                                              uint8_t** outBuffer,
+                                                              int* outSize);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_tri_adjacency(
-    const uint8_t* inBuffer, int inSize, uint8_t** outBufferVT, int* outSizeVT,
-    uint8_t** outBufferVTI, int* outSizeVTI);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_tri_adjacency(const uint8_t* inBuffer,
+                                                             int inSize,
+                                                             uint8_t** outBufferVT,
+                                                             int* outSizeVT,
+                                                             uint8_t** outBufferVTI,
+                                                             int* outSizeVTI);
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_tri_tri_adjacency(
-    const uint8_t* inBuffer, int inSize, uint8_t** outBufferTT, int* outSizeTT,
-    uint8_t** outBufferTTI, int* outSizeTTI);
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_tri_tri_adjacency(const uint8_t* inBuffer,
+                                                            int inSize,
+                                                            uint8_t** outBufferTT,
+                                                            int* outSizeTT,
+                                                            uint8_t** outBufferTTI,
+                                                            int* outSizeTTI);
+
+// ! --------------------------------
+// ! 03:: boundary funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_loop(const uint8_t* inBuffer,
+                                                        int inSize,
+                                                        uint8_t** outBuffer,
+                                                        int* outSize);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_facet(const uint8_t* inBuffer,
+                                                         int inSize,
+                                                         uint8_t** outBufferEL,
+                                                         int* outSizeEL,
+                                                         uint8_t** outBufferTL,
+                                                         int* outSizeTL);
 }

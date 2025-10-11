@@ -8,27 +8,25 @@ namespace GeoSharPlusCPP::Serialization {
 // ! Basic Type
 // Unified number array serialization (handles both double and int)
 template <typename NumberContainer>
-bool serializeNumberArray(const NumberContainer& numbers, uint8_t*& resBuffer,
-                          int& resSize);
+bool serializeNumberArray(const NumberContainer& numbers, uint8_t*& resBuffer, int& resSize);
 
 template <typename NumberContainer>
-bool deserializeNumberArray(const uint8_t* data, int size,
-                            NumberContainer& numberArray);
+bool deserializeNumberArray(const uint8_t* data, int size, NumberContainer& numberArray);
 // Index array (pairs of integers) serialization/deserialization
 template <typename IndexContainer>
-bool serializeNumberPairArray(const IndexContainer& indices,
-                              uint8_t*& resBuffer, int& resSize);
+bool serializeNumberPairArray(const IndexContainer& indices, uint8_t*& resBuffer, int& resSize);
 
 template <typename IndexContainer>
-bool deserializeNumberPairArray(const uint8_t* data, int size,
-                                IndexContainer& indexArray);
+bool deserializeNumberPairArray(const uint8_t* data, int size, IndexContainer& indexArray);
 
 // Nested integer array serialization/deserialization
 bool serializeNestedIntArray(const std::vector<std::vector<int>>& nestedArray,
-                            uint8_t*& resBuffer, int& resSize);
+                             uint8_t*& resBuffer,
+                             int& resSize);
 
-bool deserializeNestedIntArray(const uint8_t* data, int size,
-                              std::vector<std::vector<int>>& nestedArray);
+bool deserializeNestedIntArray(const uint8_t* data,
+                               int size,
+                               std::vector<std::vector<int>>& nestedArray);
 
 // ! Geometry
 // Point serialization
@@ -37,13 +35,11 @@ bool deserializePoint(const uint8_t* buffer, int size, Vector3d& point);
 
 // Point array (de)serialization
 template <typename PointContainer>
-bool serializePointArray(const PointContainer& points, uint8_t*& resBuffer,
-                         int& resSize);
+bool serializePointArray(const PointContainer& points, uint8_t*& resBuffer, int& resSize);
 
 // Point array deserialization template declaration
 template <typename PointContainer>
-bool deserializePointArray(const uint8_t* data, int size,
-                           PointContainer& pointArray);
+bool deserializePointArray(const uint8_t* data, int size, PointContainer& pointArray);
 
 // Mesh serialization
 bool serializeMesh(const Mesh& mesh, uint8_t*& resBuffer, int& resSize);
