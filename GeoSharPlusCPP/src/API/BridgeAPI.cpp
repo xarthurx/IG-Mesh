@@ -8,11 +8,14 @@
 #include <igl/per_face_normals.h>
 #include <igl/per_vertex_normals.h>
 #include <igl/read_triangle_mesh.h>
+#include <igl/triangle_triangle_adjacency.h>
+#include <igl/vertex_triangle_adjacency.h>
 #include <igl/write_triangle_mesh.h>
 
 #include <iostream>
 #include <memory>
 
+#include "GSP_FB/cpp/intNestedArray_generated.h"
 #include "GSP_FB/cpp/mesh_generated.h"
 #include "GSP_FB/cpp/pointArray_generated.h"
 #include "GSP_FB/cpp/point_generated.h"
@@ -321,19 +324,96 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
   }
+
   std::vector<std::vector<int>> VV;
   igl::adjacency_list(mesh.F, VV);
 
   // Serialize the adjacency list into the allocated buffer
   *outBuffer = nullptr;
   *outSize = 0;
-  // if (!GS::serializeNumberArray(VV, *outBuffer, *outSize)) {
-  //   if (*outBuffer) delete[] *outBuffer;  // Cleanup
-  //   *outBuffer = nullptr;
-  //   *outSize = 0;
-  //   return false;
-  // }
+
+  if (!GS::serializeNestedIntArray(VV, *outBuffer, *outSize)) {
+    if (*outBuffer) delete[] *outBuffer;  // Cleanup
+    *outBuffer = nullptr;
+    *outSize = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_tri_adjacency(
+    const uint8_t* inBuffer, int inSize, uint8_t** outBufferVT, int* outSizeVT,
+    uint8_t** outBufferVTI, int* outSizeVTI) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  std::vector<std::vector<int>> VF, VFI;
+  igl::vertex_triangle_adjacency(mesh.V, mesh.F, VF, VFI);
+
+  // Serialize the first adjacency list (VT)
+  *outBufferVT = nullptr;
+  *outSizeVT = 0;
+  if (!GS::serializeNestedIntArray(VF, *outBufferVT, *outSizeVT)) {
+    return false;
+  }
+
+  // Serialize the second adjacency list (VTI)
+  *outBufferVTI = nullptr;
+  *outSizeVTI = 0;
+  if (!GS::serializeNestedIntArray(VFI, *outBufferVTI, *outSizeVTI)) {
+    // Cleanup first buffer on failure
+    if (*outBufferVT) delete[] *outBufferVT;
+    *outBufferVT = nullptr;
+    *outSizeVT = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_tri_tri_adjacency(
+    const uint8_t* inBuffer, int inSize, uint8_t** outBufferTT, int* outSizeTT,
+    uint8_t** outBufferTTI, int* outSizeTTI) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  Eigen::MatrixXi TT, TTI;
+  igl::triangle_triangle_adjacency(mesh.F, TT, TTI);
+
+  // Convert Eigen matrices to nested vectors
+  std::vector<std::vector<int>> TT_nested, TTI_nested;
+  for (int i = 0; i < TT.rows(); ++i) {
+    std::vector<int> tt_row, tti_row;
+    for (int j = 0; j < TT.cols(); ++j) {
+      tt_row.push_back(TT(i, j));
+      tti_row.push_back(TTI(i, j));
+    }
+    TT_nested.push_back(tt_row);
+    TTI_nested.push_back(tti_row);
+  }
+
+  // Serialize both adjacency matrices
+  *outBufferTT = nullptr;
+  *outSizeTT = 0;
+  if (!GS::serializeNestedIntArray(TT_nested, *outBufferTT, *outSizeTT)) {
+    return false;
+  }
+
+  *outBufferTTI = nullptr;
+  *outSizeTTI = 0;
+  if (!GS::serializeNestedIntArray(TTI_nested, *outBufferTTI, *outSizeTTI)) {
+    // Cleanup first buffer on failure
+    if (*outBufferTT) delete[] *outBufferTT;
+    *outBufferTT = nullptr;
+    *outSizeTT = 0;
+    return false;
+  }
+
   return true;
 }
 }  // extern "C"
-}  // namespace GeoSharPlusCPP::Serialization

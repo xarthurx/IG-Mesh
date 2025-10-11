@@ -5,6 +5,7 @@
 #include "GSP_FB/cpp/doubleArray_generated.h"
 #include "GSP_FB/cpp/doublePairArray_generated.h"
 #include "GSP_FB/cpp/intArray_generated.h"
+#include "GSP_FB/cpp/intNestedArray_generated.h"
 #include "GSP_FB/cpp/intPairArray_generated.h"
 #include "GSP_FB/cpp/mesh_generated.h"
 #include "GSP_FB/cpp/pointArray_generated.h"
@@ -157,12 +158,12 @@ bool deserializeNumberArray(const uint8_t* data, int size,
     if constexpr (std::is_same_v<NumberContainer, std::vector<int>>) {
       numberArray.clear();
       numberArray.reserve(values->size());
-      for (size_t i = 0; i < values->size(); i++) {
+      for (int i = 0; i < values->size(); i++) {
         numberArray.push_back(values->Get(i));
       }
     } else if constexpr (std::is_same_v<NumberContainer, Eigen::VectorXi>) {
       numberArray.resize(values->size());
-      for (size_t i = 0; i < values->size(); i++) {
+      for (int i = 0; i < values->size(); i++) {
         numberArray(i) = values->Get(i);
       }
     }
@@ -269,7 +270,7 @@ bool deserializeNumberPairArray(const uint8_t* data, int size,
       pairArray.reserve(pairs->size());
 
       // Fill with pairs
-      for (size_t i = 0; i < pairs->size(); i++) {
+      for (int i = 0; i < pairs->size(); i++) {
         auto pair = pairs->Get(i);
         pairArray.emplace_back(std::make_pair(pair->x(), pair->y()));
       }
@@ -511,7 +512,7 @@ bool deserializeMesh(const uint8_t* data, int size, Mesh& mesh) {
     return false;
   }
   mesh.V.resize(vertices->size(), 3);
-  for (size_t i = 0; i < vertices->size(); i++) {
+  for (int i = 0; i < vertices->size(); i++) {
     auto vertex = vertices->Get(i);
     mesh.V.row(i) =
         Eigen::Vector3d(vertex->x(), vertex->y(), vertex->z()).transpose();
@@ -596,4 +597,80 @@ template bool deserializePointArray(const uint8_t* data, int size,
                                     std::vector<Vector3d>& pointArray);
 template bool deserializePointArray(const uint8_t* data, int size,
                                     Eigen::MatrixXd& pointArray);
+
+// Serialize nested integer arrays (vector<vector<int>>)
+bool serializeNestedIntArray(const std::vector<std::vector<int>>& nestedArray,
+                             uint8_t*& resBuffer, int& resSize) {
+  flatbuffers::FlatBufferBuilder builder;
+
+  // Flatten the nested array and keep track of sizes
+  std::vector<int> flatArray;
+  std::vector<int> sizes;
+
+  for (const auto& subArray : nestedArray) {
+    sizes.push_back(static_cast<int>(subArray.size()));
+    for (int value : subArray) {
+      flatArray.push_back(value);
+    }
+  }
+
+  // Create vectors in flatbuffers
+  auto valuesVector = builder.CreateVector(flatArray);
+  auto sizesVector = builder.CreateVector(sizes);
+
+  // Create the nested array data
+  auto nestedArrayOffset =
+      GSP::FB::CreateIntNestedArrayData(builder, valuesVector, sizesVector);
+  builder.Finish(nestedArrayOffset);
+
+  // Copy the serialized data to the provided buffer
+  resSize = builder.GetSize();
+  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  if (!resBuffer) {
+    return false;  // Handle allocation failure
+  }
+  std::memcpy(resBuffer, builder.GetBufferPointer(), resSize);
+
+  return true;
+}
+
+// Deserialize nested integer arrays
+bool deserializeNestedIntArray(const uint8_t* data, int size,
+                               std::vector<std::vector<int>>& nestedArray) {
+  // Verify the buffer integrity
+  flatbuffers::Verifier verifier(data, size);
+  if (!verifier.VerifyBuffer<GSP::FB::IntNestedArrayData>()) {
+    return false;
+  }
+
+  // Get the nested array data from the buffer
+  auto arrayData = GSP::FB::GetIntNestedArrayData(data);
+  if (!arrayData || !arrayData->values() || !arrayData->sizes()) {
+    return false;
+  }
+
+  auto flatValues = arrayData->values();
+  auto sizes = arrayData->sizes();
+
+  // Clear the output vector
+  nestedArray.clear();
+  nestedArray.reserve(sizes->size());
+
+  // Reconstruct the nested structure
+  size_t flatIndex = 0;
+  for (size_t i = 0; i < sizes->size(); i++) {
+    int subArraySize = sizes->Get(i);
+    std::vector<int> subArray;
+    subArray.reserve(subArraySize);
+
+    for (int j = 0; j < subArraySize; j++) {
+      if (flatIndex < flatValues->size()) {
+        subArray.push_back(flatValues->Get(flatIndex++));
+      }
+    }
+    nestedArray.push_back(std::move(subArray));
+  }
+
+  return true;
+}
 }  // namespace GeoSharPlusCPP::Serialization

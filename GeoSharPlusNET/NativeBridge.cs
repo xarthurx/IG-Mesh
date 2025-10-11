@@ -284,22 +284,68 @@ namespace GSP {
                                    out obsEI, out obEMAP, out obsEMAP);
     }
 
+    // Vertex-Vertex Adjacency
     [DllImport(WinLibName, EntryPoint = "IGM_vert_vert_adjacency",
                CallingConvention = CallingConvention.Cdecl)]
-    public static extern bool IGM_vert_vert_adjacencyWin(byte[] inBuffer, int inSize,
+    private static extern bool IGM_vert_vert_adjacencyWin(byte[] inBuffer, int inSize,
                                                          out IntPtr outBuffer, out int outSize);
-
     [DllImport(MacLibName, EntryPoint = "IGM_vert_vert_adjacency",
                CallingConvention = CallingConvention.Cdecl)]
-    public static extern bool IGM_vert_vert_adjacencyMac(byte[] inBuffer, int inSize,
+    private static extern bool IGM_vert_vert_adjacencyMac(byte[] inBuffer, int inSize,
                                                          out IntPtr outBuffer, out int outSize);
 
     public static bool IGM_vert_vert_adjacency(byte[] inBuffer, int inSize, out IntPtr outBuffer,
-                                               out int outSize) {
+                                              out int outSize) {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         return IGM_vert_vert_adjacencyWin(inBuffer, inSize, out outBuffer, out outSize);
       else
         return IGM_vert_vert_adjacencyMac(inBuffer, inSize, out outBuffer, out outSize);
+    }
+
+    // Vertex-Triangle Adjacency
+    [DllImport(WinLibName, EntryPoint = "IGM_vert_tri_adjacency",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool IGM_vert_tri_adjacencyWin(byte[] inBuffer, int inSize,
+                                                        out IntPtr outBufferVT, out int outSizeVT,
+                                                        out IntPtr outBufferVTI, out int outSizeVTI);
+    [DllImport(MacLibName, EntryPoint = "IGM_vert_tri_adjacency",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool IGM_vert_tri_adjacencyMac(byte[] inBuffer, int inSize,
+                                                        out IntPtr outBufferVT, out int outSizeVT,
+                                                        out IntPtr outBufferVTI, out int outSizeVTI);
+
+    public static bool IGM_vert_tri_adjacency(byte[] inBuffer, int inSize,
+                                             out IntPtr outBufferVT, out int outSizeVT,
+                                             out IntPtr outBufferVTI, out int outSizeVTI) {
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        return IGM_vert_tri_adjacencyWin(inBuffer, inSize, out outBufferVT, out outSizeVT,
+                                        out outBufferVTI, out outSizeVTI);
+      else
+        return IGM_vert_tri_adjacencyMac(inBuffer, inSize, out outBufferVT, out outSizeVT,
+                                        out outBufferVTI, out outSizeVTI);
+    }
+
+    // Triangle-Triangle Adjacency
+    [DllImport(WinLibName, EntryPoint = "IGM_tri_tri_adjacency",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool IGM_tri_tri_adjacencyWin(byte[] inBuffer, int inSize,
+                                                       out IntPtr outBufferTT, out int outSizeTT,
+                                                       out IntPtr outBufferTTI, out int outSizeTTI);
+    [DllImport(MacLibName, EntryPoint = "IGM_tri_tri_adjacency",
+               CallingConvention = CallingConvention.Cdecl)]
+    private static extern bool IGM_tri_tri_adjacencyMac(byte[] inBuffer, int inSize,
+                                                       out IntPtr outBufferTT, out int outSizeTT,
+                                                       out IntPtr outBufferTTI, out int outSizeTTI);
+
+    public static bool IGM_tri_tri_adjacency(byte[] inBuffer, int inSize,
+                                            out IntPtr outBufferTT, out int outSizeTT,
+                                            out IntPtr outBufferTTI, out int outSizeTTI) {
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        return IGM_tri_tri_adjacencyWin(inBuffer, inSize, out outBufferTT, out outSizeTT,
+                                       out outBufferTTI, out outSizeTTI);
+      else
+        return IGM_tri_tri_adjacencyMac(inBuffer, inSize, out outBufferTT, out outSizeTT,
+                                       out outBufferTTI, out outSizeTTI);
     }
 
 #endregion

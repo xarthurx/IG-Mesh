@@ -23,6 +23,13 @@ template <typename IndexContainer>
 bool deserializeNumberPairArray(const uint8_t* data, int size,
                                 IndexContainer& indexArray);
 
+// Nested integer array serialization/deserialization
+bool serializeNestedIntArray(const std::vector<std::vector<int>>& nestedArray,
+                            uint8_t*& resBuffer, int& resSize);
+
+bool deserializeNestedIntArray(const uint8_t* data, int size,
+                              std::vector<std::vector<int>>& nestedArray);
+
 // ! Geometry
 // Point serialization
 bool serializePoint(const Vector3d& point, uint8_t*& resBuffer, int& resSize);

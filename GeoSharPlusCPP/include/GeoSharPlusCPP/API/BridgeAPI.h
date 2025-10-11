@@ -69,4 +69,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(
 // ! --------------------------------
 GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(
     const uint8_t* inBuffer, int inSize, uint8_t** outBuffer, int* outSize);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_tri_adjacency(
+    const uint8_t* inBuffer, int inSize, uint8_t** outBufferVT, int* outSizeVT,
+    uint8_t** outBufferVTI, int* outSizeVTI);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_tri_tri_adjacency(
+    const uint8_t* inBuffer, int inSize, uint8_t** outBufferTT, int* outSizeTT,
+    uint8_t** outBufferTTI, int* outSizeTTI);
 }

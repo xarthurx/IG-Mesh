@@ -260,27 +260,107 @@ namespace GeoSharpNET {
     /// <summary>
     /// Gets the vertex-vertex adjacency list for a mesh.
     /// </summary>
-    /// <param name="mesh"></param>
-    /// <returns></returns>
+    /// <param name="mesh">Input mesh</param>
+    /// <returns>List of lists representing vertex-vertex adjacency</returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static List<List<int>> GetAdjacencyVV(ref Mesh mesh) {
       if (mesh == null)
         throw new ArgumentNullException(nameof(mesh));
+        
       // Serialize mesh to buffer
       var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      
       // Call the native function to get vertex-vertex adjacency
       var success = NativeBridge.IGM_vert_vert_adjacency(meshBuffer, meshBuffer.Length,
                                                          out IntPtr outBuffer, out int outSize);
       if (!success || outBuffer == IntPtr.Zero) {
         return new List<List<int>>();
       }
+      
       // Copy the result from unmanaged memory to a managed byte array
       var byteArray = new byte[outSize];
       Marshal.Copy(outBuffer, byteArray, 0, outSize);
       Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+      
       // Deserialize the result into a list of lists of integers
-      var adjacencyList = Wrapper.FromIntArray2DBuffer(byteArray);
+      var adjacencyList = Wrapper.FromNestedIntArrayBuffer(byteArray);
       return adjacencyList;
+    }
+
+    /// <summary>
+    /// Gets the vertex-triangle adjacency for a mesh.
+    /// </summary>
+    /// <param name="mesh">Input mesh</param>
+    /// <returns>Tuple containing vertex-triangle adjacency and vertex-triangle indices</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static (List<List<int>> VT, List<List<int>> VTI) GetAdjacencyVT(ref Mesh mesh) {
+      if (mesh == null)
+        throw new ArgumentNullException(nameof(mesh));
+        
+      // Serialize mesh to buffer
+      var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      
+      // Call the native function to get vertex-triangle adjacency
+      var success = NativeBridge.IGM_vert_tri_adjacency(meshBuffer, meshBuffer.Length,
+                                                       out IntPtr outBufferVT, out int outSizeVT,
+                                                       out IntPtr outBufferVTI, out int outSizeVTI);
+      if (!success || outBufferVT == IntPtr.Zero || outBufferVTI == IntPtr.Zero) {
+        return (new List<List<int>>(), new List<List<int>>());
+      }
+      
+      // Copy the VT result from unmanaged memory to a managed byte array
+      var byteArrayVT = new byte[outSizeVT];
+      Marshal.Copy(outBufferVT, byteArrayVT, 0, outSizeVT);
+      Marshal.FreeCoTaskMem(outBufferVT);  // Free the unmanaged memory
+      
+      // Copy the VTI result from unmanaged memory to a managed byte array
+      var byteArrayVTI = new byte[outSizeVTI];
+      Marshal.Copy(outBufferVTI, byteArrayVTI, 0, outSizeVTI);
+      Marshal.FreeCoTaskMem(outBufferVTI);  // Free the unmanaged memory
+      
+      // Deserialize the results into lists of lists of integers
+      var vtAdjacency = Wrapper.FromNestedIntArrayBuffer(byteArrayVT);
+      var vtiAdjacency = Wrapper.FromNestedIntArrayBuffer(byteArrayVTI);
+      
+      return (vtAdjacency, vtiAdjacency);
+    }
+
+    /// <summary>
+    /// Gets the triangle-triangle adjacency for a mesh.
+    /// </summary>
+    /// <param name="mesh">Input mesh</param>
+    /// <returns>Tuple containing triangle-triangle adjacency and triangle-triangle indices</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static (List<List<int>> TT, List<List<int>> TTI) GetAdjacencyTT(ref Mesh mesh) {
+      if (mesh == null)
+        throw new ArgumentNullException(nameof(mesh));
+        
+      // Serialize mesh to buffer
+      var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+      
+      // Call the native function to get triangle-triangle adjacency
+      var success = NativeBridge.IGM_tri_tri_adjacency(meshBuffer, meshBuffer.Length,
+                                                      out IntPtr outBufferTT, out int outSizeTT,
+                                                      out IntPtr outBufferTTI, out int outSizeTTI);
+      if (!success || outBufferTT == IntPtr.Zero || outBufferTTI == IntPtr.Zero) {
+        return (new List<List<int>>(), new List<List<int>>());
+      }
+      
+      // Copy the TT result from unmanaged memory to a managed byte array
+      var byteArrayTT = new byte[outSizeTT];
+      Marshal.Copy(outBufferTT, byteArrayTT, 0, outSizeTT);
+      Marshal.FreeCoTaskMem(outBufferTT);  // Free the unmanaged memory
+      
+      // Copy the TTI result from unmanaged memory to a managed byte array
+      var byteArrayTTI = new byte[outSizeTTI];
+      Marshal.Copy(outBufferTTI, byteArrayTTI, 0, outSizeTTI);
+      Marshal.FreeCoTaskMem(outBufferTTI);  // Free the unmanaged memory
+      
+      // Deserialize the results into lists of lists of integers
+      var ttAdjacency = Wrapper.FromNestedIntArrayBuffer(byteArrayTT);
+      var ttiAdjacency = Wrapper.FromNestedIntArrayBuffer(byteArrayTTI);
+      
+      return (ttAdjacency, ttiAdjacency);
     }
   }
 }

@@ -12,6 +12,10 @@ namespace igmGH {
                "Compute the vertex-vertex adjacency relationship of the given mesh.", "IG-Mesh",
                "03::Adjacency+Bound") {}
 
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.meshAdjacencyVertVert;
+    public override Guid ComponentGuid => new Guid("911ef079-7033-43b6-ad57-1d385c5b8406");
+
     /// <summary>
     /// Registers all the input parameters for this component.
     /// </summary>
@@ -42,9 +46,7 @@ namespace igmGH {
         return;
       }
 
-      // call the cpp function to solve the adjacency list
       var res = GeoSharpNET.MeshUtils.GetAdjacencyVV(ref mesh);
-      var res = IGMRhinoCommon.Utils.GetAdjacencyVV(ref mesh);
 
       // construct the index & pt tree from the adjacency list
       Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();
@@ -62,24 +64,6 @@ namespace igmGH {
       DA.SetDataTree(0, treeArray);
       DA.SetDataTree(1, ptArray);
     }
-
-    /// <summary>
-    /// Provides an Icon for the component.
-    /// </summary>
-    protected override System.Drawing.Bitmap Icon {
-      get {
-        // You can add image files to your project resources and access them like this:
-        //  return Resources.IconForThisComponent;
-        return Properties.Resources.meshAdjacencyVertVert;
-      }
-    }
-
-    /// <summary>
-    /// Gets the unique ID for this component. Do not change this ID after release.
-    /// </summary>
-    public override Guid ComponentGuid {
-      get { return new Guid("911ef079-7033-43b6-ad57-1d385c5b8406"); }
-    }
   }
 
   public class IGM_vert_tri_adjacency : GH_Component {
@@ -90,6 +74,10 @@ namespace igmGH {
         : base("Vertex-Triangle Adjacency", "igAdjVT",
                "Compute the vertex-triangle adjacency relationship of the given mesh.", "IG-Mesh",
                "03::Adjacency+Bound") {}
+
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.meshAdjacencyVertTri;
+    public override Guid ComponentGuid => new Guid("32c63b12-c43f-40fb-913c-9df607e43305");
 
     /// <summary>
     /// Registers all the input parameters for this component.
@@ -124,7 +112,7 @@ namespace igmGH {
       }
 
       // call the cpp function to solve the adjacency list
-      var (vt, vi) = IGMRhinoCommon.Utils.GetAdjacencyVT(ref mesh);
+      var (vt, vi) = GeoSharpNET.MeshUtils.GetAdjacencyVT(ref mesh);
 
       Grasshopper.DataTree<int> adjVT = new Grasshopper.DataTree<int>();
       Grasshopper.DataTree<int> adjVTI = new Grasshopper.DataTree<int>();
@@ -133,27 +121,9 @@ namespace igmGH {
         adjVT.AddRange(vt[i], path);
         adjVTI.AddRange(vi[i], path);
       }
-      // output
+
       DA.SetDataTree(0, adjVT);
       DA.SetDataTree(1, adjVTI);
-    }
-
-    /// <summary>
-    /// Provides an Icon for the component.
-    /// </summary>
-    protected override System.Drawing.Bitmap Icon {
-      get {
-        // You can add image files to your project resources and access them like this:
-        //  return Resources.IconForThisComponent;
-        return Properties.Resources.meshAdjacencyVertTri;
-      }
-    }
-
-    /// <summary>
-    /// Gets the unique ID for this component. Do not change this ID after release.
-    /// </summary>
-    public override Guid ComponentGuid {
-      get { return new Guid("32c63b12-c43f-40fb-913c-9df607e43305"); }
     }
   }
 
@@ -165,6 +135,10 @@ namespace igmGH {
         : base("Triangle-Triangle Adjacency", "igAdjTT",
                "Compute the triangle-triangle adjacency relationship of the given mesh.", "IG-Mesh",
                "03::Adjacency+Bound") {}
+
+    public override GH_Exposure Exposure => GH_Exposure.primary;
+    protected override System.Drawing.Bitmap Icon => Properties.Resources.meshAdjacencyTriTri;
+    public override Guid ComponentGuid => new Guid("f2947234-060d-44de-bd8f-f9601b0e780f");
 
     /// <summary>
     /// Registers all the input parameters for this component.
@@ -201,7 +175,7 @@ namespace igmGH {
       }
 
       // call the cpp function to solve the adjacency list
-      var (tt, tti) = IGMRhinoCommon.Utils.GetAdjacencyTT(ref mesh);
+      var (tt, tti) = GeoSharpNET.MeshUtils.GetAdjacencyTT(ref mesh);
 
       Grasshopper.DataTree<int> adjTT = new Grasshopper.DataTree<int>();
       Grasshopper.DataTree<int> adjTTI = new Grasshopper.DataTree<int>();
@@ -210,27 +184,9 @@ namespace igmGH {
         adjTT.AddRange(tt[i], path);
         adjTTI.AddRange(tti[i], path);
       }
-      // output
+
       DA.SetDataTree(0, adjTT);
       DA.SetDataTree(1, adjTTI);
-    }
-
-    /// <summary>
-    /// Provides an Icon for the component.
-    /// </summary>
-    protected override System.Drawing.Bitmap Icon {
-      get {
-        // You can add image files to your project resources and access them like this:
-        //  return Resources.IconForThisComponent;
-        return Properties.Resources.meshAdjacencyTriTri;
-      }
-    }
-
-    /// <summary>
-    /// Gets the unique ID for this component. Do not change this ID after release.
-    /// </summary>
-    public override Guid ComponentGuid {
-      get { return new Guid("f2947234-060d-44de-bd8f-f9601b0e780f"); }
     }
   }
 }

@@ -292,5 +292,70 @@ namespace GSP {
         new List<(double, double)>(FromDoublePairArrayBuffer(buffer));
     // Vector3d IO
 #endregion
+
+    // Nested Int Array IO (for adjacency lists)
+    public static byte[] ToNestedIntArrayBuffer(List<List<int>> nestedArray)
+    {
+      var builder = new FlatBufferBuilder(1024);
+
+      // Flatten the nested array and keep track of sizes
+      var flatList = new List<int>();
+      var sizes = new List<int>();
+      
+      foreach (var subArray in nestedArray)
+      {
+        sizes.Add(subArray.Count);
+        flatList.AddRange(subArray);
+      }
+
+      // Create the values and sizes vectors
+      var valuesOffset = FB.IntNestedArrayData.CreateValuesVector(builder, flatList.ToArray());
+      var sizesOffset = FB.IntNestedArrayData.CreateSizesVector(builder, sizes.ToArray());
+      
+      // Create the nested array data
+      var arrayOffset = FB.IntNestedArrayData.CreateIntNestedArrayData(builder, valuesOffset, sizesOffset);
+      builder.Finish(arrayOffset.Value);
+
+      return builder.SizedByteArray();
+    }
+
+    public static List<List<int>> FromNestedIntArrayBuffer(byte[] buffer)
+    {
+      var byteBuffer = new ByteBuffer(buffer);
+      var arrayData = FB.IntNestedArrayData.GetRootAsIntNestedArrayData(byteBuffer);
+
+      // Check if the array is valid
+      if (arrayData.ValuesLength == 0 || arrayData.SizesLength == 0)
+        return new List<List<int>>();
+
+      var result = new List<List<int>>();
+      int flatIndex = 0;
+      
+      // Reconstruct the nested structure
+      for (int i = 0; i < arrayData.SizesLength; i++)
+      {
+        int subArraySize = arrayData.Sizes(i);
+        var subArray = new List<int>();
+        
+        for (int j = 0; j < subArraySize; j++)
+        {
+          if (flatIndex < arrayData.ValuesLength)
+          {
+            subArray.Add(arrayData.Values(flatIndex++));
+          }
+        }
+        result.Add(subArray);
+      }
+      
+      return result;
+    }
+
+    // Convenience method for converting from array
+    public static byte[] ToNestedIntArrayBuffer(List<int>[] nestedArray) => 
+        ToNestedIntArrayBuffer(nestedArray.Select(arr => arr.ToList()).ToList());
+
+    // Convenience method for returning array instead of list
+    public static List<int>[] FromNestedIntArrayBufferToArray(byte[] buffer) => 
+        FromNestedIntArrayBuffer(buffer).ToArray();
   }
 }

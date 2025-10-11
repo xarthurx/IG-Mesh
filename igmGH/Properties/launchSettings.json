@@ -1,8 +1,9 @@
 {
   "profiles": {
-    "igmGH": {
+    "igm_GH_run": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\Rhino 8\\System\\Rhino.exe",
+      "commandLineArgs": "/netcore /runscript=\"_Grasshopper\"",
       "workingDirectory": "$(ProjectDir)$(OutputPath)\\",
       "environmentVariables": {
         "RHINO_PACKAGE_DIRS": "$(ProjectDir)$(OutputPath)\\"
