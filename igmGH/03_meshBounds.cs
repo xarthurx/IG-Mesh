@@ -30,10 +30,12 @@ public class IGM_BoundLoop : GH_Component {
   /// Registers all the output parameters for this component.
   /// </summary>
   protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager) {
-    pManager.AddIntegerParameter(
-        "Boundary Index", "B", "the boundary list of the input mesh", GH_ParamAccess.tree);
+    pManager.AddIntegerParameter("Boundary Index",
+                                 "B",
+                                 "the boundary vertex indices of the input mesh",
+                                 GH_ParamAccess.tree);
     pManager.AddPointParameter(
-        "Boundary Vertex", "P", "the boundary vertices of the input mesh", GH_ParamAccess.tree);
+        "Boundary Point", "P", "the boundary vertex points of the input mesh", GH_ParamAccess.tree);
   }
 
   /// <summary>
