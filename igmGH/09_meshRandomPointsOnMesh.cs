@@ -1,16 +1,17 @@
-﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel;
+using Rhino.Geometry;
 using System;
 
 namespace igmGH {
-public class IGM_random_points_on_mesh : GH_Component {
+public class IGM_random_points : GH_Component {
   /// <summary>
   /// Initializes a new instance of the MyComponent1 class.
   /// </summary>
-  public IGM_random_points_on_mesh()
-      : base("Random Pt On Mesh",
+  public IGM_random_points()
+      : base("Random Points",
              "igRndPt",
-             "Randomly sample N points on surface of the given mesh with random/uniform " +
-                 "distribution.",
+             "Randomly sample N points on surface of the given mesh, Brep, or planar " +
+                 "closed curve with random/uniform " + "distribution.",
              "IG-Mesh",
              "09::Utils") {}
 
@@ -23,9 +24,13 @@ public class IGM_random_points_on_mesh : GH_Component {
   /// Registers all the input parameters for this component.
   /// </summary>
   protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager) {
-    pManager.AddMeshParameter("Mesh", "M", "Input mesh for analysis.", GH_ParamAccess.item);
+    pManager.AddGeometryParameter(
+        "Geometry",
+        "G",
+        "Input geometry for analysis: mesh, Brep, NURBS surface, or planar closed curve.",
+        GH_ParamAccess.item);
     pManager.AddIntegerParameter(
-        "Number", "N", "Number of sampled points.", GH_ParamAccess.item, 0);
+        "Number", "N", "Number of sampled points.", GH_ParamAccess.item, 100);
     pManager[1].Optional = true;
 
     // the uniform method uses a blue-noise (Poisson's disk) approach to sample the points.
@@ -45,15 +50,87 @@ public class IGM_random_points_on_mesh : GH_Component {
   }
 
   /// <summary>
+  /// Converts various geometry types to mesh
+  /// </summary>
+  private Mesh ConvertGeometryToMesh(GeometryBase geometry) {
+    switch (geometry) {
+      case Mesh mesh:
+        return mesh;
+
+      case Brep brep:
+        // Convert Brep (which includes NURBS surfaces) to mesh
+        var brepMeshParams = MeshingParameters.Default;
+        brepMeshParams.RelativeTolerance = 0.1;
+        brepMeshParams.MinimumEdgeLength = 0.01;
+
+        var brepMeshes = Mesh.CreateFromBrep(brep, brepMeshParams);
+        if (brepMeshes != null && brepMeshes.Length > 0) {
+          var combinedBrepMesh = new Mesh();
+          foreach (var m in brepMeshes) {
+            combinedBrepMesh.Append(m);
+          }
+          return combinedBrepMesh;
+        }
+        break;
+
+      case Curve curve when curve.IsClosed && curve.IsPlanar():
+        // Convert planar closed curve to mesh
+        if (curve.TryGetPlane(out Plane plane)) {
+          // Try to convert curve to polyline and create mesh
+          if (curve.TryGetPolyline(out Polyline polyline)) {
+            return Mesh.CreateFromClosedPolyline(polyline);
+          } else {
+            // For complex curves, discretize and create fan triangulation
+            var points = curve.DivideByCount(50, true);
+            if (points != null && points.Length > 3) {
+              var meshFromCurve = new Mesh();
+
+              // Add vertices from curve points
+              for (int i = 0; i < points.Length; i++) {
+                meshFromCurve.Vertices.Add(curve.PointAt(points[i]));
+              }
+
+              // Calculate centroid for fan triangulation
+              var centroid = Point3d.Origin;
+              foreach (var vertex in meshFromCurve.Vertices) {
+                centroid += vertex;
+              }
+              centroid /= meshFromCurve.Vertices.Count;
+              meshFromCurve.Vertices.Add(centroid);
+              int centerIndex = meshFromCurve.Vertices.Count - 1;
+
+              // Create triangular faces from center to each edge
+              for (int i = 0; i < points.Length - 1; i++) {
+                meshFromCurve.Faces.AddFace(centerIndex, i, i + 1);
+              }
+              // Close the loop
+              meshFromCurve.Faces.AddFace(centerIndex, points.Length - 1, 0);
+
+              return meshFromCurve.IsValid ? meshFromCurve : null;
+            }
+          }
+        }
+        break;
+    }
+
+    return null;
+  }
+
+  /// <summary>
   /// This is the method that actually does the work.
   /// </summary>
   /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
   protected override void SolveInstance(IGH_DataAccess DA) {
-    Rhino.Geometry.Mesh mesh = new Rhino.Geometry.Mesh();
-    if (!DA.GetData(0, ref mesh)) {
+    GeometryBase inputGeometry = null;
+    if (!DA.GetData(0, ref inputGeometry)) {
       return;
     }
-    if (!mesh.IsValid) {
+
+    // Convert input geometry to mesh
+    Mesh mesh = ConvertGeometryToMesh(inputGeometry);
+    if (mesh == null || !mesh.IsValid) {
+      AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
+                        "Failed to convert input geometry to mesh or resulting mesh is invalid.");
       return;
     }
 
