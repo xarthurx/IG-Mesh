@@ -144,9 +144,6 @@ public static class NativeBridge {
   }
 #endregion
 
-//----------------------------------
-// IG-MESH native functions
-//----------------------------------
 #region IG - MESH Functions
 
   // Mesh Centroid -- calculates the centroid of a mesh
@@ -812,6 +809,261 @@ public static class NativeBridge {
                                      inSizeValues,
                                      out outBuffer,
                                      out outSize);
+  }
+
+  // Harmonic Parametrization
+  [DllImport(
+      WinLibName, EntryPoint = "IGM_param_harmonic", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool
+  IGM_param_harmonicWin(byte[] inBuffer, int inSize, int k, out IntPtr outBuffer, out int outSize);
+  [DllImport(
+      MacLibName, EntryPoint = "IGM_param_harmonic", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool
+  IGM_param_harmonicMac(byte[] inBuffer, int inSize, int k, out IntPtr outBuffer, out int outSize);
+
+  public static bool
+  IGM_param_harmonic(byte[] inBuffer, int inSize, int k, out IntPtr outBuffer, out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_param_harmonicWin(inBuffer, inSize, k, out outBuffer, out outSize);
+    else
+      return IGM_param_harmonicMac(inBuffer, inSize, k, out outBuffer, out outSize);
+  }
+
+  // Heat Geodesic Precompute
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_heat_geodesic_precompute",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_heat_geodesic_precomputeWin(byte[] inBuffer,
+                                                             int inSize,
+                                                             out IntPtr outBuffer,
+                                                             out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_heat_geodesic_precompute",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_heat_geodesic_precomputeMac(byte[] inBuffer,
+                                                             int inSize,
+                                                             out IntPtr outBuffer,
+                                                             out int outSize);
+
+  public static bool
+  IGM_heat_geodesic_precompute(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_heat_geodesic_precomputeWin(inBuffer, inSize, out outBuffer, out outSize);
+    else
+      return IGM_heat_geodesic_precomputeMac(inBuffer, inSize, out outBuffer, out outSize);
+  }
+
+  // Heat Geodesic Solve
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_heat_geodesic_solve",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_heat_geodesic_solveWin(byte[] inBuffer,
+                                                        int inSize,
+                                                        byte[] inBufferSources,
+                                                        int inSizeSources,
+                                                        out IntPtr outBuffer,
+                                                        out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_heat_geodesic_solve",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_heat_geodesic_solveMac(byte[] inBuffer,
+                                                        int inSize,
+                                                        byte[] inBufferSources,
+                                                        int inSizeSources,
+                                                        out IntPtr outBuffer,
+                                                        out int outSize);
+
+  public static bool IGM_heat_geodesic_solve(byte[] inBuffer,
+                                             int inSize,
+                                             byte[] inBufferSources,
+                                             int inSizeSources,
+                                             out IntPtr outBuffer,
+                                             out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_heat_geodesic_solveWin(
+          inBuffer, inSize, inBufferSources, inSizeSources, out outBuffer, out outSize);
+    else
+      return IGM_heat_geodesic_solveMac(
+          inBuffer, inSize, inBufferSources, inSizeSources, out outBuffer, out outSize);
+  }
+
+  // Random Points on Mesh
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_random_point_on_mesh",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_random_point_on_meshWin(byte[] inBuffer,
+                                                         int inSize,
+                                                         int N,
+                                                         out IntPtr outBuffer,
+                                                         out int outSize,
+                                                         out IntPtr outBufferFI,
+                                                         out int outSizeFI);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_random_point_on_mesh",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_random_point_on_meshMac(byte[] inBuffer,
+                                                         int inSize,
+                                                         int N,
+                                                         out IntPtr outBuffer,
+                                                         out int outSize,
+                                                         out IntPtr outBufferFI,
+                                                         out int outSizeFI);
+
+  public static bool IGM_random_point_on_mesh(byte[] inBuffer,
+                                              int inSize,
+                                              int N,
+                                              out IntPtr outBuffer,
+                                              out int outSize,
+                                              out IntPtr outBufferFI,
+                                              out int outSizeFI) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_random_point_on_meshWin(
+          inBuffer, inSize, N, out outBuffer, out outSize, out outBufferFI, out outSizeFI);
+    else
+      return IGM_random_point_on_meshMac(
+          inBuffer, inSize, N, out outBuffer, out outSize, out outBufferFI, out outSizeFI);
+  }
+
+  // Blue Noise Sampling on Mesh
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_blue_noise_sampling_on_mesh",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_blue_noise_sampling_on_meshWin(byte[] inBuffer,
+                                                                int inSize,
+                                                                int N,
+                                                                out IntPtr outBuffer,
+                                                                out int outSize,
+                                                                out IntPtr outBufferFI,
+                                                                out int outSizeFI);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_blue_noise_sampling_on_mesh",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_blue_noise_sampling_on_meshMac(byte[] inBuffer,
+                                                                int inSize,
+                                                                int N,
+                                                                out IntPtr outBuffer,
+                                                                out int outSize,
+                                                                out IntPtr outBufferFI,
+                                                                out int outSizeFI);
+
+  public static bool IGM_blue_noise_sampling_on_mesh(byte[] inBuffer,
+                                                     int inSize,
+                                                     int N,
+                                                     out IntPtr outBuffer,
+                                                     out int outSize,
+                                                     out IntPtr outBufferFI,
+                                                     out int outSizeFI) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_blue_noise_sampling_on_meshWin(
+          inBuffer, inSize, N, out outBuffer, out outSize, out outBufferFI, out outSizeFI);
+    else
+      return IGM_blue_noise_sampling_on_meshMac(
+          inBuffer, inSize, N, out outBuffer, out outSize, out outBufferFI, out outSizeFI);
+  }
+
+  // Constrained Scalar (equivalent to IGM_laplacian_scalar - they appear to be the same
+  // functionality)
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_constrained_scalar",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_constrained_scalarWin(byte[] inBufferMesh,
+                                                       int inSizeMesh,
+                                                       byte[] inBufferIndices,
+                                                       int inSizeIndices,
+                                                       byte[] inBufferValues,
+                                                       int inSizeValues,
+                                                       out IntPtr outBuffer,
+                                                       out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_constrained_scalar",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_constrained_scalarMac(byte[] inBufferMesh,
+                                                       int inSizeMesh,
+                                                       byte[] inBufferIndices,
+                                                       int inSizeIndices,
+                                                       byte[] inBufferValues,
+                                                       int inSizeValues,
+                                                       out IntPtr outBuffer,
+                                                       out int outSize);
+
+  public static bool IGM_constrained_scalar(byte[] inBufferMesh,
+                                            int inSizeMesh,
+                                            byte[] inBufferIndices,
+                                            int inSizeIndices,
+                                            byte[] inBufferValues,
+                                            int inSizeValues,
+                                            out IntPtr outBuffer,
+                                            out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_constrained_scalarWin(inBufferMesh,
+                                       inSizeMesh,
+                                       inBufferIndices,
+                                       inSizeIndices,
+                                       inBufferValues,
+                                       inSizeValues,
+                                       out outBuffer,
+                                       out outSize);
+    else
+      return IGM_constrained_scalarMac(inBufferMesh,
+                                       inSizeMesh,
+                                       inBufferIndices,
+                                       inSizeIndices,
+                                       inBufferValues,
+                                       inSizeValues,
+                                       out outBuffer,
+                                       out outSize);
+  }
+
+  // Extract Isoline from Scalar
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_extract_isoline_from_scalar",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_extract_isoline_from_scalarWin(byte[] inBufferMesh,
+                                                                int inSizeMesh,
+                                                                byte[] inBufferScalar,
+                                                                int inSizeScalar,
+                                                                byte[] inBufferIsoValues,
+                                                                int inSizeIsoValues,
+                                                                out IntPtr outBuffer,
+                                                                out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_extract_isoline_from_scalar",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_extract_isoline_from_scalarMac(byte[] inBufferMesh,
+                                                                int inSizeMesh,
+                                                                byte[] inBufferScalar,
+                                                                int inSizeScalar,
+                                                                byte[] inBufferIsoValues,
+                                                                int inSizeIsoValues,
+                                                                out IntPtr outBuffer,
+                                                                out int outSize);
+
+  public static bool IGM_extract_isoline_from_scalar(byte[] inBufferMesh,
+                                                     int inSizeMesh,
+                                                     byte[] inBufferScalar,
+                                                     int inSizeScalar,
+                                                     byte[] inBufferIsoValues,
+                                                     int inSizeIsoValues,
+                                                     out IntPtr outBuffer,
+                                                     out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_extract_isoline_from_scalarWin(inBufferMesh,
+                                                inSizeMesh,
+                                                inBufferScalar,
+                                                inSizeScalar,
+                                                inBufferIsoValues,
+                                                inSizeIsoValues,
+                                                out outBuffer,
+                                                out outSize);
+    else
+      return IGM_extract_isoline_from_scalarMac(inBufferMesh,
+                                                inSizeMesh,
+                                                inBufferScalar,
+                                                inSizeScalar,
+                                                inBufferIsoValues,
+                                                inSizeIsoValues,
+                                                out outBuffer,
+                                                out outSize);
   }
 
 #endregion

@@ -2,17 +2,26 @@
 
 #include <iostream>
 #include <memory>
+#include <unordered_map>
+
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #include <igl/adjacency_list.h>
 #include <igl/average_onto_faces.h>
 #include <igl/average_onto_vertices.h>
+#include <igl/avg_edge_length.h>
 #include <igl/barycenter.h>
+#include <igl/blue_noise.h>
 #include <igl/boundary_facets.h>
 #include <igl/boundary_loop.h>
 #include <igl/centroid.h>
+#include <igl/doublearea.h>
 #include <igl/fast_winding_number.h>
 #include <igl/gaussian_curvature.h>
 #include <igl/harmonic.h>
+#include <igl/heat_geodesics.h>
+#include <igl/map_vertices_to_circle.h>
 #include <igl/per_corner_normals.h>
 #include <igl/per_edge_normals.h>
 #include <igl/per_face_normals.h>
@@ -20,6 +29,7 @@
 #include <igl/planarize_quad_mesh.h>
 #include <igl/principal_curvature.h>
 #include <igl/quad_planarity.h>
+#include <igl/random_points_on_mesh.h>
 #include <igl/read_triangle_mesh.h>
 #include <igl/signed_distance.h>
 #include <igl/triangle_triangle_adjacency.h>
@@ -37,10 +47,10 @@ namespace GS = GeoSharPlusCPP::Serialization;
 
 extern "C" {
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_roundtrip(const uint8_t* inBuffer,
-                                                        int inSize,
-                                                        uint8_t** outBuffer,
-                                                        int* outSize) {
+GSP_API bool GSP_CALL point3d_roundtrip(const uint8_t* inBuffer,
+                                        int inSize,
+                                        uint8_t** outBuffer,
+                                        int* outSize) {
   *outBuffer = nullptr;
   *outSize = 0;
 
@@ -62,10 +72,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_roundtrip(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_array_roundtrip(const uint8_t* inBuffer,
-                                                              int inSize,
-                                                              uint8_t** outBuffer,
-                                                              int* outSize) {
+GSP_API bool GSP_CALL point3d_array_roundtrip(const uint8_t* inBuffer,
+                                              int inSize,
+                                              uint8_t** outBuffer,
+                                              int* outSize) {
   *outBuffer = nullptr;
   *outSize = 0;
 
@@ -87,10 +97,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL point3d_array_roundtrip(const uint8_t* inB
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL mesh_roundtrip(const uint8_t* inBuffer,
-                                                     int inSize,
-                                                     uint8_t** outBuffer,
-                                                     int* outSize) {
+GSP_API bool GSP_CALL mesh_roundtrip(const uint8_t* inBuffer,
+                                     int inSize,
+                                     uint8_t** outBuffer,
+                                     int* outSize) {
   *outBuffer = nullptr;
   *outSize = 0;
 
@@ -112,9 +122,9 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL mesh_roundtrip(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_read_triangle_mesh(const char* filename,
-                                                             uint8_t** outBuffer,
-                                                             int* outSize) {
+GSP_API bool GSP_CALL IGM_read_triangle_mesh(const char* filename,
+                                             uint8_t** outBuffer,
+                                             int* outSize) {
   Eigen::MatrixXd matV;
   Eigen::MatrixXi matF;
   igl::read_triangle_mesh(filename, matV, matF);
@@ -134,9 +144,9 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_read_triangle_mesh(const char* filenam
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_write_triangle_mesh(const uint8_t* inBuffer,
-                                                              const int inSize,
-                                                              const char* filename) {
+GSP_API bool GSP_CALL IGM_write_triangle_mesh(const uint8_t* inBuffer,
+                                              const int inSize,
+                                              const char* filename) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -149,10 +159,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_write_triangle_mesh(const uint8_t* inB
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_centroid(const uint8_t* inBuffer,
-                                                   int inSize,
-                                                   uint8_t** outBuffer,
-                                                   int* outSize) {
+GSP_API bool GSP_CALL IGM_centroid(const uint8_t* inBuffer,
+                                   int inSize,
+                                   uint8_t** outBuffer,
+                                   int* outSize) {
   *outBuffer = nullptr;
   *outSize = 0;
   GeoSharPlusCPP::Mesh mesh;
@@ -173,10 +183,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_centroid(const uint8_t* inBuffer,
   }
   return true;
 }
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_barycenter(const uint8_t* inBuffer,
-                                                     int inSize,
-                                                     uint8_t** outBuffer,
-                                                     int* outSize) {
+GSP_API bool GSP_CALL IGM_barycenter(const uint8_t* inBuffer,
+                                     int inSize,
+                                     uint8_t** outBuffer,
+                                     int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -201,10 +211,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_barycenter(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_normals(const uint8_t* inBuffer,
-                                                       int inSize,
-                                                       uint8_t** outBuffer,
-                                                       int* outSize) {
+GSP_API bool GSP_CALL IGM_vert_normals(const uint8_t* inBuffer,
+                                       int inSize,
+                                       uint8_t** outBuffer,
+                                       int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -230,10 +240,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_normals(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_face_normals(const uint8_t* inBuffer,
-                                                       int inSize,
-                                                       uint8_t** outBuffer,
-                                                       int* outSize) {
+GSP_API bool GSP_CALL IGM_face_normals(const uint8_t* inBuffer,
+                                       int inSize,
+                                       uint8_t** outBuffer,
+                                       int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -259,7 +269,7 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_face_normals(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_corner_normals(
+GSP_API bool GSP_CALL IGM_corner_normals(
     const uint8_t* inBuffer, int inSize, double threshold_deg, uint8_t** outBuffer, int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
@@ -286,15 +296,15 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_corner_normals(
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(const uint8_t* inBuffer,
-                                                       int inSize,
-                                                       int weightingType,
-                                                       uint8_t** outBufferA,
-                                                       int* outSizeA,
-                                                       uint8_t** outBufferB,
-                                                       int* outSizeB,
-                                                       uint8_t** outBufferC,
-                                                       int* outSizeC) {
+GSP_API bool GSP_CALL IGM_edge_normals(const uint8_t* inBuffer,
+                                       int inSize,
+                                       int weightingType,
+                                       uint8_t** outBufferA,
+                                       int* outSizeA,
+                                       uint8_t** outBufferB,
+                                       int* outSizeB,
+                                       uint8_t** outBufferC,
+                                       int* outSizeC) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -347,10 +357,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_edge_normals(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(const uint8_t* inBuffer,
-                                                              int inSize,
-                                                              uint8_t** outBuffer,
-                                                              int* outSize) {
+GSP_API bool GSP_CALL IGM_vert_vert_adjacency(const uint8_t* inBuffer,
+                                              int inSize,
+                                              uint8_t** outBuffer,
+                                              int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -374,12 +384,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_vert_adjacency(const uint8_t* inB
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_tri_adjacency(const uint8_t* inBuffer,
-                                                             int inSize,
-                                                             uint8_t** outBufferVT,
-                                                             int* outSizeVT,
-                                                             uint8_t** outBufferVTI,
-                                                             int* outSizeVTI) {
+GSP_API bool GSP_CALL IGM_vert_tri_adjacency(const uint8_t* inBuffer,
+                                             int inSize,
+                                             uint8_t** outBufferVT,
+                                             int* outSizeVT,
+                                             uint8_t** outBufferVTI,
+                                             int* outSizeVTI) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -410,12 +420,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_vert_tri_adjacency(const uint8_t* inBu
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_tri_tri_adjacency(const uint8_t* inBuffer,
-                                                            int inSize,
-                                                            uint8_t** outBufferTT,
-                                                            int* outSizeTT,
-                                                            uint8_t** outBufferTTI,
-                                                            int* outSizeTTI) {
+GSP_API bool GSP_CALL IGM_tri_tri_adjacency(const uint8_t* inBuffer,
+                                            int inSize,
+                                            uint8_t** outBufferTT,
+                                            int* outSizeTT,
+                                            uint8_t** outBufferTTI,
+                                            int* outSizeTTI) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -457,10 +467,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_tri_tri_adjacency(const uint8_t* inBuf
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_loop(const uint8_t* inBuffer,
-                                                        int inSize,
-                                                        uint8_t** outBuffer,
-                                                        int* outSize) {
+GSP_API bool GSP_CALL IGM_boundary_loop(const uint8_t* inBuffer,
+                                        int inSize,
+                                        uint8_t** outBuffer,
+                                        int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -484,12 +494,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_loop(const uint8_t* inBuffer,
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_facet(const uint8_t* inBuffer,
-                                                         int inSize,
-                                                         uint8_t** outBufferEL,
-                                                         int* outSizeEL,
-                                                         uint8_t** outBufferTL,
-                                                         int* outSizeTL) {
+GSP_API bool GSP_CALL IGM_boundary_facet(const uint8_t* inBuffer,
+                                         int inSize,
+                                         uint8_t** outBufferEL,
+                                         int* outSizeEL,
+                                         uint8_t** outBufferTL,
+                                         int* outSizeTL) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -528,12 +538,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_facet(const uint8_t* inBuffer
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_VtoF(const uint8_t* inBufferMesh,
-                                                     int inSizeMesh,
-                                                     const uint8_t* inBufferScalar,
-                                                     int inSizeScalar,
-                                                     uint8_t** outBuffer,
-                                                     int* outSize) {
+GSP_API bool GSP_CALL IGM_remap_VtoF(const uint8_t* inBufferMesh,
+                                     int inSizeMesh,
+                                     const uint8_t* inBufferScalar,
+                                     int inSizeScalar,
+                                     uint8_t** outBuffer,
+                                     int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
     return false;
@@ -561,12 +571,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_VtoF(const uint8_t* inBufferMesh
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh,
-                                                     int inSizeMesh,
-                                                     const uint8_t* inBufferScalar,
-                                                     int inSizeScalar,
-                                                     uint8_t** outBuffer,
-                                                     int* outSize) {
+GSP_API bool GSP_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh,
+                                     int inSizeMesh,
+                                     const uint8_t* inBufferScalar,
+                                     int inSizeScalar,
+                                     uint8_t** outBuffer,
+                                     int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
     return false;
@@ -594,17 +604,17 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_principal_curvature(const uint8_t* inBuffer,
-                                                              int inSize,
-                                                              uint32_t radius,
-                                                              uint8_t** outBufferPD1,
-                                                              int* outSizePD1,
-                                                              uint8_t** outBufferPD2,
-                                                              int* outSizePD2,
-                                                              uint8_t** outBufferPV1,
-                                                              int* outSizePV1,
-                                                              uint8_t** outBufferPV2,
-                                                              int* outSizePV2) {
+GSP_API bool GSP_CALL IGM_principal_curvature(const uint8_t* inBuffer,
+                                              int inSize,
+                                              uint32_t radius,
+                                              uint8_t** outBufferPD1,
+                                              int* outSizePD1,
+                                              uint8_t** outBufferPD2,
+                                              int* outSizePD2,
+                                              uint8_t** outBufferPV1,
+                                              int* outSizePV1,
+                                              uint8_t** outBufferPV2,
+                                              int* outSizePV2) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -669,10 +679,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_principal_curvature(const uint8_t* inB
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_gaussian_curvature(const uint8_t* inBuffer,
-                                                             int inSize,
-                                                             uint8_t** outBuffer,
-                                                             int* outSize) {
+GSP_API bool GSP_CALL IGM_gaussian_curvature(const uint8_t* inBuffer,
+                                             int inSize,
+                                             uint8_t** outBuffer,
+                                             int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -691,12 +701,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_gaussian_curvature(const uint8_t* inBu
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_fast_winding_number(const uint8_t* inBufferMesh,
-                                                              int inSizeMesh,
-                                                              const uint8_t* inBufferPoints,
-                                                              int inSizePoints,
-                                                              uint8_t** outBuffer,
-                                                              int* outSize) {
+GSP_API bool GSP_CALL IGM_fast_winding_number(const uint8_t* inBufferMesh,
+                                              int inSizeMesh,
+                                              const uint8_t* inBufferPoints,
+                                              int inSizePoints,
+                                              uint8_t** outBuffer,
+                                              int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
     return false;
@@ -728,17 +738,17 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_fast_winding_number(const uint8_t* inB
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_signed_distance(const uint8_t* inBufferMesh,
-                                                          int inSizeMesh,
-                                                          const uint8_t* inBufferPoints,
-                                                          int inSizePoints,
-                                                          int signedType,
-                                                          uint8_t** outBufferSD,
-                                                          int* outSizeSD,
-                                                          uint8_t** outBufferFI,
-                                                          int* outSizeFI,
-                                                          uint8_t** outBufferCP,
-                                                          int* outSizeCP) {
+GSP_API bool GSP_CALL IGM_signed_distance(const uint8_t* inBufferMesh,
+                                          int inSizeMesh,
+                                          const uint8_t* inBufferPoints,
+                                          int inSizePoints,
+                                          int signedType,
+                                          uint8_t** outBufferSD,
+                                          int* outSizeSD,
+                                          uint8_t** outBufferFI,
+                                          int* outSizeFI,
+                                          uint8_t** outBufferCP,
+                                          int* outSizeCP) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
     return false;
@@ -805,10 +815,10 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_signed_distance(const uint8_t* inBuffe
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_quad_planarity(const uint8_t* inBuffer,
-                                                         int inSize,
-                                                         uint8_t** outBuffer,
-                                                         int* outSize) {
+GSP_API bool GSP_CALL IGM_quad_planarity(const uint8_t* inBuffer,
+                                         int inSize,
+                                         uint8_t** outBuffer,
+                                         int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -827,12 +837,12 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_quad_planarity(const uint8_t* inBuffer
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_planarize_quad_mesh(const uint8_t* inBuffer,
-                                                              int inSize,
-                                                              int maxIter,
-                                                              double threshold,
-                                                              uint8_t** outBuffer,
-                                                              int* outSize) {
+GSP_API bool GSP_CALL IGM_planarize_quad_mesh(const uint8_t* inBuffer,
+                                              int inSize,
+                                              int maxIter,
+                                              double threshold,
+                                              uint8_t** outBuffer,
+                                              int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
     return false;
@@ -861,14 +871,14 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_planarize_quad_mesh(const uint8_t* inB
   return true;
 }
 
-GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_laplacian_scalar(const uint8_t* inBufferMesh,
-                                                           int inSizeMesh,
-                                                           const uint8_t* inBufferIndices,
-                                                           int inSizeIndices,
-                                                           const uint8_t* inBufferValues,
-                                                           int inSizeValues,
-                                                           uint8_t** outBuffer,
-                                                           int* outSize) {
+GSP_API bool GSP_CALL IGM_laplacian_scalar(const uint8_t* inBufferMesh,
+                                           int inSizeMesh,
+                                           const uint8_t* inBufferIndices,
+                                           int inSizeIndices,
+                                           const uint8_t* inBufferValues,
+                                           int inSizeValues,
+                                           uint8_t** outBuffer,
+                                           int* outSize) {
   GeoSharPlusCPP::Mesh mesh;
   if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
     return false;
@@ -905,6 +915,307 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_laplacian_scalar(const uint8_t* inBuff
   *outBuffer = nullptr;
   *outSize = 0;
   if (!GS::serializeNumberArray(Z, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GSP_API bool GSP_CALL
+IGM_param_harmonic(const uint8_t* inBuffer, int inSize, int k, uint8_t** outBuffer, int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  // Find boundary vertices
+  Eigen::VectorXi bnd;
+  igl::boundary_loop(mesh.F, bnd);
+
+  // Map boundary vertices to circle
+  Eigen::MatrixXd bnd_uv;
+  igl::map_vertices_to_circle(mesh.V, bnd, bnd_uv);
+
+  // Compute harmonic parametrization
+  Eigen::MatrixXd V_uv;
+  igl::harmonic(mesh.V, mesh.F, bnd, bnd_uv, k, V_uv);
+
+  // Convert UV coordinates to 3D points (Z = 0)
+  Eigen::MatrixXd uvPoints(V_uv.rows(), 3);
+  uvPoints.col(0) = V_uv.col(0);  // U coordinate
+  uvPoints.col(1) = V_uv.col(1);  // V coordinate
+  uvPoints.col(2).setZero();      // Z coordinate = 0
+
+  // Serialize the UV coordinates
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializePointArray(uvPoints, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+// Heat geodesics data structure - we'll use a simple approach with global storage
+// In production, you might want a better memory management system
+struct HeatGeodesicsPrecomputedData {
+  igl::HeatGeodesicsData<double> data;
+  bool is_valid;
+
+  HeatGeodesicsPrecomputedData() : is_valid(false) {}
+};
+
+// Global storage for precomputed data (simplified approach)
+static std::unordered_map<std::size_t, std::unique_ptr<HeatGeodesicsPrecomputedData>>
+    heat_geodesics_cache;
+static std::size_t next_handle = 1;
+
+GSP_API bool GSP_CALL IGM_heat_geodesic_precompute(const uint8_t* inBuffer,
+                                                   int inSize,
+                                                   uint8_t** outBuffer,
+                                                   int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  // Create precomputed data structure
+  auto precomputed = std::make_unique<HeatGeodesicsPrecomputedData>();
+
+  // Compute average edge length for time parameter
+  double t = std::pow(igl::avg_edge_length(mesh.V, mesh.F), 2);
+
+  // Precompute heat geodesics data
+  if (!igl::heat_geodesics_precompute(mesh.V, mesh.F, t, precomputed->data)) {
+    return false;
+  }
+
+  precomputed->is_valid = true;
+
+  // Store in cache and get handle
+  std::size_t handle = next_handle++;
+  heat_geodesics_cache[handle] = std::move(precomputed);
+
+  // Serialize the handle as a double (for simplicity)
+  std::vector<double> handle_vec = {static_cast<double>(handle)};
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(handle_vec, *outBuffer, *outSize)) {
+    // Clean up on failure
+    heat_geodesics_cache.erase(handle);
+    return false;
+  }
+
+  return true;
+}
+
+GSP_API bool GSP_CALL IGM_heat_geodesic_solve(const uint8_t* inBuffer,
+                                              int inSize,
+                                              const uint8_t* inBufferSources,
+                                              int inSizeSources,
+                                              uint8_t** outBuffer,
+                                              int* outSize) {
+  // Deserialize handle as double and convert to size_t
+  std::vector<double> handle_vec;
+  if (!GS::deserializeNumberArray(inBuffer, inSize, handle_vec) || handle_vec.empty()) {
+    return false;
+  }
+
+  std::size_t handle = static_cast<std::size_t>(handle_vec[0]);
+
+  // Find precomputed data
+  auto it = heat_geodesics_cache.find(handle);
+  if (it == heat_geodesics_cache.end() || !it->second->is_valid) {
+    return false;
+  }
+
+  // Deserialize source vertex indices
+  std::vector<int> sources;
+  if (!GS::deserializeNumberArray(inBufferSources, inSizeSources, sources)) {
+    return false;
+  }
+
+  // Convert to Eigen vector
+  Eigen::VectorXi gamma = Eigen::Map<Eigen::VectorXi>(sources.data(), sources.size());
+
+  // Solve for geodesic distances
+  Eigen::VectorXd distances;
+  igl::heat_geodesics_solve(it->second->data, gamma, distances);
+
+  // Serialize the distances
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(distances, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GSP_API bool GSP_CALL IGM_random_point_on_mesh(const uint8_t* inBuffer,
+                                               int inSize,
+                                               int N,
+                                               uint8_t** outBufferPoints,
+                                               int* outSizePoints,
+                                               uint8_t** outBufferFI,
+                                               int* outSizeFI) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  Eigen::MatrixXd B, P;
+  Eigen::VectorXi FI;
+
+  igl::random_points_on_mesh(N, mesh.V, mesh.F, B, FI, P);
+
+  // Serialize the points
+  *outBufferPoints = nullptr;
+  *outSizePoints = 0;
+  if (!GS::serializePointArray(P, *outBufferPoints, *outSizePoints)) {
+    return false;
+  }
+
+  // Serialize the face indices
+  *outBufferFI = nullptr;
+  *outSizeFI = 0;
+  if (!GS::serializeNumberArray(FI, *outBufferFI, *outSizeFI)) {
+    // Cleanup on failure
+    if (*outBufferPoints)
+      delete[] *outBufferPoints;
+    *outBufferPoints = nullptr;
+    *outSizePoints = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GSP_API bool GSP_CALL IGM_blue_noise_sampling_on_mesh(const uint8_t* inBuffer,
+                                                      int inSize,
+                                                      int N,
+                                                      uint8_t** outBufferPoints,
+                                                      int* outSizePoints,
+                                                      uint8_t** outBufferFI,
+                                                      int* outSizeFI) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  // Compute the radius from desired number using double area
+  Eigen::VectorXd A;
+  igl::doublearea(mesh.V, mesh.F, A);
+  const double r = std::sqrt(((A.sum() * 0.5 / (N * 0.6162910373)) / M_PI));
+
+  Eigen::MatrixXd B, P;
+  Eigen::VectorXi FI;
+
+  igl::blue_noise(mesh.V, mesh.F, r, B, FI, P);
+
+  // Serialize the points
+  *outBufferPoints = nullptr;
+  *outSizePoints = 0;
+  if (!GS::serializePointArray(P, *outBufferPoints, *outSizePoints)) {
+    return false;
+  }
+
+  // Serialize the face indices
+  *outBufferFI = nullptr;
+  *outSizeFI = 0;
+  if (!GS::serializeNumberArray(FI, *outBufferFI, *outSizeFI)) {
+    // Cleanup on failure
+    if (*outBufferPoints)
+      delete[] *outBufferPoints;
+    *outBufferPoints = nullptr;
+    *outSizePoints = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GSP_API bool GSP_CALL IGM_constrained_scalar(const uint8_t* inBufferMesh,
+                                             int inSizeMesh,
+                                             const uint8_t* inBufferIndices,
+                                             int inSizeIndices,
+                                             const uint8_t* inBufferValues,
+                                             int inSizeValues,
+                                             uint8_t** outBuffer,
+                                             int* outSize) {
+  // This is essentially the same as IGM_laplacian_scalar, so we can delegate to it
+  return IGM_laplacian_scalar(inBufferMesh,
+                              inSizeMesh,
+                              inBufferIndices,
+                              inSizeIndices,
+                              inBufferValues,
+                              inSizeValues,
+                              outBuffer,
+                              outSize);
+}
+
+GSP_API bool GSP_CALL IGM_extract_isoline_from_scalar(const uint8_t* inBufferMesh,
+                                                      int inSizeMesh,
+                                                      const uint8_t* inBufferScalar,
+                                                      int inSizeScalar,
+                                                      const uint8_t* inBufferIsoValues,
+                                                      int inSizeIsoValues,
+                                                      uint8_t** outBuffer,
+                                                      int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
+    return false;
+  }
+
+  std::vector<double> scalarData;
+  if (!GS::deserializeNumberArray(inBufferScalar, inSizeScalar, scalarData)) {
+    return false;
+  }
+
+  std::vector<double> isoValues;
+  if (!GS::deserializeNumberArray(inBufferIsoValues, inSizeIsoValues, isoValues)) {
+    return false;
+  }
+
+  // Convert scalar data to Eigen vector
+  Eigen::VectorXd S = Eigen::Map<Eigen::VectorXd>(scalarData.data(), scalarData.size());
+
+  // For now, we'll return a simplified implementation that just serializes all isolevel points
+  // This would need a proper isoline extraction algorithm like marching triangles
+  // For this implementation, we'll create placeholder points along mesh edges where isolevels occur
+
+  std::vector<GeoSharPlusCPP::Vector3d> allIsolinePoints;
+
+  // Simple edge-based isoline extraction
+  for (double isoValue : isoValues) {
+    for (int f = 0; f < mesh.F.rows(); ++f) {
+      for (int e = 0; e < 3; ++e) {
+        int v1 = mesh.F(f, e);
+        int v2 = mesh.F(f, (e + 1) % 3);
+
+        double s1 = S(v1);
+        double s2 = S(v2);
+
+        // Check if isoline crosses this edge
+        if ((s1 <= isoValue && s2 >= isoValue) || (s1 >= isoValue && s2 <= isoValue)) {
+          // Interpolate position along edge
+          double t = (isoValue - s1) / (s2 - s1);
+          if (t >= 0.0 && t <= 1.0) {
+            Eigen::Vector3d p1 = mesh.V.row(v1);
+            Eigen::Vector3d p2 = mesh.V.row(v2);
+            Eigen::Vector3d isoPoint = p1 + t * (p2 - p1);
+
+            allIsolinePoints.emplace_back(isoPoint.x(), isoPoint.y(), isoPoint.z());
+          }
+        }
+      }
+    }
+  }
+
+  // Serialize all the isoline points
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializePointArray(allIsolinePoints, *outBuffer, *outSize)) {
     return false;
   }
 

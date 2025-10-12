@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FD9F533F-D593-4911-8567-DA682C80E658}</ProjectGuid>
+    <ProjectGuid>{B530CC41-4FFD-07EF-7711-73929DC16AB3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>igmRhinoCommon</RootNamespace>

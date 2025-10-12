@@ -294,8 +294,6 @@ public static class Wrapper {
       new List<(int, int)>(FromIntPairArrayBuffer(buffer));
   public static List<(double, double)> FromDoublePairArrayBufferToList(byte[] buffer) =>
       new List<(double, double)>(FromDoublePairArrayBuffer(buffer));
-  // Vector3d IO
-#endregion
 
   // Nested Int Array IO (for adjacency lists)
   public static byte[] ToNestedIntArrayBuffer(List<List<int>> nestedArray) {
@@ -348,5 +346,7 @@ public static class Wrapper {
 
     return result;
   }
+
+#endregion
 }
 }

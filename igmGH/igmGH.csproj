@@ -81,7 +81,6 @@
 		<!-- <Compile Include="03_meshAdjacency.cs" /> -->
 		<!-- <Compile Include="03_meshBounds.cs" /> -->
 		<!-- <Compile Include="04_scalarRemap.cs" /> -->
-		<!-- <Compile Include="05_meshDeformBiharmonic.cs" /> -->
 		<!-- <Compile Include="06_meshCurvature.cs" /> -->
 		<!-- <Compile Include="06_meshFastWindingNumber.cs" /> -->
 		<!-- <Compile Include="06_meshLaplacian.cs" /> -->

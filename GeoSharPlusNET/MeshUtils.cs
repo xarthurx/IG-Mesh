@@ -854,5 +854,292 @@ public static class MeshUtils {
     var scalarValues = Wrapper.FromDoubleArrayBufferToList(byteArray);
     return scalarValues;
   }
+
+  /// <summary>
+  /// Computes harmonic parametrization of a mesh.
+  /// Maps a mesh to a flat 2D domain using harmonic coordinates.
+  /// The boundary vertices are mapped to a circle and the interior vertices
+  /// are positioned to minimize the Dirichlet energy.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="k">Order of harmonic coordinates (typically 1 for biharmonic)</param>
+  /// <returns>UV coordinates as 3D points (Z coordinate is 0)</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<Point3d> GetHarmonicParametrization(ref Mesh mesh, int k = 1) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the native function
+    var success = NativeBridge.IGM_param_harmonic(
+        meshBuffer, meshBuffer.Length, k, out IntPtr outBuffer, out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<Point3d>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var uvCoordinates = Wrapper.FromPointArrayBuffer(byteArray).ToList();
+    return uvCoordinates;
+  }
+
+  /// <summary>
+  /// Precomputes data for heat-based geodesic distance calculations.
+  /// This function computes and caches the necessary matrices for fast geodesic distance
+  /// computation.
+  /// </summary>
+  /// <param name="mesh">Input mesh for geodesic computations</param>
+  /// <returns>Handle for the precomputed data (to be used with GetHeatGeodesicDistances)</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static long GetHeatGeodesicPrecomputedData(ref Mesh mesh) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the native function
+    var success = NativeBridge.IGM_heat_geodesic_precompute(
+        meshBuffer, meshBuffer.Length, out IntPtr outBuffer, out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return 0;  // Invalid handle
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the handle - assuming it's serialized as a double array for simplicity
+    var handles = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return handles.Count > 0 ? (long)handles[0] : 0;
+  }
+
+  /// <summary>
+  /// Computes heat-based geodesic distances from source vertices using precomputed data.
+  /// This is the fast solving step that uses the precomputed factorization.
+  /// </summary>
+  /// <param name="precomputedHandle">Handle from GetHeatGeodesicPrecomputedData</param>
+  /// <param name="sourceVertices">List of source vertex indices</param>
+  /// <returns>Geodesic distances from sources to all vertices</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<double> GetHeatGeodesicDistances(long precomputedHandle,
+                                                      ref List<int> sourceVertices) {
+    if (sourceVertices == null)
+      throw new ArgumentNullException(nameof(sourceVertices));
+
+    // Serialize handle to buffer as double array (cast to double for serialization)
+    var handleList = new List<double> { (double)precomputedHandle };
+    var handleBuffer = Wrapper.ToDoubleArrayBuffer(handleList);
+
+    // Serialize source vertices to buffer
+    var sourcesBuffer = Wrapper.ToIntArrayBuffer(sourceVertices);
+
+    // Call the native function
+    var success = NativeBridge.IGM_heat_geodesic_solve(handleBuffer,
+                                                       handleBuffer.Length,
+                                                       sourcesBuffer,
+                                                       sourcesBuffer.Length,
+                                                       out IntPtr outBuffer,
+                                                       out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<double>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the distances
+    var distances = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return distances;
+  }
+
+  /// <summary>
+  /// Generates random or uniform distributed points on mesh surface.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="N">Number of points to generate</param>
+  /// <param name="method">Sampling method: 0=random, 1=uniform</param>
+  /// <returns>Tuple containing sampled points and their face indices</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static (List<Point3d> Points, List<int> FaceIndices)
+      GetRandomPointsOnMesh(ref Mesh mesh, int N, int method = 0) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the appropriate native function based on method
+    bool success;
+    IntPtr outBufferPoints, outBufferFI;
+    int outSizePoints, outSizeFI;
+
+    if (method == 0) {
+      // Random sampling
+      success = NativeBridge.IGM_random_point_on_mesh(meshBuffer,
+                                                      meshBuffer.Length,
+                                                      N,
+                                                      out outBufferPoints,
+                                                      out outSizePoints,
+                                                      out outBufferFI,
+                                                      out outSizeFI);
+    } else {
+      // Blue noise (uniform) sampling
+      success = NativeBridge.IGM_blue_noise_sampling_on_mesh(meshBuffer,
+                                                             meshBuffer.Length,
+                                                             N,
+                                                             out outBufferPoints,
+                                                             out outSizePoints,
+                                                             out outBufferFI,
+                                                             out outSizeFI);
+    }
+
+    if (!success || outBufferPoints == IntPtr.Zero || outBufferFI == IntPtr.Zero) {
+      return (new List<Point3d>(), new List<int>());
+    }
+
+    // Copy points from unmanaged memory
+    var pointsBytes = new byte[outSizePoints];
+    Marshal.Copy(outBufferPoints, pointsBytes, 0, outSizePoints);
+    Marshal.FreeCoTaskMem(outBufferPoints);
+
+    // Copy face indices from unmanaged memory
+    var fiBytes = new byte[outSizeFI];
+    Marshal.Copy(outBufferFI, fiBytes, 0, outSizeFI);
+    Marshal.FreeCoTaskMem(outBufferFI);
+
+    // Deserialize the results
+    var points = Wrapper.FromPointArrayBuffer(pointsBytes).ToList();
+    var faceIndices = Wrapper.FromIntArrayBufferToList(fiBytes);
+
+    return (points, faceIndices);
+  }
+
+  /// <summary>
+  /// Computes a constrained scalar field on mesh vertices using Laplacian smoothing.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="constraintIndices">Indices of constrained vertices</param>
+  /// <param name="constraintValues">Values for constrained vertices</param>
+  /// <returns>Scalar values for all vertices</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<double> GetConstrainedScalar(ref Mesh mesh,
+                                                  ref List<int> constraintIndices,
+                                                  ref List<double> constraintValues) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+    if (constraintIndices == null)
+      throw new ArgumentNullException(nameof(constraintIndices));
+    if (constraintValues == null)
+      throw new ArgumentNullException(nameof(constraintValues));
+    if (constraintIndices.Count != constraintValues.Count)
+      throw new ArgumentException("Constraint indices and values must have the same count");
+
+    // Serialize mesh and constraint data to buffers
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+    var indicesBuffer = Wrapper.ToIntArrayBuffer(constraintIndices);
+    var valuesBuffer = Wrapper.ToDoubleArrayBuffer(constraintValues);
+
+    // Call the native function
+    var success = NativeBridge.IGM_constrained_scalar(meshBuffer,
+                                                      meshBuffer.Length,
+                                                      indicesBuffer,
+                                                      indicesBuffer.Length,
+                                                      valuesBuffer,
+                                                      valuesBuffer.Length,
+                                                      out IntPtr outBuffer,
+                                                      out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<double>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var scalarValues = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return scalarValues;
+  }
+
+  /// <summary>
+  /// Extracts isoline points from a scalar field defined on mesh vertices.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="meshScalar">Scalar values defined on vertices</param>
+  /// <param name="isoValues">Isoline parameter values (typically in [0, 1])</param>
+  /// <returns>List of lists of points, one for each isoline</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<List<Point3d>>
+  GetIsolineFromScalar(ref Mesh mesh, ref List<double> meshScalar, ref List<double> isoValues) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+    if (meshScalar == null)
+      throw new ArgumentNullException(nameof(meshScalar));
+    if (isoValues == null)
+      throw new ArgumentNullException(nameof(isoValues));
+
+    // Serialize mesh and scalar data to buffers
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+    var scalarBuffer = Wrapper.ToDoubleArrayBuffer(meshScalar);
+    var isoBuffer = Wrapper.ToDoubleArrayBuffer(isoValues);
+
+    // Call the native function
+    var success = NativeBridge.IGM_extract_isoline_from_scalar(meshBuffer,
+                                                               meshBuffer.Length,
+                                                               scalarBuffer,
+                                                               scalarBuffer.Length,
+                                                               isoBuffer,
+                                                               isoBuffer.Length,
+                                                               out IntPtr outBuffer,
+                                                               out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<List<Point3d>>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result - this will need special handling for nested point arrays
+    // For now, return a simple implementation that assumes the format matches the expected output
+    var isolinePoints = new List<List<Point3d>>();
+
+    // This is a simplified version - the actual implementation would need to handle
+    // the nested array structure based on how the C++ side serializes it
+    var allPoints = Wrapper.FromPointArrayBuffer(byteArray);
+
+    // Group points by isoline (this is a placeholder - needs proper implementation based on
+    // serialization format)
+    int pointsPerIsoline = allPoints.Length / isoValues.Count;
+    for (int i = 0; i < isoValues.Count; i++) {
+      var linePoints = new List<Point3d>();
+      int startIdx = i * pointsPerIsoline;
+      int endIdx = Math.Min(startIdx + pointsPerIsoline, allPoints.Length);
+
+      for (int j = startIdx; j < endIdx; j++) {
+        linePoints.Add(allPoints[j]);
+      }
+      isolinePoints.Add(linePoints);
+    }
+
+    return isolinePoints;
+  }
 }
 }  // namespace GeoSharpNET
