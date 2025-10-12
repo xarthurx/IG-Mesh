@@ -3,7 +3,9 @@ using Rhino.Geometry;
 
 namespace GSP {
 public static class Wrapper {
-  // Point3d /Vector3d IO
+#region Point3d / Vector3d Operations
+
+  // Single Point/Vector IO
   public static byte[] ToPointBuffer(Point3d pt) {
     var builder = new FlatBufferBuilder(64);  // Enough for a single Vector3d
 
@@ -19,6 +21,7 @@ public static class Wrapper {
     // Now get the completed buffer
     return builder.SizedByteArray();
   }
+
   public static byte[] ToVector3dBuffer(Vector3d vector) {
     return ToPointBuffer(new Point3d(vector));
   }
@@ -30,11 +33,12 @@ public static class Wrapper {
     return pt.HasValue ? new Point3d(pt.Value.X, pt.Value.Y, pt.Value.Z)
                        : new Point3d(0, 0, 0);  // Default value if null
   }
+
   public static Vector3d FromVector3dBuffer(byte[] buffer) {
     return new Vector3d(FromPointBuffer(buffer));
   }
 
-  // Point3dArray / Vector3dArray IO
+  // Point/Vector Array IO
   public static byte[] ToPointArrayBuffer(Point3d[] points) {
     var builder = new FlatBufferBuilder(1024);
 
@@ -50,10 +54,12 @@ public static class Wrapper {
 
     return builder.SizedByteArray();
   }
+
   public static byte[] ToVector3dArrayBuffer(Vector3d[] vectors) {
     var points = vectors.Select(v => new Point3d(v)).ToArray();
     return ToPointArrayBuffer(points);
   }
+
   public static byte[] ToPointArrayBuffer(List<Vector3d> vectors) {
     var points = vectors.Select(v => new Point3d(v)).ToArray();
     return ToPointArrayBuffer(points);
@@ -77,11 +83,16 @@ public static class Wrapper {
     }
     return res;
   }
+
   public static Vector3d[] FromVector3dArrayBuffer(byte[] buffer) {
     var vectors = FromPointArrayBuffer(buffer);
     return vectors.Select(vectors => new Vector3d(vectors)).ToArray();
   }
-  // Mesh IO
+
+#endregion
+
+#region Mesh Operations
+
   public static byte[] ToMeshBuffer(Mesh mesh) {
     var builder = new FlatBufferBuilder(1024);
 
@@ -145,39 +156,10 @@ public static class Wrapper {
     return mesh;
   }
 
-#region Basic Types IO
+#endregion
 
-  // Double Array IO
-  public static byte[] ToDoubleArrayBuffer(double[] values) {
-    var builder = new FlatBufferBuilder(1024);
+#region Int Array Operations
 
-    // Create the values vector
-    var valuesOffset = FB.DoubleArrayData.CreateValuesVector(builder, values);
-
-    // Create the array data
-    var arrayOffset = FB.DoubleArrayData.CreateDoubleArrayData(builder, valuesOffset);
-    builder.Finish(arrayOffset.Value);
-
-    return builder.SizedByteArray();
-  }
-
-  public static double[] FromDoubleArrayBuffer(byte[] buffer) {
-    var byteBuffer = new ByteBuffer(buffer);
-    var arrayData = FB.DoubleArrayData.GetRootAsDoubleArrayData(byteBuffer);
-
-    // Check if the array is valid
-    if (arrayData.ValuesLength == 0)
-      return Array.Empty<double>();
-
-    // Extract values
-    var result = new double[arrayData.ValuesLength];
-    for (int i = 0; i < arrayData.ValuesLength; i++) {
-      result[i] = arrayData.Values(i);
-    }
-    return result;
-  }
-
-  // Int Array IO
   public static byte[] ToIntArrayBuffer(int[] values) {
     var builder = new FlatBufferBuilder(1024);
 
@@ -190,6 +172,8 @@ public static class Wrapper {
 
     return builder.SizedByteArray();
   }
+
+  public static byte[] ToIntArrayBuffer(List<int> values) => ToIntArrayBuffer(values.ToArray());
 
   public static int[] FromIntArrayBuffer(byte[] buffer) {
     var byteBuffer = new ByteBuffer(buffer);
@@ -207,7 +191,13 @@ public static class Wrapper {
     return result;
   }
 
-  // Int Pair Array IO
+  public static List<int>
+      FromIntArrayBufferToList(byte[] buffer) => new List<int>(FromIntArrayBuffer(buffer));
+
+#endregion
+
+#region Int Pair Array Operations
+
   public static byte[] ToIntPairArrayBuffer((int, int)[] pairs) {
     var builder = new FlatBufferBuilder(1024);
 
@@ -223,6 +213,9 @@ public static class Wrapper {
 
     return builder.SizedByteArray();
   }
+
+  public static byte[] ToIntPairArrayBuffer(List<(int, int)> pairs) =>
+      ToIntPairArrayBuffer(pairs.ToArray());
 
   public static (int, int)[] FromIntPairArrayBuffer(byte[] buffer) {
     var byteBuffer = new ByteBuffer(buffer);
@@ -241,7 +234,52 @@ public static class Wrapper {
     return result;
   }
 
-  // Double Pair Array IO
+  public static List<(int, int)> FromIntPairArrayBufferToList(byte[] buffer) =>
+      new List<(int, int)>(FromIntPairArrayBuffer(buffer));
+
+#endregion
+
+#region Double Array Operations
+
+  public static byte[] ToDoubleArrayBuffer(double[] values) {
+    var builder = new FlatBufferBuilder(1024);
+
+    // Create the values vector
+    var valuesOffset = FB.DoubleArrayData.CreateValuesVector(builder, values);
+
+    // Create the array data
+    var arrayOffset = FB.DoubleArrayData.CreateDoubleArrayData(builder, valuesOffset);
+    builder.Finish(arrayOffset.Value);
+
+    return builder.SizedByteArray();
+  }
+
+  public static byte[] ToDoubleArrayBuffer(List<double> values) =>
+      ToDoubleArrayBuffer(values.ToArray());
+
+  public static double[] FromDoubleArrayBuffer(byte[] buffer) {
+    var byteBuffer = new ByteBuffer(buffer);
+    var arrayData = FB.DoubleArrayData.GetRootAsDoubleArrayData(byteBuffer);
+
+    // Check if the array is valid
+    if (arrayData.ValuesLength == 0)
+      return Array.Empty<double>();
+
+    // Extract values
+    var result = new double[arrayData.ValuesLength];
+    for (int i = 0; i < arrayData.ValuesLength; i++) {
+      result[i] = arrayData.Values(i);
+    }
+    return result;
+  }
+
+  public static List<double>
+      FromDoubleArrayBufferToList(byte[] buffer) => new List<double>(FromDoubleArrayBuffer(buffer));
+
+#endregion
+
+#region Double Pair Array Operations
+
   public static byte[] ToDoublePairArrayBuffer((double, double)[] pairs) {
     var builder = new FlatBufferBuilder(1024);
 
@@ -257,6 +295,9 @@ public static class Wrapper {
 
     return builder.SizedByteArray();
   }
+
+  public static byte[] ToDoublePairArrayBuffer(List<(double, double)> pairs) =>
+      ToDoublePairArrayBuffer(pairs.ToArray());
 
   public static (double, double)[] FromDoublePairArrayBuffer(byte[] buffer) {
     var byteBuffer = new ByteBuffer(buffer);
@@ -276,26 +317,13 @@ public static class Wrapper {
     return result;
   }
 
-  // Overloads for List types
-  public static byte[] ToDoubleArrayBuffer(List<double> values) =>
-      ToDoubleArrayBuffer(values.ToArray());
-  public static byte[] ToIntArrayBuffer(List<int> values) => ToIntArrayBuffer(values.ToArray());
-  public static byte[] ToIntPairArrayBuffer(List<(int, int)> pairs) =>
-      ToIntPairArrayBuffer(pairs.ToArray());
-  public static byte[] ToDoublePairArrayBuffer(List<(double, double)> pairs) =>
-      ToDoublePairArrayBuffer(pairs.ToArray());
-
-  // Convenience methods for returning Lists instead of arrays
-  public static List<double>
-      FromDoubleArrayBufferToList(byte[] buffer) => new List<double>(FromDoubleArrayBuffer(buffer));
-  public static List<int>
-      FromIntArrayBufferToList(byte[] buffer) => new List<int>(FromIntArrayBuffer(buffer));
-  public static List<(int, int)> FromIntPairArrayBufferToList(byte[] buffer) =>
-      new List<(int, int)>(FromIntPairArrayBuffer(buffer));
   public static List<(double, double)> FromDoublePairArrayBufferToList(byte[] buffer) =>
       new List<(double, double)>(FromDoublePairArrayBuffer(buffer));
 
-  // Nested Int Array IO (for adjacency lists)
+#endregion
+
+#region Nested Int Array Operations
+
   public static byte[] ToNestedIntArrayBuffer(List<List<int>> nestedArray) {
     var builder = new FlatBufferBuilder(1024);
 
