@@ -1,7 +1,5 @@
 ﻿using GSP;
 using Rhino.Geometry;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace GeoSharpNET {
@@ -84,6 +82,11 @@ public static class MeshUtils {
     return success;
   }
 
+  /// <summary>
+  /// Computes barycenter for each face of a mesh.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <returns>List of vertex normals</returns>
   public static List<Point3d> GetBarycenter(ref Mesh rMesh) {
     // initialize the pointer and pass data
     if (rMesh == null)
