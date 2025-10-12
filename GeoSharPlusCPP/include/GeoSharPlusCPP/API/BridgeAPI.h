@@ -109,4 +109,20 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_facet(const uint8_t* inBuffer
                                                          int* outSizeEL,
                                                          uint8_t** outBufferTL,
                                                          int* outSizeTL);
+// ! --------------------------------
+// ! 04:: scalar remap funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_VtoF(const uint8_t* inBufferMesh,
+                                                     int inSizeMesh,
+                                                     const uint8_t* inBufferScalar,
+                                                     int inSizeScalar,
+                                                     uint8_t** outBuffer,
+                                                     int* outSize);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh,
+                                                     int inSizeMesh,
+                                                     const uint8_t* inBufferScalar,
+                                                     int inSizeScalar,
+                                                     uint8_t** outBuffer,
+                                                     int* outSize);
 }

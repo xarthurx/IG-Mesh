@@ -462,6 +462,70 @@ public static class NativeBridge {
           inBuffer, inSize, out outBufferEL, out outSizeEL, out outBufferTL, out outSizeTL);
   }
 
+  // Scalar Remap VtoF
+  [DllImport(
+      WinLibName, EntryPoint = "IGM_remap_VtoF", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_remap_VtoFWin(byte[] inBufferMesh,
+                                               int inSizeMesh,
+                                               byte[] inBufferScalar,
+                                               int inSizeScalar,
+                                               out IntPtr outBuffer,
+                                               out int outSize);
+  [DllImport(
+      MacLibName, EntryPoint = "IGM_remap_VtoF", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_remap_VtoFMac(byte[] inBufferMesh,
+                                               int inSizeMesh,
+                                               byte[] inBufferScalar,
+                                               int inSizeScalar,
+                                               out IntPtr outBuffer,
+                                               out int outSize);
+
+  public static bool IGM_remap_VtoF(byte[] inBufferMesh,
+                                    int inSizeMesh,
+                                    byte[] inBufferScalar,
+                                    int inSizeScalar,
+                                    out IntPtr outBuffer,
+                                    out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_remap_VtoFWin(
+          inBufferMesh, inSizeMesh, inBufferScalar, inSizeScalar, out outBuffer, out outSize);
+    else
+      return IGM_remap_VtoFMac(
+          inBufferMesh, inSizeMesh, inBufferScalar, inSizeScalar, out outBuffer, out outSize);
+  }
+
+  // Scalar Remap FtoV
+  [DllImport(
+      WinLibName, EntryPoint = "IGM_remap_FtoV", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_remap_FtoVWin(byte[] inBufferMesh,
+                                               int inSizeMesh,
+                                               byte[] inBufferScalar,
+                                               int inSizeScalar,
+                                               out IntPtr outBuffer,
+                                               out int outSize);
+  [DllImport(
+      MacLibName, EntryPoint = "IGM_remap_FtoV", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_remap_FtoVMac(byte[] inBufferMesh,
+                                               int inSizeMesh,
+                                               byte[] inBufferScalar,
+                                               int inSizeScalar,
+                                               out IntPtr outBuffer,
+                                               out int outSize);
+
+  public static bool IGM_remap_FtoV(byte[] inBufferMesh,
+                                    int inSizeMesh,
+                                    byte[] inBufferScalar,
+                                    int inSizeScalar,
+                                    out IntPtr outBuffer,
+                                    out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_remap_FtoVWin(
+          inBufferMesh, inSizeMesh, inBufferScalar, inSizeScalar, out outBuffer, out outSize);
+    else
+      return IGM_remap_FtoVMac(
+          inBufferMesh, inSizeMesh, inBufferScalar, inSizeScalar, out outBuffer, out outSize);
+  }
+
 #endregion
 }
 }

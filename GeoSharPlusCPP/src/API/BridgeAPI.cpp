@@ -4,6 +4,8 @@
 #include <memory>
 
 #include <igl/adjacency_list.h>
+#include <igl/average_onto_faces.h>
+#include <igl/average_onto_vertices.h>
 #include <igl/barycenter.h>
 #include <igl/boundary_facets.h>
 #include <igl/boundary_loop.h>
@@ -513,6 +515,72 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_boundary_facet(const uint8_t* inBuffer
       delete[] *outBufferEL;
     *outBufferEL = nullptr;
     *outSizeEL = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_VtoF(const uint8_t* inBufferMesh,
+                                                     int inSizeMesh,
+                                                     const uint8_t* inBufferScalar,
+                                                     int inSizeScalar,
+                                                     uint8_t** outBuffer,
+                                                     int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
+    return false;
+  }
+
+  std::vector<double> scalarData;
+  if (!GS::deserializeNumberArray(inBufferScalar, inSizeScalar, scalarData)) {
+    return false;
+  }
+
+  // Convert to Eigen vector
+  Eigen::VectorXd vertexScalars = Eigen::Map<Eigen::VectorXd>(scalarData.data(), scalarData.size());
+
+  // Compute face scalars using IGL
+  Eigen::VectorXd faceScalars;
+  igl::average_onto_faces(mesh.F, vertexScalars, faceScalars);
+
+  // Serialize result
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(faceScalars, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh,
+                                                     int inSizeMesh,
+                                                     const uint8_t* inBufferScalar,
+                                                     int inSizeScalar,
+                                                     uint8_t** outBuffer,
+                                                     int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
+    return false;
+  }
+
+  std::vector<double> scalarData;
+  if (!GS::deserializeNumberArray(inBufferScalar, inSizeScalar, scalarData)) {
+    return false;
+  }
+
+  // Convert to Eigen vector
+  Eigen::VectorXd faceScalars = Eigen::Map<Eigen::VectorXd>(scalarData.data(), scalarData.size());
+
+  // Compute vertex scalars using IGL
+  Eigen::VectorXd vertexScalars;
+  igl::average_onto_vertices(mesh.V, mesh.F, faceScalars, vertexScalars);
+
+  // Serialize result
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(vertexScalars, *outBuffer, *outSize)) {
     return false;
   }
 
