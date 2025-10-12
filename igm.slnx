@@ -7,16 +7,7 @@
     <Platform Project="x64" />
   </Project>
   <Project Path="GeoSharPlusNET/GeoSharPlusNET.csproj" />
-  <Project Path="igmCppPort/igmCppPort.vcxproj">
-    <Platform Project="x64" />
-    <Build Solution="*|x86" Project="false" />
-  </Project>
   <Project Path="igmGH/igmGH.csproj">
-    <Build Solution="*|x86" Project="false" />
-  </Project>
-  <Project Path="igmRhinoCommon/igmRhinoCommon.csproj">
-    <BuildDependency Project="igmCppPort/igmCppPort.vcxproj" />
-    <Platform Project="x64" />
     <Build Solution="*|x86" Project="false" />
   </Project>
 </Solution>

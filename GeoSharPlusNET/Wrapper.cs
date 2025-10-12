@@ -1,5 +1,6 @@
 ﻿using Google.FlatBuffers;
 using Rhino.Geometry;
+using System.Linq;
 
 namespace GSP {
 public static class Wrapper {
@@ -55,6 +56,10 @@ public static class Wrapper {
     return builder.SizedByteArray();
   }
 
+  public static byte[] ToPointArrayBuffer(List<Point3d> points) {
+    return ToPointArrayBuffer(points.ToArray());
+  }
+
   public static byte[] ToVector3dArrayBuffer(Vector3d[] vectors) {
     var points = vectors.Select(v => new Point3d(v)).ToArray();
     return ToPointArrayBuffer(points);
@@ -88,6 +93,12 @@ public static class Wrapper {
     var vectors = FromPointArrayBuffer(buffer);
     return vectors.Select(vectors => new Vector3d(vectors)).ToArray();
   }
+
+  public static List<Point3d>
+      FromPointArrayBufferToList(byte[] buffer) => new List<Point3d>(FromPointArrayBuffer(buffer));
+
+  public static List<Vector3d> FromVector3dArrayBufferToList(byte[] buffer) =>
+      new List<Vector3d>(FromVector3dArrayBuffer(buffer));
 
 #endregion
 
