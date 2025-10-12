@@ -125,4 +125,74 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh
                                                      int inSizeScalar,
                                                      uint8_t** outBuffer,
                                                      int* outSize);
-}
+
+// ! --------------------------------
+// ! 05:: curvature funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_principal_curvature(const uint8_t* inBuffer,
+                                                              int inSize,
+                                                              uint32_t radius,
+                                                              uint8_t** outBufferPD1,
+                                                              int* outSizePD1,
+                                                              uint8_t** outBufferPD2,
+                                                              int* outSizePD2,
+                                                              uint8_t** outBufferPV1,
+                                                              int* outSizePV1,
+                                                              uint8_t** outBufferPV2,
+                                                              int* outSizePV2);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_gaussian_curvature(const uint8_t* inBuffer,
+                                                             int inSize,
+                                                             uint8_t** outBuffer,
+                                                             int* outSize);
+
+// ! --------------------------------
+// ! 06:: measure funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_fast_winding_number(const uint8_t* inBufferMesh,
+                                                              int inSizeMesh,
+                                                              const uint8_t* inBufferPoints,
+                                                              int inSizePoints,
+                                                              uint8_t** outBuffer,
+                                                              int* outSize);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_signed_distance(const uint8_t* inBufferMesh,
+                                                          int inSizeMesh,
+                                                          const uint8_t* inBufferPoints,
+                                                          int inSizePoints,
+                                                          int signedType,
+                                                          uint8_t** outBufferSD,
+                                                          int* outSizeSD,
+                                                          uint8_t** outBufferFI,
+                                                          int* outSizeFI,
+                                                          uint8_t** outBufferCP,
+                                                          int* outSizeCP);
+
+// ! --------------------------------
+// ! 07:: quad mesh funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_quad_planarity(const uint8_t* inBuffer,
+                                                         int inSize,
+                                                         uint8_t** outBuffer,
+                                                         int* outSize);
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_planarize_quad_mesh(const uint8_t* inBuffer,
+                                                              int inSize,
+                                                              int maxIter,
+                                                              double threshold,
+                                                              uint8_t** outBuffer,
+                                                              int* outSize);
+
+// ! --------------------------------
+// ! 08:: laplacian funcs
+// ! --------------------------------
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_laplacian_scalar(const uint8_t* inBufferMesh,
+                                                           int inSizeMesh,
+                                                           const uint8_t* inBufferIndices,
+                                                           int inSizeIndices,
+                                                           const uint8_t* inBufferValues,
+                                                           int inSizeValues,
+                                                           uint8_t** outBuffer,
+                                                           int* outSize);
+
+}  // extern "C"

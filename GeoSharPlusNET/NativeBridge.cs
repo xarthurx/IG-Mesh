@@ -526,6 +526,294 @@ public static class NativeBridge {
           inBufferMesh, inSizeMesh, inBufferScalar, inSizeScalar, out outBuffer, out outSize);
   }
 
+  // Principal Curvature - note the multiple output parameters
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_principal_curvature",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_principal_curvatureWin(byte[] inBuffer,
+                                                        int inSize,
+                                                        uint radius,
+                                                        out IntPtr obPD1,
+                                                        out int obsPD1,
+                                                        out IntPtr obPD2,
+                                                        out int obsPD2,
+                                                        out IntPtr obPV1,
+                                                        out int obsPV1,
+                                                        out IntPtr obPV2,
+                                                        out int obsPV2);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_principal_curvature",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_principal_curvatureMac(byte[] inBuffer,
+                                                        int inSize,
+                                                        uint radius,
+                                                        out IntPtr obPD1,
+                                                        out int obsPD1,
+                                                        out IntPtr obPD2,
+                                                        out int obsPD2,
+                                                        out IntPtr obPV1,
+                                                        out int obsPV1,
+                                                        out IntPtr obPV2,
+                                                        out int obsPV2);
+
+  public static bool IGM_principal_curvature(byte[] inBuffer,
+                                             int inSize,
+                                             uint radius,
+                                             out IntPtr obPD1,
+                                             out int obsPD1,
+                                             out IntPtr obPD2,
+                                             out int obsPD2,
+                                             out IntPtr obPV1,
+                                             out int obsPV1,
+                                             out IntPtr obPV2,
+                                             out int obsPV2) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_principal_curvatureWin(inBuffer,
+                                        inSize,
+                                        radius,
+                                        out obPD1,
+                                        out obsPD1,
+                                        out obPD2,
+                                        out obsPD2,
+                                        out obPV1,
+                                        out obsPV1,
+                                        out obPV2,
+                                        out obsPV2);
+    else
+      return IGM_principal_curvatureMac(inBuffer,
+                                        inSize,
+                                        radius,
+                                        out obPD1,
+                                        out obsPD1,
+                                        out obPD2,
+                                        out obsPD2,
+                                        out obPV1,
+                                        out obsPV1,
+                                        out obPV2,
+                                        out obsPV2);
+  }
+
+  // Gaussian Curvature
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_gaussian_curvature",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool
+  IGM_gaussian_curvatureWin(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_gaussian_curvature",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool
+  IGM_gaussian_curvatureMac(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize);
+
+  public static bool
+  IGM_gaussian_curvature(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_gaussian_curvatureWin(inBuffer, inSize, out outBuffer, out outSize);
+    else
+      return IGM_gaussian_curvatureMac(inBuffer, inSize, out outBuffer, out outSize);
+  }
+
+  // Fast Winding Number
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_fast_winding_number",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_fast_winding_numberWin(byte[] inBufferMesh,
+                                                        int inSizeMesh,
+                                                        byte[] inBufferPoints,
+                                                        int inSizePoints,
+                                                        out IntPtr outBuffer,
+                                                        out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_fast_winding_number",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_fast_winding_numberMac(byte[] inBufferMesh,
+                                                        int inSizeMesh,
+                                                        byte[] inBufferPoints,
+                                                        int inSizePoints,
+                                                        out IntPtr outBuffer,
+                                                        out int outSize);
+
+  public static bool IGM_fast_winding_number(byte[] inBufferMesh,
+                                             int inSizeMesh,
+                                             byte[] inBufferPoints,
+                                             int inSizePoints,
+                                             out IntPtr outBuffer,
+                                             out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_fast_winding_numberWin(
+          inBufferMesh, inSizeMesh, inBufferPoints, inSizePoints, out outBuffer, out outSize);
+    else
+      return IGM_fast_winding_numberMac(
+          inBufferMesh, inSizeMesh, inBufferPoints, inSizePoints, out outBuffer, out outSize);
+  }
+
+  // Signed Distance
+  [DllImport(
+      WinLibName, EntryPoint = "IGM_signed_distance", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_signed_distanceWin(byte[] inBufferMesh,
+                                                    int inSizeMesh,
+                                                    byte[] inBufferPoints,
+                                                    int inSizePoints,
+                                                    int signedType,
+                                                    out IntPtr outBufferSD,
+                                                    out int outSizeSD,
+                                                    out IntPtr outBufferFI,
+                                                    out int outSizeFI,
+                                                    out IntPtr outBufferCP,
+                                                    out int outSizeCP);
+  [DllImport(
+      MacLibName, EntryPoint = "IGM_signed_distance", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_signed_distanceMac(byte[] inBufferMesh,
+                                                    int inSizeMesh,
+                                                    byte[] inBufferPoints,
+                                                    int inSizePoints,
+                                                    int signedType,
+                                                    out IntPtr outBufferSD,
+                                                    out int outSizeSD,
+                                                    out IntPtr outBufferFI,
+                                                    out int outSizeFI,
+                                                    out IntPtr outBufferCP,
+                                                    out int outSizeCP);
+
+  public static bool IGM_signed_distance(byte[] inBufferMesh,
+                                         int inSizeMesh,
+                                         byte[] inBufferPoints,
+                                         int inSizePoints,
+                                         int signedType,
+                                         out IntPtr outBufferSD,
+                                         out int outSizeSD,
+                                         out IntPtr outBufferFI,
+                                         out int outSizeFI,
+                                         out IntPtr outBufferCP,
+                                         out int outSizeCP) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_signed_distanceWin(inBufferMesh,
+                                    inSizeMesh,
+                                    inBufferPoints,
+                                    inSizePoints,
+                                    signedType,
+                                    out outBufferSD,
+                                    out outSizeSD,
+                                    out outBufferFI,
+                                    out outSizeFI,
+                                    out outBufferCP,
+                                    out outSizeCP);
+    else
+      return IGM_signed_distanceMac(inBufferMesh,
+                                    inSizeMesh,
+                                    inBufferPoints,
+                                    inSizePoints,
+                                    signedType,
+                                    out outBufferSD,
+                                    out outSizeSD,
+                                    out outBufferFI,
+                                    out outSizeFI,
+                                    out outBufferCP,
+                                    out outSizeCP);
+  }
+
+  // Quad Planarity
+  [DllImport(
+      WinLibName, EntryPoint = "IGM_quad_planarity", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool
+  IGM_quad_planarityWin(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize);
+  [DllImport(
+      MacLibName, EntryPoint = "IGM_quad_planarity", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool
+  IGM_quad_planarityMac(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize);
+
+  public static bool
+  IGM_quad_planarity(byte[] inBuffer, int inSize, out IntPtr outBuffer, out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_quad_planarityWin(inBuffer, inSize, out outBuffer, out outSize);
+    else
+      return IGM_quad_planarityMac(inBuffer, inSize, out outBuffer, out outSize);
+  }
+
+  // Planarize Quad Mesh
+  [DllImport(WinLibName,
+             EntryPoint = "IGM_planarize_quad_mesh",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_planarize_quad_meshWin(byte[] inBuffer,
+                                                        int inSize,
+                                                        int maxIter,
+                                                        double threshold,
+                                                        out IntPtr outBuffer,
+                                                        out int outSize);
+  [DllImport(MacLibName,
+             EntryPoint = "IGM_planarize_quad_mesh",
+             CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_planarize_quad_meshMac(byte[] inBuffer,
+                                                        int inSize,
+                                                        int maxIter,
+                                                        double threshold,
+                                                        out IntPtr outBuffer,
+                                                        out int outSize);
+
+  public static bool IGM_planarize_quad_mesh(byte[] inBuffer,
+                                             int inSize,
+                                             int maxIter,
+                                             double threshold,
+                                             out IntPtr outBuffer,
+                                             out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_planarize_quad_meshWin(
+          inBuffer, inSize, maxIter, threshold, out outBuffer, out outSize);
+    else
+      return IGM_planarize_quad_meshMac(
+          inBuffer, inSize, maxIter, threshold, out outBuffer, out outSize);
+  }
+
+  // Laplacian Scalar
+  [DllImport(
+      WinLibName, EntryPoint = "IGM_laplacian_scalar", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_laplacian_scalarWin(byte[] inBufferMesh,
+                                                     int inSizeMesh,
+                                                     byte[] inBufferIndices,
+                                                     int inSizeIndices,
+                                                     byte[] inBufferValues,
+                                                     int inSizeValues,
+                                                     out IntPtr outBuffer,
+                                                     out int outSize);
+  [DllImport(
+      MacLibName, EntryPoint = "IGM_laplacian_scalar", CallingConvention = CallingConvention.Cdecl)]
+  private static extern bool IGM_laplacian_scalarMac(byte[] inBufferMesh,
+                                                     int inSizeMesh,
+                                                     byte[] inBufferIndices,
+                                                     int inSizeIndices,
+                                                     byte[] inBufferValues,
+                                                     int inSizeValues,
+                                                     out IntPtr outBuffer,
+                                                     out int outSize);
+
+  public static bool IGM_laplacian_scalar(byte[] inBufferMesh,
+                                          int inSizeMesh,
+                                          byte[] inBufferIndices,
+                                          int inSizeIndices,
+                                          byte[] inBufferValues,
+                                          int inSizeValues,
+                                          out IntPtr outBuffer,
+                                          out int outSize) {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      return IGM_laplacian_scalarWin(inBufferMesh,
+                                     inSizeMesh,
+                                     inBufferIndices,
+                                     inSizeIndices,
+                                     inBufferValues,
+                                     inSizeValues,
+                                     out outBuffer,
+                                     out outSize);
+    else
+      return IGM_laplacian_scalarMac(inBufferMesh,
+                                     inSizeMesh,
+                                     inBufferIndices,
+                                     inSizeIndices,
+                                     inBufferValues,
+                                     inSizeValues,
+                                     out outBuffer,
+                                     out outSize);
+  }
+
 #endregion
 }
 }

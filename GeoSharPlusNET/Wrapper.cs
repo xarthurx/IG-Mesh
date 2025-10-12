@@ -54,6 +54,10 @@ public static class Wrapper {
     var points = vectors.Select(v => new Point3d(v)).ToArray();
     return ToPointArrayBuffer(points);
   }
+  public static byte[] ToPointArrayBuffer(List<Vector3d> vectors) {
+    var points = vectors.Select(v => new Point3d(v)).ToArray();
+    return ToPointArrayBuffer(points);
+  }
 
   public static Point3d[] FromPointArrayBuffer(byte[] buffer) {
     var byteBuffer = new ByteBuffer(buffer);
@@ -344,13 +348,5 @@ public static class Wrapper {
 
     return result;
   }
-
-  // Convenience method for converting from array
-  public static byte[] ToNestedIntArrayBuffer(List<int>[] nestedArray) =>
-      ToNestedIntArrayBuffer(nestedArray.Select(arr => arr.ToList()).ToList());
-
-  // Convenience method for returning array instead of list
-  public static List<int>[] FromNestedIntArrayBufferToArray(byte[] buffer) =>
-      FromNestedIntArrayBuffer(buffer).ToArray();
 }
 }

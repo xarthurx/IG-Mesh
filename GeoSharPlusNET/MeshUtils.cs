@@ -544,5 +544,315 @@ public static class MeshUtils {
     var vertexScalars = Wrapper.FromDoubleArrayBufferToList(byteArray);
     return vertexScalars;
   }
+
+  /// <summary>
+  /// Computes principal curvature directions and values for a mesh.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="radius">Radius parameter for curvature computation</param>
+  /// <returns>Tuple containing principal directions and values</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static (List<Vector3d> PD1, List<Vector3d> PD2, List<double> PV1, List<double> PV2)
+      GetPrincipalCurvature(ref Mesh mesh, uint radius = 5) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the native function
+    var success = NativeBridge.IGM_principal_curvature(meshBuffer,
+                                                       meshBuffer.Length,
+                                                       radius,
+                                                       out IntPtr obPD1,
+                                                       out int obsPD1,
+                                                       out IntPtr obPD2,
+                                                       out int obsPD2,
+                                                       out IntPtr obPV1,
+                                                       out int obsPV1,
+                                                       out IntPtr obPV2,
+                                                       out int obsPV2);
+
+    if (!success) {
+      return (new List<Vector3d>(), new List<Vector3d>(), new List<double>(), new List<double>());
+    }
+
+    // Process PD1 (principal direction 1)
+    var pd1Bytes = new byte[obsPD1];
+    Marshal.Copy(obPD1, pd1Bytes, 0, obsPD1);
+    Marshal.FreeCoTaskMem(obPD1);
+    var pd1 = Wrapper.FromVector3dArrayBuffer(pd1Bytes).ToList();
+
+    // Process PD2 (principal direction 2)
+    var pd2Bytes = new byte[obsPD2];
+    Marshal.Copy(obPD2, pd2Bytes, 0, obsPD2);
+    Marshal.FreeCoTaskMem(obPD2);
+    var pd2 = Wrapper.FromVector3dArrayBuffer(pd2Bytes).ToList();
+
+    // Process PV1 (principal value 1)
+    var pv1Bytes = new byte[obsPV1];
+    Marshal.Copy(obPV1, pv1Bytes, 0, obsPV1);
+    Marshal.FreeCoTaskMem(obPV1);
+    var pv1 = Wrapper.FromDoubleArrayBufferToList(pv1Bytes);
+
+    // Process PV2 (principal value 2)
+    var pv2Bytes = new byte[obsPV2];
+    Marshal.Copy(obPV2, pv2Bytes, 0, obsPV2);
+    Marshal.FreeCoTaskMem(obPV2);
+    var pv2 = Wrapper.FromDoubleArrayBufferToList(pv2Bytes);
+
+    return (pd1, pd2, pv1, pv2);
+  }
+
+  /// <summary>
+  /// Computes Gaussian curvature for each vertex of a mesh.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <returns>List of Gaussian curvature values</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<double> GetGaussianCurvature(ref Mesh mesh) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the native function
+    var success = NativeBridge.IGM_gaussian_curvature(
+        meshBuffer, meshBuffer.Length, out IntPtr outBuffer, out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<double>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var curvatures = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return curvatures;
+  }
+
+  /// <summary>
+  /// Computes fast winding numbers for query points with respect to a mesh.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="queryPoints">Points to query</param>
+  /// <returns>List of winding numbers</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<double> GetFastWindingNumber(ref Mesh mesh, ref List<Point3d> queryPoints) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+    if (queryPoints == null)
+      throw new ArgumentNullException(nameof(queryPoints));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Convert Point3d list to Vector3d list for serialization
+    var queryVector3ds = queryPoints.ConvertAll(p => new Vector3d(p.X, p.Y, p.Z));
+    var pointsBuffer = Wrapper.ToPointArrayBuffer(queryVector3ds);
+
+    // Call the native function
+    var success = NativeBridge.IGM_fast_winding_number(meshBuffer,
+                                                       meshBuffer.Length,
+                                                       pointsBuffer,
+                                                       pointsBuffer.Length,
+                                                       out IntPtr outBuffer,
+                                                       out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<double>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var windingNumbers = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return windingNumbers;
+  }
+
+  /// <summary>
+  /// Computes signed distance from query points to a mesh.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="queryPoints">Points to query</param>
+  /// <param name="signedType">Method for computing signed distance (1-4)</param>
+  /// <returns>Tuple containing signed distances, face indices, and closest points</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static (List<double> SignedDistances, List<int> FaceIndices, List<Point3d> ClosestPoints)
+      GetSignedDistance(ref Mesh mesh, ref List<Point3d> queryPoints, int signedType = 4) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+    if (queryPoints == null)
+      throw new ArgumentNullException(nameof(queryPoints));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Convert Point3d list to Vector3d list for serialization
+    var queryVector3ds = queryPoints.ConvertAll(p => new Vector3d(p.X, p.Y, p.Z));
+    var pointsBuffer = Wrapper.ToPointArrayBuffer(queryVector3ds);
+
+    // Call the native function
+    var success = NativeBridge.IGM_signed_distance(meshBuffer,
+                                                   meshBuffer.Length,
+                                                   pointsBuffer,
+                                                   pointsBuffer.Length,
+                                                   signedType,
+                                                   out IntPtr sdBuffer,
+                                                   out int sdSize,
+                                                   out IntPtr fiBuffer,
+                                                   out int fiSize,
+                                                   out IntPtr cpBuffer,
+                                                   out int cpSize);
+
+    if (!success) {
+      return (new List<double>(), new List<int>(), new List<Point3d>());
+    }
+
+    // Process signed distances
+    var sdBytes = new byte[sdSize];
+    Marshal.Copy(sdBuffer, sdBytes, 0, sdSize);
+    Marshal.FreeCoTaskMem(sdBuffer);
+    var signedDistances = Wrapper.FromDoubleArrayBufferToList(sdBytes);
+
+    // Process face indices
+    var fiBytes = new byte[fiSize];
+    Marshal.Copy(fiBuffer, fiBytes, 0, fiSize);
+    Marshal.FreeCoTaskMem(fiBuffer);
+    var faceIndices = Wrapper.FromIntArrayBufferToList(fiBytes);
+
+    // Process closest points
+    var cpBytes = new byte[cpSize];
+    Marshal.Copy(cpBuffer, cpBytes, 0, cpSize);
+    Marshal.FreeCoTaskMem(cpBuffer);
+    var closestPoints = Wrapper.FromPointArrayBuffer(cpBytes).ToList();
+
+    return (signedDistances, faceIndices, closestPoints);
+  }
+
+  /// <summary>
+  /// Computes planarity values for quad faces in a mesh.
+  /// </summary>
+  /// <param name="mesh">Input quad mesh</param>
+  /// <returns>List of planarity values</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<double> GetQuadPlanarity(ref Mesh mesh) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the native function
+    var success = NativeBridge.IGM_quad_planarity(
+        meshBuffer, meshBuffer.Length, out IntPtr outBuffer, out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<double>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var planarityValues = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return planarityValues;
+  }
+
+  /// <summary>
+  /// Planarizes quad faces in a mesh.
+  /// </summary>
+  /// <param name="mesh">Input quad mesh</param>
+  /// <param name="maxIterations">Maximum iterations for planarization</param>
+  /// <param name="threshold">Threshold to stop planarization</param>
+  /// <returns>Planarized mesh</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static Mesh
+  PlanarizeQuadMesh(ref Mesh mesh, int maxIterations = 100, double threshold = 0.005) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+
+    // Serialize mesh to buffer
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+
+    // Call the native function
+    var success = NativeBridge.IGM_planarize_quad_mesh(meshBuffer,
+                                                       meshBuffer.Length,
+                                                       maxIterations,
+                                                       threshold,
+                                                       out IntPtr outBuffer,
+                                                       out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new Mesh();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var planarizedMesh = Wrapper.FromMeshBuffer(byteArray);
+    return planarizedMesh;
+  }
+
+  /// <summary>
+  /// Solves Laplacian equation with given boundary constraints.
+  /// </summary>
+  /// <param name="mesh">Input mesh</param>
+  /// <param name="constraintIndices">Indices of constrained vertices</param>
+  /// <param name="constraintValues">Values for constrained vertices</param>
+  /// <returns>Scalar values for all vertices</returns>
+  /// <exception cref="ArgumentNullException"></exception>
+  public static List<double> GetLaplacianScalar(ref Mesh mesh,
+                                                ref List<int> constraintIndices,
+                                                ref List<double> constraintValues) {
+    if (mesh == null)
+      throw new ArgumentNullException(nameof(mesh));
+    if (constraintIndices == null)
+      throw new ArgumentNullException(nameof(constraintIndices));
+    if (constraintValues == null)
+      throw new ArgumentNullException(nameof(constraintValues));
+    if (constraintIndices.Count != constraintValues.Count)
+      throw new ArgumentException("Constraint indices and values must have the same count");
+
+    // Serialize mesh and constraint data to buffers
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+    var indicesBuffer = Wrapper.ToIntArrayBuffer(constraintIndices);
+    var valuesBuffer = Wrapper.ToDoubleArrayBuffer(constraintValues);
+
+    // Call the native function
+    var success = NativeBridge.IGM_laplacian_scalar(meshBuffer,
+                                                    meshBuffer.Length,
+                                                    indicesBuffer,
+                                                    indicesBuffer.Length,
+                                                    valuesBuffer,
+                                                    valuesBuffer.Length,
+                                                    out IntPtr outBuffer,
+                                                    out int outSize);
+
+    if (!success || outBuffer == IntPtr.Zero) {
+      return new List<double>();
+    }
+
+    // Copy the result from unmanaged memory to a managed byte array
+    var byteArray = new byte[outSize];
+    Marshal.Copy(outBuffer, byteArray, 0, outSize);
+    Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
+
+    // Deserialize the result
+    var scalarValues = Wrapper.FromDoubleArrayBufferToList(byteArray);
+    return scalarValues;
+  }
 }
 }  // namespace GeoSharpNET

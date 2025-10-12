@@ -10,11 +10,18 @@
 #include <igl/boundary_facets.h>
 #include <igl/boundary_loop.h>
 #include <igl/centroid.h>
+#include <igl/fast_winding_number.h>
+#include <igl/gaussian_curvature.h>
+#include <igl/harmonic.h>
 #include <igl/per_corner_normals.h>
 #include <igl/per_edge_normals.h>
 #include <igl/per_face_normals.h>
 #include <igl/per_vertex_normals.h>
+#include <igl/planarize_quad_mesh.h>
+#include <igl/principal_curvature.h>
+#include <igl/quad_planarity.h>
 #include <igl/read_triangle_mesh.h>
+#include <igl/signed_distance.h>
 #include <igl/triangle_triangle_adjacency.h>
 #include <igl/vertex_triangle_adjacency.h>
 #include <igl/write_triangle_mesh.h>
@@ -581,6 +588,323 @@ GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_remap_FtoV(const uint8_t* inBufferMesh
   *outBuffer = nullptr;
   *outSize = 0;
   if (!GS::serializeNumberArray(vertexScalars, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_principal_curvature(const uint8_t* inBuffer,
+                                                              int inSize,
+                                                              uint32_t radius,
+                                                              uint8_t** outBufferPD1,
+                                                              int* outSizePD1,
+                                                              uint8_t** outBufferPD2,
+                                                              int* outSizePD2,
+                                                              uint8_t** outBufferPV1,
+                                                              int* outSizePV1,
+                                                              uint8_t** outBufferPV2,
+                                                              int* outSizePV2) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  Eigen::MatrixXd PD1, PD2;
+  Eigen::VectorXd PV1, PV2;
+  igl::principal_curvature(mesh.V, mesh.F, PD1, PD2, PV1, PV2, radius);
+
+  // Serialize PD1
+  *outBufferPD1 = nullptr;
+  *outSizePD1 = 0;
+  if (!GS::serializePointArray(PD1, *outBufferPD1, *outSizePD1)) {
+    return false;
+  }
+
+  // Serialize PD2
+  *outBufferPD2 = nullptr;
+  *outSizePD2 = 0;
+  if (!GS::serializePointArray(PD2, *outBufferPD2, *outSizePD2)) {
+    if (*outBufferPD1)
+      delete[] *outBufferPD1;
+    *outBufferPD1 = nullptr;
+    *outSizePD1 = 0;
+    return false;
+  }
+
+  // Serialize PV1
+  *outBufferPV1 = nullptr;
+  *outSizePV1 = 0;
+  if (!GS::serializeNumberArray(PV1, *outBufferPV1, *outSizePV1)) {
+    if (*outBufferPD1)
+      delete[] *outBufferPD1;
+    if (*outBufferPD2)
+      delete[] *outBufferPD2;
+    *outBufferPD1 = nullptr;
+    *outBufferPD2 = nullptr;
+    *outSizePD1 = 0;
+    *outSizePD2 = 0;
+    return false;
+  }
+
+  // Serialize PV2
+  *outBufferPV2 = nullptr;
+  *outSizePV2 = 0;
+  if (!GS::serializeNumberArray(PV2, *outBufferPV2, *outSizePV2)) {
+    if (*outBufferPD1)
+      delete[] *outBufferPD1;
+    if (*outBufferPD2)
+      delete[] *outBufferPD2;
+    if (*outBufferPV1)
+      delete[] *outBufferPV1;
+    *outBufferPD1 = nullptr;
+    *outBufferPD2 = nullptr;
+    *outBufferPV1 = nullptr;
+    *outSizePD1 = 0;
+    *outSizePD2 = 0;
+    *outSizePV1 = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_gaussian_curvature(const uint8_t* inBuffer,
+                                                             int inSize,
+                                                             uint8_t** outBuffer,
+                                                             int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  Eigen::VectorXd K;
+  igl::gaussian_curvature(mesh.V, mesh.F, K);
+
+  // Serialize the curvature values
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(K, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_fast_winding_number(const uint8_t* inBufferMesh,
+                                                              int inSizeMesh,
+                                                              const uint8_t* inBufferPoints,
+                                                              int inSizePoints,
+                                                              uint8_t** outBuffer,
+                                                              int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
+    return false;
+  }
+
+  std::vector<GeoSharPlusCPP::Vector3d> queryPoints;
+  if (!GS::deserializePointArray(inBufferPoints, inSizePoints, queryPoints)) {
+    return false;
+  }
+
+  // Convert query points to Eigen matrix
+  Eigen::MatrixXd Q(queryPoints.size(), 3);
+  for (size_t i = 0; i < queryPoints.size(); ++i) {
+    Q(i, 0) = queryPoints[i].x();
+    Q(i, 1) = queryPoints[i].y();
+    Q(i, 2) = queryPoints[i].z();
+  }
+
+  Eigen::VectorXd W;
+  igl::fast_winding_number(mesh.V, mesh.F, Q, W);
+
+  // Serialize the winding numbers
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(W, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_signed_distance(const uint8_t* inBufferMesh,
+                                                          int inSizeMesh,
+                                                          const uint8_t* inBufferPoints,
+                                                          int inSizePoints,
+                                                          int signedType,
+                                                          uint8_t** outBufferSD,
+                                                          int* outSizeSD,
+                                                          uint8_t** outBufferFI,
+                                                          int* outSizeFI,
+                                                          uint8_t** outBufferCP,
+                                                          int* outSizeCP) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
+    return false;
+  }
+
+  std::vector<GeoSharPlusCPP::Vector3d> queryPoints;
+  if (!GS::deserializePointArray(inBufferPoints, inSizePoints, queryPoints)) {
+    return false;
+  }
+
+  // Convert query points to Eigen matrix
+  Eigen::MatrixXd Q(queryPoints.size(), 3);
+  for (size_t i = 0; i < queryPoints.size(); ++i) {
+    Q(i, 0) = queryPoints[i].x();
+    Q(i, 1) = queryPoints[i].y();
+    Q(i, 2) = queryPoints[i].z();
+  }
+
+  // Ensure signedType is within valid range
+  if (signedType < 1 || signedType > 4)
+    signedType = 4;
+
+  Eigen::VectorXd S;
+  Eigen::VectorXi I;
+  Eigen::MatrixXd C;
+  Eigen::MatrixXd N;  // temporary variable
+
+  igl::signed_distance(
+      Q, mesh.V, mesh.F, static_cast<igl::SignedDistanceType>(signedType), S, I, C, N);
+
+  // Serialize signed distances
+  *outBufferSD = nullptr;
+  *outSizeSD = 0;
+  if (!GS::serializeNumberArray(S, *outBufferSD, *outSizeSD)) {
+    return false;
+  }
+
+  // Serialize face indices
+  *outBufferFI = nullptr;
+  *outSizeFI = 0;
+  if (!GS::serializeNumberArray(I, *outBufferFI, *outSizeFI)) {
+    if (*outBufferSD)
+      delete[] *outBufferSD;
+    *outBufferSD = nullptr;
+    *outSizeSD = 0;
+    return false;
+  }
+
+  // Serialize closest points
+  *outBufferCP = nullptr;
+  *outSizeCP = 0;
+  if (!GS::serializePointArray(C, *outBufferCP, *outSizeCP)) {
+    if (*outBufferSD)
+      delete[] *outBufferSD;
+    if (*outBufferFI)
+      delete[] *outBufferFI;
+    *outBufferSD = nullptr;
+    *outBufferFI = nullptr;
+    *outSizeSD = 0;
+    *outSizeFI = 0;
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_quad_planarity(const uint8_t* inBuffer,
+                                                         int inSize,
+                                                         uint8_t** outBuffer,
+                                                         int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  Eigen::VectorXd P;
+  igl::quad_planarity(mesh.V, mesh.F, P);
+
+  // Serialize the planarity values
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(P, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_planarize_quad_mesh(const uint8_t* inBuffer,
+                                                              int inSize,
+                                                              int maxIter,
+                                                              double threshold,
+                                                              uint8_t** outBuffer,
+                                                              int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBuffer, inSize, mesh)) {
+    return false;
+  }
+
+  // TEMP SOLUTION as libigl hasn't added templating for igl::planarize_quad_mesh
+  // Convert RowMajor matrices to ColMajor matrices for libigl compatibility
+  Eigen::MatrixXd V_col = mesh.V;  // This will convert from RowMajor to ColMajor
+  Eigen::MatrixXi F_col = mesh.F;  // This will convert from RowMajor to ColMajor
+
+  Eigen::MatrixXd VPlanarized;
+  igl::planarize_quad_mesh(V_col, F_col, maxIter, threshold, VPlanarized);
+
+  // Create a new mesh with planarized vertices, converting back to RowMajor if needed
+  GeoSharPlusCPP::Mesh planarizedMesh;
+  planarizedMesh.V = VPlanarized;  // Convert back to RowMajor
+  planarizedMesh.F = F_col;        // Convert back to RowMajor
+
+  // Serialize the planarized mesh
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeMesh(planarizedMesh, *outBuffer, *outSize)) {
+    return false;
+  }
+
+  return true;
+}
+
+GEOSHARPLUS_API bool GEOSHARPLUS_CALL IGM_laplacian_scalar(const uint8_t* inBufferMesh,
+                                                           int inSizeMesh,
+                                                           const uint8_t* inBufferIndices,
+                                                           int inSizeIndices,
+                                                           const uint8_t* inBufferValues,
+                                                           int inSizeValues,
+                                                           uint8_t** outBuffer,
+                                                           int* outSize) {
+  GeoSharPlusCPP::Mesh mesh;
+  if (!GS::deserializeMesh(inBufferMesh, inSizeMesh, mesh)) {
+    return false;
+  }
+
+  std::vector<int> constraintIndices;
+  if (!GS::deserializeNumberArray(inBufferIndices, inSizeIndices, constraintIndices)) {
+    return false;
+  }
+
+  std::vector<double> constraintValues;
+  if (!GS::deserializeNumberArray(inBufferValues, inSizeValues, constraintValues)) {
+    return false;
+  }
+
+  if (constraintIndices.size() != constraintValues.size()) {
+    return false;
+  }
+
+  // Convert to Eigen types
+  Eigen::VectorXi b(constraintIndices.size());
+  Eigen::VectorXd bc(constraintValues.size());
+
+  for (size_t i = 0; i < constraintIndices.size(); ++i) {
+    b(i) = constraintIndices[i];
+    bc(i) = constraintValues[i];
+  }
+
+  // Solve harmonic function (Laplacian with constraints)
+  Eigen::VectorXd Z;
+  igl::harmonic(mesh.V, mesh.F, b, bc, 1, Z);
+
+  // Serialize the result
+  *outBuffer = nullptr;
+  *outSize = 0;
+  if (!GS::serializeNumberArray(Z, *outBuffer, *outSize)) {
     return false;
   }
 
