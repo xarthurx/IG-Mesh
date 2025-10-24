@@ -7,7 +7,7 @@ if (Test-Path "manifest.yml")
 Copy-Item -Path "..\..\bin\*.dll" -Destination ".\" -Recurse
 Copy-Item -Path "..\..\bin\*.gha" -Destination ".\" -Recurse
 
-&'C:\Program Files\Rhino 7\System\Yak.exe' spec
+&'C:\Program Files\Rhino 8\System\Yak.exe' spec
 
 # Add-Content manifest.yml "`nicon: `"https://i.imgur.com/WABE4LN.png`""
 Add-Content manifest.yml "`nicon: packageManagerIcon.png"
