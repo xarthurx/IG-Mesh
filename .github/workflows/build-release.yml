@@ -43,11 +43,11 @@ jobs:
           vcpkgGitCommitId: ce613c41372b23b1f51333815feb3edd87ef8a8b # 2025-04-09 version
           vcpkgDirectory: ${{ runner.temp }}/vcpkg
 
-      # Configure and build using CMake with presets
+      # Configure and build using CMake (override VCPKG_ROOT for CI)
       - name: Configure and Build with CMake
+        env:
+          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         uses: lukka/run-cmake@v10
-        # env:
-        #   VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/${{ env.CPP_Project }}/CMakeLists.txt"
           configurePreset: ${{ matrix.configure-preset }}

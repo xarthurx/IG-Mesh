@@ -18,16 +18,22 @@
                 "CMAKE_CXX_STANDARD_REQUIRED": "ON",
                 "CMAKE_TOOLCHAIN_FILE": {
                     "type": "FILEPATH",
-                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                    "value": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
                 }
-            },
+            }
+        },
+        {
+            "name": "default-local",
+            "inherits": "default",
+            "displayName": "Default Config (Local)",
+            "description": "Default build configuration using local vcpkg",
             "environment": {
                 "VCPKG_ROOT": "${sourceDir}/../vcpkg"
             }
         },
         {
             "name": "windows-default",
-            "inherits": "default",
+            "inherits": "default-local",
             "displayName": "Windows",
             "description": "Windows-specific build configuration",
             "cacheVariables": {
@@ -41,7 +47,7 @@
         },
         {
             "name": "macos-default",
-            "inherits": "default",
+            "inherits": "default-local",
             "displayName": "macOS ARM64",
             "description": "macOS-specific build configuration for ARM64",
             "cacheVariables": {
