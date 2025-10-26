@@ -46,8 +46,8 @@ jobs:
       # Configure and build using CMake with presets
       - name: Configure and Build with CMake
         uses: lukka/run-cmake@v10
-        env:
-          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+        # env:
+        #   VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/${{ env.CPP_Project }}/CMakeLists.txt"
           configurePreset: ${{ matrix.configure-preset }}
