@@ -36,10 +36,18 @@ jobs:
 
       # Setup vcpkg (required by the C++ project)
       - uses: lukka/get-cmake@latest
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: ce613c41372b23b1f51333815feb3edd87ef8a8b # 2025-04-09 version
+          vcpkgDirectory: ${{ runner.temp }}/vcpkg
+
+      # Set VCPKG_ROOT environment variable for CMake
+      - name: Set VCPKG_ROOT
+        shell: bash
+        run: |
+          echo "VCPKG_ROOT=${{ runner.temp }}/vcpkg" >> $GITHUB_ENV
 
       # Configure and build using CMake with presets
       - name: Configure and Build with CMake

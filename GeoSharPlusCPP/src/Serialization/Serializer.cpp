@@ -1,6 +1,10 @@
 #include "GeoSharPlusCPP/Serialization/Serializer.h"
 
-#include <combaseapi.h>  // Add this include for CoTaskMemAlloc
+#ifdef _WIN32
+#include <combaseapi.h>  // Windows: CoTaskMemAlloc for COM interop
+#else
+#include <cstdlib>  // Unix/macOS: use malloc
+#endif
 
 #include "GSP_FB/cpp/doubleArray_generated.h"
 #include "GSP_FB/cpp/doublePairArray_generated.h"
@@ -14,6 +18,17 @@
 #include "flatbuffers/flatbuffers.h"
 
 namespace GeoSharPlusCPP::Serialization {
+// Cross-platform memory allocation for C# interop
+// On Windows: Use CoTaskMemAlloc (COM-compatible)
+// On Unix/macOS: Use malloc (compatible with P/Invoke Marshal.FreeCoTaskMem)
+inline void* AllocateInteropMemory(size_t size) {
+#ifdef _WIN32
+  return CoTaskMemAlloc(size);
+#else
+  return malloc(size);
+#endif
+}
+
 // Helper template to get the element type of a container
 template <typename Container>
 struct element_type {
@@ -95,7 +110,7 @@ bool serializeNumberArray(const NumberContainer& numbers, uint8_t*& resBuffer, i
 
   // Copy the serialized data to the provided buffer
   resSize = builder.GetSize();
-  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  resBuffer = static_cast<uint8_t*>(AllocateInteropMemory(resSize));
   if (!resBuffer) {
     return false;  // Handle allocation failure
   }
@@ -221,7 +236,7 @@ bool serializeNumberPairArray(const PairContainer& pairs, uint8_t*& resBuffer, i
 
   // Copy the serialized data to the provided buffer
   resSize = builder.GetSize();
-  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  resBuffer = static_cast<uint8_t*>(AllocateInteropMemory(resSize));
   if (!resBuffer) {
     return false;  // Handle allocation failure
   }
@@ -320,7 +335,7 @@ bool serializePoint(const Vector3d& point, uint8_t*& resBuffer, int& resSize) {
 
   // Copy the serialized data to the provided buffer
   resSize = builder.GetSize();
-  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  resBuffer = static_cast<uint8_t*>(AllocateInteropMemory(resSize));
   if (!resBuffer) {
     return false;  // Handle allocation failure
   }
@@ -371,7 +386,7 @@ bool serializePointArray(const PointContainer& points, uint8_t*& resBuffer, int&
 
   // Copy the serialized data to the provided buffer
   resSize = builder.GetSize();
-  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  resBuffer = static_cast<uint8_t*>(AllocateInteropMemory(resSize));
   if (!resBuffer) {
     return false;  // Handle allocation failure
   }
@@ -462,7 +477,7 @@ bool serializeMesh(const Mesh& mesh, uint8_t*& resBuffer, int& resSize) {
 
   // Copy the serialized data to the provided buffer
   resSize = builder.GetSize();
-  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  resBuffer = static_cast<uint8_t*>(AllocateInteropMemory(resSize));
   if (!resBuffer) {
     return false;  // Handle allocation failure
   }
@@ -597,7 +612,7 @@ bool serializeNestedIntArray(const std::vector<std::vector<int>>& nestedArray,
 
   // Copy the serialized data to the provided buffer
   resSize = builder.GetSize();
-  resBuffer = static_cast<uint8_t*>(CoTaskMemAlloc(resSize));
+  resBuffer = static_cast<uint8_t*>(AllocateInteropMemory(resSize));
   if (!resBuffer) {
     return false;  // Handle allocation failure
   }
