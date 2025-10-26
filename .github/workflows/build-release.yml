@@ -128,16 +128,13 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v1.1
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
 
       - name: Restore NuGet packages
-        run: nuget restore ${{ env.Solution_Name }}
+        run: dotnet restore ${{ env.CSProj_Path }}
 
       # Build C# Project first - does NOT rebuild C++
       - name: Build C# Project
