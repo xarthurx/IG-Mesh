@@ -45,8 +45,8 @@ jobs:
 
       # Configure and build using CMake (override VCPKG_ROOT for CI)
       - name: Configure and Build with CMake
-        env:
-          VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+        # env:
+        # VCPKG_ROOT: ${{ runner.temp }}/vcpkg
         uses: lukka/run-cmake@v10
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/${{ env.CPP_Project }}/CMakeLists.txt"
