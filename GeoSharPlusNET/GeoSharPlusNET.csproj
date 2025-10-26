@@ -8,7 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
-		<PackageReference Include="RhinoCommon" Version="8.0.23304.9001" />
+		<PackageReference Include="RhinoCommon" Version="8.15.25013.13001" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -47,9 +47,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grasshopper" Version="8.0.23304.9001" />
+		<PackageReference Include="Grasshopper" Version="8.15.25013.13001" />
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-		<PackageReference Include="RhinoCommon" Version="8.0.23304.9001" />
+		<PackageReference Include="RhinoCommon" Version="8.15.25013.13001" />
 		<PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
 
 		<PackageReference Include="System.Collections">
