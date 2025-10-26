@@ -1,0 +1,74 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "default",
+            "displayName": "Default Config",
+            "description": "Default build configuration using vcpkg",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_STANDARD": "17",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                }
+            },
+            "environment": {
+                "VCPKG_ROOT": "${sourceDir}/../vcpkg"
+            }
+        },
+        {
+            "name": "windows-default",
+            "inherits": "default",
+            "displayName": "Windows",
+            "description": "Windows-specific build configuration",
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "macos-default",
+            "inherits": "default",
+            "displayName": "macOS ARM64",
+            "description": "macOS-specific build configuration for ARM64",
+            "cacheVariables": {
+                "VCPKG_TARGET_TRIPLET": "arm64-osx"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "release",
+            "configurePreset": "default",
+            "configuration": "Release"
+        },
+        {
+            "name": "windows-release",
+            "inherits": "release",
+            "configurePreset": "windows-default"
+        },
+        {
+            "name": "macos-release",
+            "inherits": "release",
+            "configurePreset": "macos-default"
+        }
+    ]
+}
