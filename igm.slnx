@@ -3,7 +3,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="GeoSharPlusCPP/build/GeoSharPlusCPP.vcxproj" Id="3cf9c053-154c-3259-a3fb-413cf17561cd">
+  <Project Path="GeoSharPlusCPP/build/GeoSharPlusCPP.vcxproj" Id="7326f5f2-a705-31b4-9410-bcc78221a05d">
     <Platform Project="x64" />
   </Project>
   <Project Path="GeoSharPlusNET/GeoSharPlusNET.csproj" />
