@@ -2,7 +2,7 @@
 using Rhino.Geometry;
 using System.Linq;
 
-namespace GSP {
+namespace GeoSharPlusNET {
 public static class Wrapper {
 #region Point3d / Vector3d Operations
 

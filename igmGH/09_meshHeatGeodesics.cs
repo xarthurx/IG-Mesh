@@ -1,7 +1,7 @@
 ﻿using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
-using GeoSharpNET;
+using GeoSharPlusNET;
 
 namespace igmGH {
 public class IGM_heat_geodesic_dist : GH_Component {

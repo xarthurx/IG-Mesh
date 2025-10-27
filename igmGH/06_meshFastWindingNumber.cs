@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 
@@ -50,7 +51,7 @@ public class IGM_winding_number : GH_Component {
     }
 
     // call the cpp function to solve the adjacency list
-    var w = GeoSharpNET.MeshUtils.GetFastWindingNumber(ref mesh, ref Q);
+    var w = MeshUtils.GetFastWindingNumber(ref mesh, ref Q);
 
     // output
     DA.SetDataList(0, w);

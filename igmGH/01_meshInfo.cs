@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 
 namespace igmGH {
@@ -40,7 +41,7 @@ namespace igmGH {
       }
 
       // call the cpp function to solve the adjacency list
-      var (V, F, cen, vol) = GeoSharpNET.MeshUtils.GetMeshInfo(ref mesh);
+      var (V, F, cen, vol) = MeshUtils.GetMeshInfo(ref mesh);
 
       Grasshopper.DataTree<int> fTree = new Grasshopper.DataTree<int>();
       for (int i = 0; i < F.Count; i++) {

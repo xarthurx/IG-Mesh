@@ -1,3 +1,4 @@
+using GeoSharPlusNET;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
@@ -140,7 +141,7 @@ public class IGM_random_points : GH_Component {
     //{ return; }
 
     // call the GeoSharPlusNET function to sample points on mesh
-    var (p, fi) = GeoSharpNET.MeshUtils.GetRandomPointsOnMesh(ref mesh, N, M);
+    var (p, fi) = MeshUtils.GetRandomPointsOnMesh(ref mesh, N, M);
 
     // output
     DA.SetDataList(0, p);

@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 
 namespace igmGH {
@@ -75,7 +76,7 @@ public class IGM_principal_curvature : GH_Component {
     }  // make sure the value is unit
 
     // call the cpp function to solve the adjacency list
-    var (PD1, PD2, PV1, PV2) = GeoSharpNET.MeshUtils.GetPrincipalCurvature(ref mesh, (uint)r);
+    var (PD1, PD2, PV1, PV2) = MeshUtils.GetPrincipalCurvature(ref mesh, (uint)r);
 
     // output
     DA.SetDataList(0, PD1);
@@ -145,7 +146,7 @@ public class IGM_gaussian_curvature : GH_Component {
     }
 
     // call the cpp function to solve the adjacency list
-    var k = GeoSharpNET.MeshUtils.GetGaussianCurvature(ref mesh);
+    var k = MeshUtils.GetGaussianCurvature(ref mesh);
 
     // output
     DA.SetDataList(0, k);

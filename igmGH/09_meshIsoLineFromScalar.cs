@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
@@ -71,7 +72,7 @@ public class IGM_isoline_scalar : GH_Component {
     }
 
     // call the GeoSharPlusNET function to extract isolines
-    var isoPts = GeoSharpNET.MeshUtils.GetIsolineFromScalar(ref mesh, ref mesh_scalar, ref iso_t);
+    var isoPts = MeshUtils.GetIsolineFromScalar(ref mesh, ref mesh_scalar, ref iso_t);
 
     // construct the index & pt tree from the isoline points
     Grasshopper.DataTree<Point3d> ptTree = new Grasshopper.DataTree<Point3d>();

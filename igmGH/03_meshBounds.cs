@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 
@@ -52,7 +53,7 @@ public class IGM_BoundLoop : GH_Component {
     }
 
     // call the cpp function to solve the boundary loops
-    var res = GeoSharpNET.MeshUtils.GetBoundaryLoop(ref mesh);
+    var res = MeshUtils.GetBoundaryLoop(ref mesh);
 
     // construct the index & pt tree from the boundary loops
     Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();
@@ -141,7 +142,7 @@ public class IGM_BoundEdge : GH_Component {
     }
 
     // call the cpp function
-    var (bndE_geo, bndE, bndTi) = GeoSharpNET.MeshUtils.GetBoundaryEdge(ref mesh);
+    var (bndE_geo, bndE, bndTi) = MeshUtils.GetBoundaryEdge(ref mesh);
 
     // construct the edge tree from the list
     Grasshopper.DataTree<int> evArray = new Grasshopper.DataTree<int>();

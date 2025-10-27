@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 
@@ -46,7 +47,7 @@ namespace igmGH {
         return;
       }
 
-      var res = GeoSharpNET.MeshUtils.GetAdjacencyVV(ref mesh);
+      var res = MeshUtils.GetAdjacencyVV(ref mesh);
 
       // construct the index & pt tree from the adjacency list
       Grasshopper.DataTree<int> treeArray = new Grasshopper.DataTree<int>();
@@ -112,7 +113,7 @@ namespace igmGH {
       }
 
       // call the cpp function to solve the adjacency list
-      var (vt, vi) = GeoSharpNET.MeshUtils.GetAdjacencyVT(ref mesh);
+      var (vt, vi) = MeshUtils.GetAdjacencyVT(ref mesh);
 
       Grasshopper.DataTree<int> adjVT = new Grasshopper.DataTree<int>();
       Grasshopper.DataTree<int> adjVTI = new Grasshopper.DataTree<int>();
@@ -175,7 +176,7 @@ namespace igmGH {
       }
 
       // call the cpp function to solve the adjacency list
-      var (tt, tti) = GeoSharpNET.MeshUtils.GetAdjacencyTT(ref mesh);
+      var (tt, tti) = MeshUtils.GetAdjacencyTT(ref mesh);
 
       Grasshopper.DataTree<int> adjTT = new Grasshopper.DataTree<int>();
       Grasshopper.DataTree<int> adjTTI = new Grasshopper.DataTree<int>();

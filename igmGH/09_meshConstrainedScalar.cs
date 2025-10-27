@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,7 @@ public class IGM_constrained_scalar : GH_Component {
     }
 
     // call the GeoSharPlusNET function to solve the constrained scalar field
-    var scalarV = GeoSharpNET.MeshUtils.GetConstrainedScalar(ref mesh, ref con_idx, ref con_val);
+    var scalarV = MeshUtils.GetConstrainedScalar(ref mesh, ref con_idx, ref con_val);
 
     // assign to the output
     DA.SetDataList(0, scalarV);

@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 
@@ -31,7 +32,7 @@ namespace igmGH {
         return;
       }
 
-      var vn = GeoSharpNET.MeshUtils.GetNormalVert(ref mesh);
+      var vn = MeshUtils.GetNormalVert(ref mesh);
       DA.SetDataList(0, vn);
     }
   }
@@ -64,7 +65,7 @@ namespace igmGH {
         return;
       }
 
-      var fn = GeoSharpNET.MeshUtils.GetNormalFace(ref mesh);
+      var fn = MeshUtils.GetNormalFace(ref mesh);
       DA.SetDataList(0, fn);
     }
   }
@@ -117,7 +118,7 @@ namespace igmGH {
         return;
       }
 
-      var (en, ei, emap) = GeoSharpNET.MeshUtils.GetNormalEdge(ref mesh, w);
+      var (en, ei, emap) = MeshUtils.GetNormalEdge(ref mesh, w);
 
       Grasshopper.DataTree<int> eiTree = new Grasshopper.DataTree<int>();
       for (int i = 0; i < ei.Count; i++) {
@@ -169,7 +170,7 @@ namespace igmGH {
       if (!DA.GetData(1, ref t)) {
       }
 
-      var cn = GeoSharpNET.MeshUtils.GetNormalCorner(ref mesh, t);
+      var cn = MeshUtils.GetNormalCorner(ref mesh, t);
 
       Grasshopper.DataTree<Vector3d> cnTree = new Grasshopper.DataTree<Vector3d>();
       for (int i = 0; i < cn.Count; i++) {

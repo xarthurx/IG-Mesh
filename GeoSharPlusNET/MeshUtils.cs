@@ -1,13 +1,12 @@
-﻿using GSP;
-using Rhino.Geometry;
+﻿using Rhino.Geometry;
 using System.Runtime.InteropServices;
 
-namespace GeoSharpNET {
+namespace GeoSharPlusNET {
 public static class MeshUtils {
   private static Point3d Centroid(Mesh mesh) {
     // Serialize the mesh for calling into GeoSharPlusCPP
     byte[] meshBuffer;
-    meshBuffer = GSP.Wrapper.ToMeshBuffer(mesh);
+    meshBuffer = Wrapper.ToMeshBuffer(mesh);
 
     // Call the C++ function to calculate centroid
     var success = NativeBridge.MeshCentroid(

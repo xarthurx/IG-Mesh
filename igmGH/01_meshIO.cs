@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
 
@@ -28,7 +29,7 @@ namespace igmGH {
         return;
       }
 
-      var success = GeoSharpNET.MeshUtils.LoadMesh(fName, out Mesh mesh);
+      var success = MeshUtils.LoadMesh(fName, out Mesh mesh);
 
       if (!mesh.IsValid || !success) {
         return;
@@ -81,7 +82,7 @@ namespace igmGH {
       }
 
       if (doIt) {
-        var success = GeoSharpNET.MeshUtils.SaveMesh(ref mesh, fName);
+        var success = MeshUtils.SaveMesh(ref mesh, fName);
         DA.SetData("Success", success ? "Success." : "Failed.");
       }
     }

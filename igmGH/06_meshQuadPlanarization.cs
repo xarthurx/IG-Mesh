@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 
 namespace igmGH {
@@ -47,7 +48,7 @@ public class IGM_quad_planarity : GH_Component {
     }
 
     // call the cpp function to solve the adjacency list
-    var P = GeoSharpNET.MeshUtils.GetQuadPlanarity(ref mesh);
+    var P = MeshUtils.GetQuadPlanarity(ref mesh);
 
     // output
     DA.SetDataList(0, P);
@@ -132,7 +133,7 @@ public class IGM_quad_planarize : GH_Component {
     }
 
     // call the cpp function to solve the adjacency list
-    var oMesh = GeoSharpNET.MeshUtils.PlanarizeQuadMesh(ref mesh, maxIter, thres);
+    var oMesh = MeshUtils.PlanarizeQuadMesh(ref mesh, maxIter, thres);
 
     // output
     DA.SetData(0, oMesh);

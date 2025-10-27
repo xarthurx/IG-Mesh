@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 
@@ -67,7 +68,7 @@ public class IGM_laplacian : GH_Component {
     }
 
     // call the cpp function to solve the adjacency list
-    var res = GeoSharpNET.MeshUtils.GetLaplacianScalar(ref mesh, ref con_idx, ref con_val);
+    var res = MeshUtils.GetLaplacianScalar(ref mesh, ref con_idx, ref con_val);
 
     DA.SetDataList(0, res);
   }

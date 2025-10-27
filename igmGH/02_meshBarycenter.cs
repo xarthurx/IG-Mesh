@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 
 namespace igmGH {
@@ -30,7 +31,7 @@ namespace igmGH {
       }
 
       // call the cpp function to solve the adjacency list
-      var res = GeoSharpNET.MeshUtils.GetBarycenter(ref mesh);
+      var res = MeshUtils.GetBarycenter(ref mesh);
 
       // output
       DA.SetDataList(0, res);

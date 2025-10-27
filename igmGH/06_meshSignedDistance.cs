@@ -1,4 +1,5 @@
-﻿using Grasshopper.Kernel;
+﻿using GeoSharPlusNET;
+using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 
@@ -68,7 +69,7 @@ public class IGM_signed_distance : GH_Component {
     if (!DA.GetData(2, ref st)) {}
 
     // call the cpp function to solve the adjacency list
-    var (sd, fi, cp) = GeoSharpNET.MeshUtils.GetSignedDistance(ref mesh, ref Q, st);
+    var (sd, fi, cp) = MeshUtils.GetSignedDistance(ref mesh, ref Q, st);
 
     // output
     DA.SetDataList(0, sd);

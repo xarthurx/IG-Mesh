@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rhino.Geometry;
+using GeoSharPlusNET;
 
 namespace igmGH {
 public class IGM_paramHarmonic : GH_Component {
@@ -52,7 +53,7 @@ public class IGM_paramHarmonic : GH_Component {
     }
 
     // call the cpp function to compute harmonic parametrization
-    var uvCoordinates = GeoSharpNET.MeshUtils.GetHarmonicParametrization(ref mesh, k);
+    var uvCoordinates = MeshUtils.GetHarmonicParametrization(ref mesh, k);
 
     // output
     DA.SetDataList(0, uvCoordinates);
