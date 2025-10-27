@@ -276,12 +276,32 @@ jobs:
             
             if (Test-Path $yakExe) {
               Write-Host "Using yak.exe from: $yakExe"
-              & $yakExe push $yakFile.FullName
               
-              if ($LASTEXITCODE -eq 0) {
-                Write-Host "✓ Successfully pushed $($yakFile.Name) to Yak server"
-              } else {
-                Write-Error "Failed to push to Yak server (exit code: $LASTEXITCODE)"
+              # Retry logic for push (up to 3 attempts)
+              $maxRetries = 3
+              $retryCount = 0
+              $success = $false
+              
+              while (-not $success -and $retryCount -lt $maxRetries) {
+                $retryCount++
+                Write-Host "Attempt $retryCount of $maxRetries..."
+                
+                & $yakExe push $yakFile.FullName
+                
+                if ($LASTEXITCODE -eq 0) {
+                  Write-Host "✓ Successfully pushed $($yakFile.Name) to Yak server"
+                  $success = $true
+                } else {
+                  Write-Warning "Push failed with exit code: $LASTEXITCODE"
+                  if ($retryCount -lt $maxRetries) {
+                    Write-Host "Waiting 30 seconds before retry..."
+                    Start-Sleep -Seconds 30
+                  }
+                }
+              }
+              
+              if (-not $success) {
+                Write-Error "Failed to push to Yak server after $maxRetries attempts"
                 exit 1
               }
             } else {
