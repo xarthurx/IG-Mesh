@@ -1,8 +1,7 @@
 ﻿using Google.FlatBuffers;
 using Rhino.Geometry;
-using System.Linq;
 
-namespace GeoSharPlusNET {
+namespace GSP {
 public static class Wrapper {
 #region Point3d / Vector3d Operations
 

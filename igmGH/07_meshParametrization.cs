@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rhino.Geometry;
-using GeoSharPlusNET;
+using GSP;
 
 namespace igmGH {
 public class IGM_paramHarmonic : GH_Component {

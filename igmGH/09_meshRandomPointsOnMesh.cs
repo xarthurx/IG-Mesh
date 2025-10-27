@@ -1,4 +1,4 @@
-using GeoSharPlusNET;
+using GSP;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;

@@ -1,7 +1,7 @@
 ﻿using Rhino.Geometry;
 using System.Runtime.InteropServices;
 
-namespace GeoSharPlusNET {
+namespace GSP {
 public static class MeshUtils {
   private static Point3d Centroid(Mesh mesh) {
     // Serialize the mesh for calling into GeoSharPlusCPP

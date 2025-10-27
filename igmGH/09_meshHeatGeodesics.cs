@@ -1,7 +1,7 @@
 ﻿using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
-using GeoSharPlusNET;
+using GSP;
 
 namespace igmGH {
 public class IGM_heat_geodesic_dist : GH_Component {
@@ -15,7 +15,7 @@ public class IGM_heat_geodesic_dist : GH_Component {
       : base("HeatGeo Distance",
              "igGeoDist",
              "Compute geodesic distance of multiple sources on a mesh using the " +
-             "heat-transfer-inspired fast approximation method.",
+                 "heat-transfer-inspired fast approximation method.",
              "IG-Mesh",
              "06::measure") {}
 
