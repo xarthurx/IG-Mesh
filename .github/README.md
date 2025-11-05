@@ -15,8 +15,8 @@
 <!-- shields.io stuff -->
 <div align="center">
 
-<a href="https://www.rhino3d.com/7/" >
-<img alt="License" src="https://img.shields.io/badge/Rhino-7.0-9cf?style=flat-square"> </a>
+<a href="https://www.rhino3d.com/" >
+<img alt="License" src="https://img.shields.io/badge/Rhino-8.0-9cf?style=flat-square"> </a>
 
 <a href="https://www.grasshopper3d.com" >
 <img alt="License" src="https://img.shields.io/badge/Grasshopper-1.0-brightgreen?style=flat-square"> </a>
