@@ -1,9 +1,9 @@
 #include "GeoSharPlusCPP/Serialization/Serializer.h"
 
 #ifdef _WIN32
-#include <combaseapi.h>  // Windows: CoTaskMemAlloc for COM interop
+  #include <combaseapi.h>  // Windows: CoTaskMemAlloc for COM interop
 #else
-#include <cstdlib>  // Unix/macOS: use malloc
+  #include <cstdlib>  // Unix/macOS: use malloc
 #endif
 
 #include "GSP_FB/cpp/doubleArray_generated.h"
@@ -168,12 +168,12 @@ bool deserializeNumberArray(const uint8_t* data, int size, NumberContainer& numb
     if constexpr (std::is_same_v<NumberContainer, std::vector<int>>) {
       numberArray.clear();
       numberArray.reserve(values->size());
-      for (int i = 0; i < values->size(); i++) {
+      for (size_t i = 0; i < values->size(); i++) {
         numberArray.push_back(values->Get(i));
       }
     } else if constexpr (std::is_same_v<NumberContainer, Eigen::VectorXi>) {
       numberArray.resize(values->size());
-      for (int i = 0; i < values->size(); i++) {
+      for (size_t i = 0; i < values->size(); i++) {
         numberArray(i) = values->Get(i);
       }
     }
@@ -271,7 +271,7 @@ bool deserializeNumberPairArray(const uint8_t* data, int size, PairContainer& pa
       pairArray.reserve(pairs->size());
 
       // Fill with pairs
-      for (int i = 0; i < pairs->size(); i++) {
+      for (size_t i = 0; i < pairs->size(); i++) {
         auto pair = pairs->Get(i);
         pairArray.emplace_back(std::make_pair(pair->x(), pair->y()));
       }
@@ -441,14 +441,14 @@ bool serializeMesh(const Mesh& mesh, uint8_t*& resBuffer, int& resSize) {
   // Convert vertices to flatbuffers compatible format
   std::vector<GSP::FB::Vec3> vertices;
   vertices.reserve(mesh.V.rows());
-  for (int i = 0; i < mesh.V.rows(); i++) {
+  for (size_t i = 0; i < mesh.V.rows(); i++) {
     vertices.emplace_back(mesh.V(i, 0), mesh.V(i, 1), mesh.V(i, 2));
   }
 
   // Convert faces to flatbuffers compatible format
   std::vector<GSP::FB::Vec3i> faces;
   faces.reserve(mesh.F.rows());
-  for (int i = 0; i < mesh.F.rows(); i++) {
+  for (size_t i = 0; i < mesh.F.rows(); i++) {
     faces.emplace_back(mesh.F(i, 0), mesh.F(i, 1), mesh.F(i, 2));
   }
 
@@ -505,7 +505,7 @@ bool deserializeMesh(const uint8_t* data, int size, Mesh& mesh) {
     return false;
   }
   mesh.V.resize(vertices->size(), 3);
-  for (int i = 0; i < vertices->size(); i++) {
+  for (size_t i = 0; i < vertices->size(); i++) {
     auto vertex = vertices->Get(i);
     mesh.V.row(i) = Eigen::Vector3d(vertex->x(), vertex->y(), vertex->z()).transpose();
   }
