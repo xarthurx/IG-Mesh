@@ -110,35 +110,17 @@ Below is an incomplete list of functions that `IG-Mesh` plans to provide. The li
 
 ## Contribution
 
-You need `Visual Studio 2019` (2022 is not supported by McNeel) and the `.NET` framework to compile the project.
+You need `Visual Studio 2022` and `CMake` to compile the project.
 
-### Dependence
-#### `openNURBS`
-1. Install the official [Rhino SDK](https://www.rhino3d.com/download/Rhino-SDK/7.0/latest/).
-2. Build the `iglCpp` project -- if no error occurs, the SDK is installed successfully.
+### Prebuild for CPP Dependencies
 
+Go to the `GeoSharPlusCPP` folder and run `cmake build .` to build the C++ dependencies.
 
-#### `libigl`
+This will generate a `generated` folder containing the required geometry transmission types using `flatbuffer`.
 
-1. Download the [libigl](https://libigl.github.io) library to your local desk. 
-2. Add the `include` dir in the Property Page of `igmCpp`.
-![](./cppIGL-setting.png)
+### Build the projec
 
-
-#### `Eigen`
-Both `IG-Mesh` and `libigl` requires `Eigen3`. The `vcpkg` approach is recommended, though you can also manually link the library in the Solution Property Page.
-
-
-#### `nuget` 
-In the `NuGet` package manager of `Visual Studio`, you should install the following packages for the solution:
-- `System.Collections`
-- `System.Runtime`
-- `Grasshopper`
-- `RhinoCommon`
-
-### Build
-You should now be able to build the whole solution and generate the `.gha` and `.dll` files.
-
+Open the solution file with `Visual Studio 2022+` and compile the project.
 
 ## Acknowledgement and License
 
@@ -161,7 +143,7 @@ If `IG-Mesh` contributes to an academic publication, please cite it as:
   author = {Zhao Ma},
   url = {https://github.com/xarthurx/IG-Mesh},
   doi = {10.5281/zenodo.6499203},
-  version = {0.2.8}
+  version = {0.5.3}
   year = {2022}
 }
 ```
