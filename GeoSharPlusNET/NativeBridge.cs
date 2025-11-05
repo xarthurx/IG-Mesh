@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace GSP {
 public static class NativeBridge {
   private const string WinLibName = @"GeoSharPlusCPP.dll";
-  private const string MacLibName = @"GeoSharPlusCPP.dylib";
+  private const string MacLibName = @"libGeoSharPlusCPP.dylib";
 
   // System debugging functions for cross-platform support
 
