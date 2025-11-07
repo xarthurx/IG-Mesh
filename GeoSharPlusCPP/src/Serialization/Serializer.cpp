@@ -3,7 +3,7 @@
 #ifdef _WIN32
   #include <combaseapi.h>  // Windows: CoTaskMemAlloc for COM interop
 #else
-  #include <cstdlib>  // Unix/macOS: use malloc
+  #include <cstdlib>  // Unix/macOS: use malloc/free
   #include <cstring>  // Unix/macOS: use memcpy
 #endif
 
@@ -31,6 +31,17 @@ inline void* AllocateInteropMemory(size_t size) {
   // On Unix/macOS, use malloc which pairs with .NET's Marshal.FreeCoTaskMem
   // .NET Core runtime translates Marshal.FreeCoTaskMem to free() on non-Windows platforms
   return malloc(size);
+#endif
+}
+
+// Cross-platform memory deallocation for C# interop
+// This should only be used in error paths before the buffer is returned to C#
+// Once returned to C#, the memory MUST be freed by Marshal.FreeCoTaskMem
+inline void FreeInteropMemory(void* ptr) {
+#ifdef _WIN32
+  CoTaskMemFree(ptr);
+#else
+  free(ptr);
 #endif
 }
 
