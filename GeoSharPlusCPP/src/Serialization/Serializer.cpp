@@ -4,6 +4,7 @@
   #include <combaseapi.h>  // Windows: CoTaskMemAlloc for COM interop
 #else
   #include <cstdlib>  // Unix/macOS: use malloc
+  #include <cstring>  // Unix/macOS: use memcpy
 #endif
 
 #include "GSP_FB/cpp/doubleArray_generated.h"
@@ -20,11 +21,15 @@
 namespace GeoSharPlusCPP::Serialization {
 // Cross-platform memory allocation for C# interop
 // On Windows: Use CoTaskMemAlloc (COM-compatible)
-// On Unix/macOS: Use malloc (compatible with P/Invoke Marshal.FreeCoTaskMem)
+// On Unix/macOS: Use standard malloc - .NET Core will handle it correctly with Marshal.FreeCoTaskMem
+// Note: On .NET Core/5+, Marshal.FreeCoTaskMem on Unix calls free() internally, 
+// which properly pairs with malloc()
 inline void* AllocateInteropMemory(size_t size) {
 #ifdef _WIN32
   return CoTaskMemAlloc(size);
 #else
+  // On Unix/macOS, use malloc which pairs with .NET's Marshal.FreeCoTaskMem
+  // .NET Core runtime translates Marshal.FreeCoTaskMem to free() on non-Windows platforms
   return malloc(size);
 #endif
 }
