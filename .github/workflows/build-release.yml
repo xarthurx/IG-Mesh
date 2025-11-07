@@ -255,8 +255,7 @@ jobs:
           name: release-packages
           path: |
             ${{ env.ARTIFACTS_DIR }}/*.yak
-            ${{ env.ARTIFACTS_DIR }}/releaseRH8/
-            ${{ env.ARTIFACTS_DIR }}/bin/
+            # ${{ env.ARTIFACTS_DIR }}/bin/
 
       # Push to Yak server
       - name: Push to Yak Server
