@@ -50,7 +50,7 @@
 		<PackageReference Include="Grasshopper" Version="8.21.25188.17001" />
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
 		<PackageReference Include="RhinoCommon" Version="8.21.25188.17001" />
-		<PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+		<PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
 
 		<PackageReference Include="System.Collections">
 			<Version>4.3.0</Version>
@@ -66,44 +66,6 @@
 			<TreatAsUsed>true</TreatAsUsed>
 		</ProjectReference>
 	</ItemGroup>
-
-	<!-- <ItemGroup> -->
-		<!-- <Compile Update="Properties\Resources.Designer.cs"> -->
-		<!-- 	<AutoGen>True</AutoGen> -->
-		<!-- 	<DesignTime>True</DesignTime> -->
-		<!-- 	<DependentUpon>Resources.resx</DependentUpon> -->
-		<!-- </Compile> -->
-		<!-- <Compile Include="00_igm_Info.cs" /> -->
-		<!-- <Compile Include="01_meshIO.cs" /> -->
-		<!-- <Compile Include="01_meshInfo.cs" /> -->
-		<!-- <Compile Include="02_meshNormals.cs" /> -->
-		<!-- <Compile Include="02_meshBarycenter.cs" /> -->
-		<!-- <Compile Include="04_meshColourFace.cs" /> -->
-		<!-- <Compile Include="03_meshAdjacency.cs" /> -->
-		<!-- <Compile Include="03_meshBounds.cs" /> -->
-		<!-- <Compile Include="04_scalarRemap.cs" /> -->
-		<!-- <Compile Include="06_meshCurvature.cs" /> -->
-		<!-- <Compile Include="06_meshFastWindingNumber.cs" /> -->
-		<!-- <Compile Include="06_meshLaplacian.cs" /> -->
-		<!-- <Compile Include="06_meshQuadPlanarization.cs" /> -->
-		<!-- <Compile Include="06_meshSignedDistance.cs" /> -->
-		<!-- <Compile Include="07_meshParametrization.cs" /> -->
-		<!-- <Compile Include="09_meshConstrainedScalar.cs" /> -->
-		<!-- <Compile Include="09_meshHeatGeodesics.cs" /> -->
-		<!-- <Compile Include="09_meshIsoLineFromScalar.cs" /> -->
-		<!-- <Compile Include="09_meshRandomPointsOnMesh.cs" /> -->
-		<!-- <Compile Include="Properties\AssemblyInfo.cs" /> -->
-		<!-- <Compile Include="Utils.cs" /> -->
-	<!-- </ItemGroup> -->
-
-	<!-- <ItemGroup> -->
-	<!-- 	<EmbeddedResource Include="Properties\Resources.resx"> -->
-	<!-- 		<Generator>ResXFileCodeGenerator</Generator> -->
-	<!-- 		<LastGenOutput>Resources.Designer.cs</LastGenOutput> -->
-	<!-- 		<SubType>Designer</SubType> -->
-	<!-- 	</EmbeddedResource> -->
-	<!-- </ItemGroup> -->
-
 
 
 	<ItemGroup>

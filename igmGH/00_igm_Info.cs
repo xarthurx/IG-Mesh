@@ -19,7 +19,7 @@ public class igmInfo : GH_AssemblyInfo {
   //        .GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location)
   //        .FileVersion;
 
-  public override string Version => "0.5.3";
+  public override string Version => "0.5.5";
   public override Guid Id => new Guid("18bfce35-2f9a-4442-9028-9d0821505dcf");
   public override GH_LibraryLicense License => GH_LibraryLicense.opensource;
 }
