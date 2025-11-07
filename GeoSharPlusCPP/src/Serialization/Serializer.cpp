@@ -21,9 +21,9 @@
 namespace GeoSharPlusCPP::Serialization {
 // Cross-platform memory allocation for C# interop
 // On Windows: Use CoTaskMemAlloc (COM-compatible)
-// On Unix/macOS: Use standard malloc - .NET Core will handle it correctly with Marshal.FreeCoTaskMem
-// Note: On .NET Core/5+, Marshal.FreeCoTaskMem on Unix calls free() internally, 
-// which properly pairs with malloc()
+// On Unix/macOS: Use standard malloc - .NET Core will handle it correctly with
+// Marshal.FreeCoTaskMem Note: On .NET Core/5+, Marshal.FreeCoTaskMem on Unix calls free()
+// internally, which properly pairs with malloc()
 inline void* AllocateInteropMemory(size_t size) {
 #ifdef _WIN32
   return CoTaskMemAlloc(size);
