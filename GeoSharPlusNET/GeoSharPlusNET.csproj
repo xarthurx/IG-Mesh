@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
-		<PackageReference Include="RhinoCommon" Version="8.15.25013.13001" />
+		<PackageReference Include="RhinoCommon" Version="8.21.25188.17001" />
 	</ItemGroup>
 
 	<ItemGroup>

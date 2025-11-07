@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<!-- Select the framework(s) you wish to target.
-        Rhino 7: net48
-        Rhino 8 Windows: net48, net7.0, net7.0-windows, net7.0-windows10.0.22000.0, etc
-        Rhino 8 Mac: net7.0, net7.0-macos, net7.0-macos12.0, etc
+        Rhino 8.0-8.10: net7.0, net7.0-windows
+        Rhino 8.11+: net7.0, net7.0-windows, net8.0, net8.0-windows
 	-->
-		<TargetFrameworks>net7.0-windows;net7.0</TargetFrameworks>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<TargetExt>.gha</TargetExt>
 		<NoWarn>NU1701;NETSDK1086</NoWarn>
@@ -23,6 +20,7 @@
 		<Version>$(AssemblyVersion)</Version>
 		<AssemblyVersion></AssemblyVersion>
 		<PlatformTarget>AnyCPU</PlatformTarget>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
 
 
@@ -50,7 +48,9 @@
 		<PackageReference Include="Grasshopper" Version="8.21.25188.17001" />
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
 		<PackageReference Include="RhinoCommon" Version="8.21.25188.17001" />
-		<PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
+
+		<!-- Use .NET 7 version for net7.0 targets, .NET 8 version for net8.0 targets -->
+		<PackageReference Include="System.Resources.Extensions" Version="8.0.0" Condition="$(TargetFramework.StartsWith('net8'))" />
 
 		<PackageReference Include="System.Collections">
 			<Version>4.3.0</Version>
@@ -170,23 +170,23 @@
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Compile Update="Properties\Settings.Designer.cs">
-	    <DesignTimeSharedInput>True</DesignTimeSharedInput>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Settings.settings</DependentUpon>
-	  </Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Update="Properties\Settings.settings">
-	    <Generator>SettingsSingleFileGenerator</Generator>
-	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-	  </None>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
 	</ItemGroup>
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)prebuild.ps1' -TargetDir '$(TargetDir)' -SourceDir '$(SolutionDir)GeoSharPlusCPP\build\' -Configuration '$(Configuration)'&quot;" />
+		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)prebuild.ps1' -TargetDir '$(TargetDir)' -SourceDir '$(SolutionDir)GeoSharPlusCPP\build\' -Configuration '$(Configuration)'&quot;" />
 	</Target>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)postbuild.ps1' -TargetDir '$(TargetDir)' -SolutionDir '$(SolutionDir)' -Configuration '$(Configuration)'&quot;" />
+		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)postbuild.ps1' -TargetDir '$(TargetDir)' -SolutionDir '$(SolutionDir)' -Configuration '$(Configuration)'&quot;" />
 	</Target>
 	<!-- <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /> -->
 	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
