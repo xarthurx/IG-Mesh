@@ -1156,9 +1156,245 @@ public static class MeshUtils {
 
   /// <summary>
   /// Helper method to sort unordered points into a connected polyline.
-  /// Uses a greedy nearest-neighbor algorithm starting from an endpoint.
+  /// Uses KD-tree for fast neighbor queries and direction clustering for endpoint detection.
   /// Removes duplicate/overlapping points before sorting.
   /// </summary>
-  private static List<Point3d> SortPointsIntoPolyline(List<Point3d> points) {}
+  private static List<Point3d> SortPointsIntoPolyline(List<Point3d> points) {
+    if (points.Count == 0)
+      return new List<Point3d>();
+    if (points.Count == 1)
+      return new List<Point3d>(points);
+
+    // Phase 1: Remove duplicate points
+    const double tolerance = 1e-6;
+    var uniquePoints = new List<Point3d>();
+
+    foreach (var point in points) {
+      bool isDuplicate = false;
+      foreach (var existing in uniquePoints) {
+        if (point.DistanceTo(existing) < tolerance) {
+          isDuplicate = true;
+          break;
+        }
+      }
+      if (!isDuplicate) {
+        uniquePoints.Add(point);
+      }
+    }
+
+    if (uniquePoints.Count == 0)
+      return new List<Point3d>();
+    if (uniquePoints.Count == 1)
+      return new List<Point3d>(uniquePoints);
+
+    // Phase 2: Build KD-tree for fast neighbor queries
+    var kdTree = new KdTree.KdTree<double, int>(3, new KdTree.Math.DoubleMath());
+    for (int i = 0; i < uniquePoints.Count; i++) {
+      var pt = uniquePoints[i];
+      kdTree.Add(new double[] { pt.X, pt.Y, pt.Z }, i);
+    }
+
+    // Phase 3: Find endpoint using direction clustering
+    int startIdx = FindPolylineEndpointWithClustering(uniquePoints, kdTree);
+
+    // Phase 4: Greedy nearest-neighbor sorting using KD-tree
+    var sorted = new List<Point3d>();
+    var remaining = new HashSet<int>(Enumerable.Range(0, uniquePoints.Count));
+
+    sorted.Add(uniquePoints[startIdx]);
+    remaining.Remove(startIdx);
+
+    while (remaining.Count > 0) {
+      Point3d current = sorted[sorted.Count - 1];
+
+      // Query KD-tree for K nearest neighbors
+      var nearest = kdTree.GetNearestNeighbours(new double[] { current.X, current.Y, current.Z },
+                                                Math.Min(10, uniquePoints.Count));
+
+      // Find closest unvisited neighbor
+      int nearestIdx = -1;
+      double minDist = double.MaxValue;
+
+      foreach (var neighbor in nearest) {
+        int idx = neighbor.Value;
+        if (remaining.Contains(idx)) {
+          double dist = current.DistanceTo(uniquePoints[idx]);
+          if (dist < minDist) {
+            minDist = dist;
+            nearestIdx = idx;
+          }
+        }
+      }
+
+      if (nearestIdx >= 0) {
+        sorted.Add(uniquePoints[nearestIdx]);
+        remaining.Remove(nearestIdx);
+      } else {
+        break;
+      }
+    }
+
+    return sorted;
+  }
+
+  /// <summary>
+  /// Finds an endpoint using direction clustering.
+  /// Points where all neighbors point in the same direction are endpoints.
+  /// </summary>
+  private static int FindPolylineEndpointWithClustering(List<Point3d> points,
+                                                        KdTree.KdTree<double, int> kdTree) {
+    if (points.Count <= 2)
+      return 0;
+
+    int bestEndpointIdx = 0;
+    double bestScore = double.MaxValue;
+    int K = Math.Min(8, points.Count - 1);  // Changed from const to var
+
+    for (int i = 0; i < points.Count; i++) {
+      Point3d current = points[i];
+
+      // Get K nearest neighbors
+      var nearest = kdTree.GetNearestNeighbours(new double[] { current.X, current.Y, current.Z },
+                                                K + 1  // +1 because it includes the point itself
+      );
+
+      // Extract neighbor directions (skip self)
+      var directions = new List<Vector3d>();
+      var distances = new List<double>();
+
+      foreach (var neighbor in nearest) {
+        int idx = neighbor.Value;
+        if (idx == i)
+          continue;
+
+        Point3d neighborPt = points[idx];
+        Vector3d dir = neighborPt - current;
+        double dist = dir.Length;
+
+        if (dist > 1e-10) {
+          dir.Unitize();
+          directions.Add(dir);
+          distances.Add(dist);
+        }
+      }
+
+      if (directions.Count == 0) {
+        continue;  // Skip isolated points
+      }
+
+      if (directions.Count == 1) {
+        // Only 1 neighbor - perfect endpoint
+        return i;
+      }
+
+      // Cluster directions by angular similarity
+      var clusters = ClusterDirections(directions, angleThresholdDeg: 45.0);
+
+      double score;
+
+      if (clusters.Count == 1) {
+        // All neighbors point same direction - ENDPOINT!
+        score = 0.0;
+      } else if (clusters.Count == 2) {
+        // Two clusters - check if opposite
+        Vector3d centroid1 = CalculateDirectionCentroid(clusters[0]);
+        Vector3d centroid2 = CalculateDirectionCentroid(clusters[1]);
+
+        double dotProduct = centroid1 * centroid2;
+        dotProduct = Math.Max(-1.0, Math.Min(1.0, dotProduct));
+        double angle = Math.Acos(dotProduct) * 180.0 / Math.PI;
+
+        if (angle >= 160.0 && angle <= 180.0) {
+          // Opposite directions - middle point
+          score = 180.0;
+        } else {
+          // Non-opposite - corner or endpoint
+          score = 90.0;
+        }
+      } else {
+        // 3+ clusters - irregular geometry, avoid as start
+        score = 200.0;
+      }
+
+      // Additional check: distance variance
+      if (distances.Count >= 2) {
+        double meanDist = distances.Average();
+        double variance = distances.Select(d => Math.Pow(d - meanDist, 2)).Average();
+        double stdDev = Math.Sqrt(variance);
+        double varianceScore = stdDev / (meanDist + 1e-10);
+
+        if (varianceScore > 1.5) {
+          // High variance = unbalanced = endpoint indicator
+          score = Math.Min(score, 30.0);
+        }
+      }
+
+      if (score < bestScore) {
+        bestScore = score;
+        bestEndpointIdx = i;
+      }
+
+      // Early exit for perfect endpoint
+      if (score == 0.0) {
+        return bestEndpointIdx;
+      }
+    }
+
+    return bestEndpointIdx;
+  }
+
+  /// <summary>
+  /// Clusters direction vectors by angular similarity.
+  /// </summary>
+  private static List<List<Vector3d>> ClusterDirections(List<Vector3d> directions,
+                                                        double angleThresholdDeg) {
+    var clusters = new List<List<Vector3d>>();
+    double angleThresholdRad = angleThresholdDeg * Math.PI / 180.0;
+
+    foreach (var dir in directions) {
+      bool addedToCluster = false;
+
+      foreach (var cluster in clusters) {
+        Vector3d centroid = CalculateDirectionCentroid(cluster);
+        double dotProduct = dir * centroid;
+        dotProduct = Math.Max(-1.0, Math.Min(1.0, dotProduct));
+        double angle = Math.Acos(dotProduct);
+
+        if (angle < angleThresholdRad) {
+          cluster.Add(dir);
+          addedToCluster = true;
+          break;
+        }
+      }
+
+      if (!addedToCluster) {
+        clusters.Add(new List<Vector3d> { dir });
+      }
+    }
+
+    return clusters;
+  }
+
+  /// <summary>
+  /// Calculates the centroid (average direction) of a cluster of direction vectors.
+  /// </summary>
+  private static Vector3d CalculateDirectionCentroid(List<Vector3d> directions) {
+    if (directions.Count == 0)
+      return new Vector3d(1, 0, 0);
+
+    Vector3d sum = new Vector3d(0, 0, 0);
+    foreach (var dir in directions) {
+      sum += dir;
+    }
+
+    double length = sum.Length;
+    if (length > 1e-10) {
+      sum.Unitize();
+    } else {
+      sum = new Vector3d(1, 0, 0);
+    }
+
+    return sum;
+  }
 }
-}
+}  // namespace GSP

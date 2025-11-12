@@ -47,37 +47,37 @@ namespace GS = GeoSharPlusCPP::Serialization;
 
 // Helper functions for mesh type handling
 namespace {
-  // Check if mesh requires triangulation for triangle-only functions
-  bool requiresTriangulation(const GeoSharPlusCPP::Mesh& mesh) {
-    return mesh.F.cols() == 4;  // Quad mesh needs triangulation
-  }
-  
-  // Triangulate a quad mesh by splitting each quad into 2 triangles
-  GeoSharPlusCPP::Mesh triangulate(const GeoSharPlusCPP::Mesh& mesh) {
-    if (mesh.F.cols() == 3) {
-      return mesh;  // Already triangulated
-    }
-    
-    GeoSharPlusCPP::Mesh triMesh;
-    triMesh.V = mesh.V;
-    
-    // Convert quads to triangles (split each quad into 2 triangles)
-    triMesh.F.resize(mesh.F.rows() * 2, 3);
-    for (int i = 0; i < mesh.F.rows(); ++i) {
-      // Triangle 1: vertices 0,1,2
-      triMesh.F(i * 2, 0) = mesh.F(i, 0);
-      triMesh.F(i * 2, 1) = mesh.F(i, 1);
-      triMesh.F(i * 2, 2) = mesh.F(i, 2);
-      
-      // Triangle 2: vertices 0,2,3
-      triMesh.F(i * 2 + 1, 0) = mesh.F(i, 0);
-      triMesh.F(i * 2 + 1, 1) = mesh.F(i, 2);
-      triMesh.F(i * 2 + 1, 2) = mesh.F(i, 3);
-    }
-    
-    return triMesh;
-  }
+// Check if mesh requires triangulation for triangle-only functions
+bool requiresTriangulation(const GeoSharPlusCPP::Mesh& mesh) {
+  return mesh.F.cols() == 4;  // Quad mesh needs triangulation
 }
+
+// Triangulate a quad mesh by splitting each quad into 2 triangles
+GeoSharPlusCPP::Mesh triangulate(const GeoSharPlusCPP::Mesh& mesh) {
+  if (mesh.F.cols() == 3) {
+    return mesh;  // Already triangulated
+  }
+
+  GeoSharPlusCPP::Mesh triMesh;
+  triMesh.V = mesh.V;
+
+  // Convert quads to triangles (split each quad into 2 triangles)
+  triMesh.F.resize(mesh.F.rows() * 2, 3);
+  for (int i = 0; i < mesh.F.rows(); ++i) {
+    // Triangle 1: vertices 0,1,2
+    triMesh.F(i * 2, 0) = mesh.F(i, 0);
+    triMesh.F(i * 2, 1) = mesh.F(i, 1);
+    triMesh.F(i * 2, 2) = mesh.F(i, 2);
+
+    // Triangle 2: vertices 0,2,3
+    triMesh.F(i * 2 + 1, 0) = mesh.F(i, 0);
+    triMesh.F(i * 2 + 1, 1) = mesh.F(i, 2);
+    triMesh.F(i * 2 + 1, 2) = mesh.F(i, 3);
+  }
+
+  return triMesh;
+}
+}  // namespace
 
 extern "C" {
 
@@ -900,10 +900,12 @@ GSP_API bool GSP_CALL IGM_planarize_quad_mesh(const uint8_t* inBuffer,
 
   // Convert RowMajor to ColMajor for libigl compatibility
   // libigl's planarize_quad_mesh requires ColMajor matrices
-  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> V_col(mesh.V.rows(), mesh.V.cols());
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> V_col(mesh.V.rows(),
+                                                                               mesh.V.cols());
   V_col = mesh.V;
-  
-  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> F_col(mesh.F.rows(), mesh.F.cols());
+
+  Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::ColMajor> F_col(mesh.F.rows(),
+                                                                            mesh.F.cols());
   F_col = mesh.F;
 
   Eigen::MatrixXd VPlanarized;
@@ -912,7 +914,7 @@ GSP_API bool GSP_CALL IGM_planarize_quad_mesh(const uint8_t* inBuffer,
   // Create result mesh with planarized vertices
   GeoSharPlusCPP::Mesh planarizedMesh;
   planarizedMesh.V = VPlanarized;  // Convert ColMajor back to RowMajor via assignment
-  planarizedMesh.F = mesh.F;  // Keep original quad topology
+  planarizedMesh.F = mesh.F;       // Keep original quad topology
 
   // Serialize the planarized mesh
   *outBuffer = nullptr;
