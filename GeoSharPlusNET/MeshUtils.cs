@@ -749,8 +749,8 @@ public static class MeshUtils {
     if (mesh == null)
       throw new ArgumentNullException(nameof(mesh));
 
-    // Serialize mesh to buffer
-    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+    // Serialize mesh preserving quads
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh, preserveQuads: true);
 
     // Call the native function
     var success = NativeBridge.IGM_quad_planarity(
@@ -783,8 +783,8 @@ public static class MeshUtils {
     if (mesh == null)
       throw new ArgumentNullException(nameof(mesh));
 
-    // Serialize mesh to buffer
-    var meshBuffer = Wrapper.ToMeshBuffer(mesh);
+    // Serialize mesh preserving quads - critical for planarization to work
+    var meshBuffer = Wrapper.ToMeshBuffer(mesh, preserveQuads: true);
 
     // Call the native function
     var success = NativeBridge.IGM_planarize_quad_mesh(meshBuffer,

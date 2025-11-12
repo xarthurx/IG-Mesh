@@ -5,3 +5,4 @@ struct Vec2 { x:double; y:double; }
 
 struct Vec3i { x:int; y:int; z:int; }
 struct Vec2i { x:int; y:int; }
+struct Vec4i { x:int; y:int; z:int; w:int; }

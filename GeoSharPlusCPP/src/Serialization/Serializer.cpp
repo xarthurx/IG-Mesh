@@ -461,33 +461,46 @@ bool serializeMesh(const Mesh& mesh, uint8_t*& resBuffer, int& resSize) {
     vertices.emplace_back(mesh.V(i, 0), mesh.V(i, 1), mesh.V(i, 2));
   }
 
-  // Convert faces to flatbuffers compatible format
-  std::vector<GSP::FB::Vec3i> faces;
-  faces.reserve(mesh.F.rows());
-  for (size_t i = 0; i < mesh.F.rows(); i++) {
-    faces.emplace_back(mesh.F(i, 0), mesh.F(i, 1), mesh.F(i, 2));
+  // Determine if this is a triangle or quad mesh
+  int faceCols = mesh.F.cols();
+  
+  flatbuffers::Offset<flatbuffers::Vector<const GSP::FB::Vec3i*>> facesVector;
+  flatbuffers::Offset<flatbuffers::Vector<const GSP::FB::Vec4i*>> quadFacesVector;
+  
+  if (faceCols == 3) {
+    // Triangle mesh - use existing Vec3i format
+    std::vector<GSP::FB::Vec3i> faces;
+    faces.reserve(mesh.F.rows());
+    for (size_t i = 0; i < mesh.F.rows(); i++) {
+      faces.emplace_back(mesh.F(i, 0), mesh.F(i, 1), mesh.F(i, 2));
+    }
+    facesVector = builder.CreateVectorOfStructs(faces);
+  } else if (faceCols == 4) {
+    // Quad mesh - use Vec4i format
+    std::vector<GSP::FB::Vec4i> quadFaces;
+    quadFaces.reserve(mesh.F.rows());
+    for (size_t i = 0; i < mesh.F.rows(); i++) {
+      quadFaces.emplace_back(mesh.F(i, 0), mesh.F(i, 1), mesh.F(i, 2), mesh.F(i, 3));
+    }
+    quadFacesVector = builder.CreateVectorOfStructs(quadFaces);
+  } else {
+    // Invalid face count
+    return false;
   }
 
-  // Create vectors in flatbuffers
+  // Create vertices vector
   auto verticesVector = builder.CreateVectorOfStructs(vertices);
-  auto facesVector = builder.CreateVectorOfStructs(faces);
 
-  // Create colors vector if present
-  flatbuffers::Offset<flatbuffers::Vector<float>> colorsVector;
-  bool hasColors = mesh.C.size() > 0;
-  if (hasColors) {
-    std::vector<float> colors(mesh.C.data(), mesh.C.data() + mesh.C.size());
-    colorsVector = builder.CreateVector(colors);
-  }
-
-  // Create the mesh
+  // Create the mesh with appropriate face data
   GSP::FB::MeshDataBuilder meshBuilder(builder);
   meshBuilder.add_vertices(verticesVector);
-  meshBuilder.add_faces(facesVector);
-  // if (hasColors) {
-  //   meshBuilder.add_colors(colorsVector);
-  //   meshBuilder.add_has_colors(true);
-  // }
+  
+  if (faceCols == 3) {
+    meshBuilder.add_faces(facesVector);
+  } else if (faceCols == 4) {
+    meshBuilder.add_quad_faces(quadFacesVector);
+  }
+  
   auto meshOffset = meshBuilder.Finish();
   builder.Finish(meshOffset);
 
@@ -526,27 +539,32 @@ bool deserializeMesh(const uint8_t* data, int size, Mesh& mesh) {
     mesh.V.row(i) = Eigen::Vector3d(vertex->x(), vertex->y(), vertex->z()).transpose();
   }
 
-  // Extract faces
-  auto faces = meshData->faces();
-  if (!faces) {
-    return false;
+  // Extract faces - check if we have triangle or quad faces
+  auto triFaces = meshData->faces();
+  auto quadFaces = meshData->quad_faces();
+  
+  if (quadFaces && quadFaces->size() > 0) {
+    // Quad mesh
+    mesh.F.resize(quadFaces->size(), 4);
+    for (size_t i = 0; i < quadFaces->size(); i++) {
+      auto face = quadFaces->Get(i);
+      mesh.F(i, 0) = face->x();
+      mesh.F(i, 1) = face->y();
+      mesh.F(i, 2) = face->z();
+      mesh.F(i, 3) = face->w();
+    }
+  } else if (triFaces && triFaces->size() > 0) {
+    // Triangle mesh
+    mesh.F.resize(triFaces->size(), 3);
+    for (size_t i = 0; i < triFaces->size(); i++) {
+      auto face = triFaces->Get(i);
+      mesh.F(i, 0) = face->x();
+      mesh.F(i, 1) = face->y();
+      mesh.F(i, 2) = face->z();
+    }
+  } else {
+    return false;  // No faces found
   }
-  mesh.F.resize(faces->size(), 3);
-  for (size_t i = 0; i < faces->size(); i++) {
-    auto face = faces->Get(i);
-    mesh.F.row(i) = Eigen::Vector3i(face->x(), face->y(), face->z()).transpose();
-  }
-
-  // Extract colors if present
-  // if (meshData->has_colors() && meshData->colors()) {
-  //  auto colors = meshData->colors();
-  //  mesh.C.resize(colors->size());
-  //  for (size_t i = 0; i < colors->size(); i++) {
-  //    mesh.C(i) = colors->Get(i);
-  //  }
-  //} else {
-  //  mesh.C.resize(0);
-  //}
 
   return true;
 }

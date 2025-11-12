@@ -11,6 +11,11 @@ using Vector3d = Eigen::Vector3d;
 using MatrixX3f = Eigen::Matrix<float, Eigen::Dynamic, 3, Eigen::RowMajor>;
 using MatrixX3d = Eigen::Matrix<double, Eigen::Dynamic, 3, Eigen::RowMajor>;
 using MatrixX3i = Eigen::Matrix<int, Eigen::Dynamic, 3, Eigen::RowMajor>;
+using MatrixX4i = Eigen::Matrix<int, Eigen::Dynamic, 4, Eigen::RowMajor>;  // For quad meshes
+
+// Dynamic width matrix types for flexible mesh support
+using MatrixXi = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+using MatrixXd = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
 // Geometry primitives
 struct Point {

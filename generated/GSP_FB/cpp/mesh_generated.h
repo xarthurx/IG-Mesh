@@ -25,7 +25,8 @@ struct MeshData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef MeshDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_VERTICES = 4,
-    VT_FACES = 6
+    VT_FACES = 6,
+    VT_QUAD_FACES = 8
   };
   const ::flatbuffers::Vector<const GSP::FB::Vec3 *> *vertices() const {
     return GetPointer<const ::flatbuffers::Vector<const GSP::FB::Vec3 *> *>(VT_VERTICES);
@@ -33,12 +34,17 @@ struct MeshData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   const ::flatbuffers::Vector<const GSP::FB::Vec3i *> *faces() const {
     return GetPointer<const ::flatbuffers::Vector<const GSP::FB::Vec3i *> *>(VT_FACES);
   }
+  const ::flatbuffers::Vector<const GSP::FB::Vec4i *> *quad_faces() const {
+    return GetPointer<const ::flatbuffers::Vector<const GSP::FB::Vec4i *> *>(VT_QUAD_FACES);
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_VERTICES) &&
            verifier.VerifyVector(vertices()) &&
            VerifyOffset(verifier, VT_FACES) &&
            verifier.VerifyVector(faces()) &&
+           VerifyOffset(verifier, VT_QUAD_FACES) &&
+           verifier.VerifyVector(quad_faces()) &&
            verifier.EndTable();
   }
 };
@@ -52,6 +58,9 @@ struct MeshDataBuilder {
   }
   void add_faces(::flatbuffers::Offset<::flatbuffers::Vector<const GSP::FB::Vec3i *>> faces) {
     fbb_.AddOffset(MeshData::VT_FACES, faces);
+  }
+  void add_quad_faces(::flatbuffers::Offset<::flatbuffers::Vector<const GSP::FB::Vec4i *>> quad_faces) {
+    fbb_.AddOffset(MeshData::VT_QUAD_FACES, quad_faces);
   }
   explicit MeshDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -67,8 +76,10 @@ struct MeshDataBuilder {
 inline ::flatbuffers::Offset<MeshData> CreateMeshData(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     ::flatbuffers::Offset<::flatbuffers::Vector<const GSP::FB::Vec3 *>> vertices = 0,
-    ::flatbuffers::Offset<::flatbuffers::Vector<const GSP::FB::Vec3i *>> faces = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<const GSP::FB::Vec3i *>> faces = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<const GSP::FB::Vec4i *>> quad_faces = 0) {
   MeshDataBuilder builder_(_fbb);
+  builder_.add_quad_faces(quad_faces);
   builder_.add_faces(faces);
   builder_.add_vertices(vertices);
   return builder_.Finish();
@@ -77,13 +88,16 @@ inline ::flatbuffers::Offset<MeshData> CreateMeshData(
 inline ::flatbuffers::Offset<MeshData> CreateMeshDataDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<GSP::FB::Vec3> *vertices = nullptr,
-    const std::vector<GSP::FB::Vec3i> *faces = nullptr) {
+    const std::vector<GSP::FB::Vec3i> *faces = nullptr,
+    const std::vector<GSP::FB::Vec4i> *quad_faces = nullptr) {
   auto vertices__ = vertices ? _fbb.CreateVectorOfStructs<GSP::FB::Vec3>(*vertices) : 0;
   auto faces__ = faces ? _fbb.CreateVectorOfStructs<GSP::FB::Vec3i>(*faces) : 0;
+  auto quad_faces__ = quad_faces ? _fbb.CreateVectorOfStructs<GSP::FB::Vec4i>(*quad_faces) : 0;
   return GSP::FB::CreateMeshData(
       _fbb,
       vertices__,
-      faces__);
+      faces__,
+      quad_faces__);
 }
 
 inline const GSP::FB::MeshData *GetMeshData(const void *buf) {

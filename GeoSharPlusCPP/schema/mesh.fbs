@@ -2,9 +2,12 @@ include "base.fbs";
 
 namespace GSP.FB;
 
+// Updated MeshData to support both triangle and quad meshes
+// Uses separate arrays for clarity and backward compatibility
 table MeshData {
     vertices:[Vec3];
-    faces:[Vec3i];
+    faces:[Vec3i];        // Triangle faces (for backward compatibility)
+    quad_faces:[Vec4i];   // Quad faces (optional, for quad meshes)
 }
 
 root_type MeshData; // Single root

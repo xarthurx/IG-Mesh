@@ -24,6 +24,8 @@ struct Vec3i;
 
 struct Vec2i;
 
+struct Vec4i;
+
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(8) Vec3 FLATBUFFERS_FINAL_CLASS {
  private:
   double x_;
@@ -127,6 +129,41 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Vec2i FLATBUFFERS_FINAL_CLASS {
   }
 };
 FLATBUFFERS_STRUCT_END(Vec2i, 8);
+
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Vec4i FLATBUFFERS_FINAL_CLASS {
+ private:
+  int32_t x_;
+  int32_t y_;
+  int32_t z_;
+  int32_t w_;
+
+ public:
+  Vec4i()
+      : x_(0),
+        y_(0),
+        z_(0),
+        w_(0) {
+  }
+  Vec4i(int32_t _x, int32_t _y, int32_t _z, int32_t _w)
+      : x_(::flatbuffers::EndianScalar(_x)),
+        y_(::flatbuffers::EndianScalar(_y)),
+        z_(::flatbuffers::EndianScalar(_z)),
+        w_(::flatbuffers::EndianScalar(_w)) {
+  }
+  int32_t x() const {
+    return ::flatbuffers::EndianScalar(x_);
+  }
+  int32_t y() const {
+    return ::flatbuffers::EndianScalar(y_);
+  }
+  int32_t z() const {
+    return ::flatbuffers::EndianScalar(z_);
+  }
+  int32_t w() const {
+    return ::flatbuffers::EndianScalar(w_);
+  }
+};
+FLATBUFFERS_STRUCT_END(Vec4i, 16);
 
 }  // namespace FB
 }  // namespace GSP

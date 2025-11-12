@@ -24,21 +24,27 @@ public struct MeshData : IFlatbufferObject
   public int VerticesLength { get { int o = __p.__offset(4); return o != 0 ? __p.__vector_len(o) : 0; } }
   public GSP.FB.Vec3i? Faces(int j) { int o = __p.__offset(6); return o != 0 ? (GSP.FB.Vec3i?)(new GSP.FB.Vec3i()).__assign(__p.__vector(o) + j * 12, __p.bb) : null; }
   public int FacesLength { get { int o = __p.__offset(6); return o != 0 ? __p.__vector_len(o) : 0; } }
+  public GSP.FB.Vec4i? QuadFaces(int j) { int o = __p.__offset(8); return o != 0 ? (GSP.FB.Vec4i?)(new GSP.FB.Vec4i()).__assign(__p.__vector(o) + j * 16, __p.bb) : null; }
+  public int QuadFacesLength { get { int o = __p.__offset(8); return o != 0 ? __p.__vector_len(o) : 0; } }
 
   public static Offset<GSP.FB.MeshData> CreateMeshData(FlatBufferBuilder builder,
       VectorOffset verticesOffset = default(VectorOffset),
-      VectorOffset facesOffset = default(VectorOffset)) {
-    builder.StartTable(2);
+      VectorOffset facesOffset = default(VectorOffset),
+      VectorOffset quad_facesOffset = default(VectorOffset)) {
+    builder.StartTable(3);
+    MeshData.AddQuadFaces(builder, quad_facesOffset);
     MeshData.AddFaces(builder, facesOffset);
     MeshData.AddVertices(builder, verticesOffset);
     return MeshData.EndMeshData(builder);
   }
 
-  public static void StartMeshData(FlatBufferBuilder builder) { builder.StartTable(2); }
+  public static void StartMeshData(FlatBufferBuilder builder) { builder.StartTable(3); }
   public static void AddVertices(FlatBufferBuilder builder, VectorOffset verticesOffset) { builder.AddOffset(0, verticesOffset.Value, 0); }
   public static void StartVerticesVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(24, numElems, 8); }
   public static void AddFaces(FlatBufferBuilder builder, VectorOffset facesOffset) { builder.AddOffset(1, facesOffset.Value, 0); }
   public static void StartFacesVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(12, numElems, 4); }
+  public static void AddQuadFaces(FlatBufferBuilder builder, VectorOffset quadFacesOffset) { builder.AddOffset(2, quadFacesOffset.Value, 0); }
+  public static void StartQuadFacesVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(16, numElems, 4); }
   public static Offset<GSP.FB.MeshData> EndMeshData(FlatBufferBuilder builder) {
     int o = builder.EndTable();
     return new Offset<GSP.FB.MeshData>(o);
@@ -55,6 +61,8 @@ public struct MeshData : IFlatbufferObject
     for (var _j = 0; _j < this.VerticesLength; ++_j) {_o.Vertices.Add(this.Vertices(_j).HasValue ? this.Vertices(_j).Value.UnPack() : null);}
     _o.Faces = new List<GSP.FB.Vec3iT>();
     for (var _j = 0; _j < this.FacesLength; ++_j) {_o.Faces.Add(this.Faces(_j).HasValue ? this.Faces(_j).Value.UnPack() : null);}
+    _o.QuadFaces = new List<GSP.FB.Vec4iT>();
+    for (var _j = 0; _j < this.QuadFacesLength; ++_j) {_o.QuadFaces.Add(this.QuadFaces(_j).HasValue ? this.QuadFaces(_j).Value.UnPack() : null);}
   }
   public static Offset<GSP.FB.MeshData> Pack(FlatBufferBuilder builder, MeshDataT _o) {
     if (_o == null) return default(Offset<GSP.FB.MeshData>);
@@ -70,10 +78,17 @@ public struct MeshData : IFlatbufferObject
       for (var _j = _o.Faces.Count - 1; _j >= 0; --_j) { GSP.FB.Vec3i.Pack(builder, _o.Faces[_j]); }
       _faces = builder.EndVector();
     }
+    var _quad_faces = default(VectorOffset);
+    if (_o.QuadFaces != null) {
+      StartQuadFacesVector(builder, _o.QuadFaces.Count);
+      for (var _j = _o.QuadFaces.Count - 1; _j >= 0; --_j) { GSP.FB.Vec4i.Pack(builder, _o.QuadFaces[_j]); }
+      _quad_faces = builder.EndVector();
+    }
     return CreateMeshData(
       builder,
       _vertices,
-      _faces);
+      _faces,
+      _quad_faces);
   }
 }
 
@@ -81,10 +96,12 @@ public class MeshDataT
 {
   public List<GSP.FB.Vec3T> Vertices { get; set; }
   public List<GSP.FB.Vec3iT> Faces { get; set; }
+  public List<GSP.FB.Vec4iT> QuadFaces { get; set; }
 
   public MeshDataT() {
     this.Vertices = null;
     this.Faces = null;
+    this.QuadFaces = null;
   }
   public static MeshDataT DeserializeFromBinary(byte[] fbBuffer) {
     return MeshData.GetRootAsMeshData(new ByteBuffer(fbBuffer)).UnPack();
@@ -104,6 +121,7 @@ static public class MeshDataVerify
     return verifier.VerifyTableStart(tablePos)
       && verifier.VerifyVectorOfData(tablePos, 4 /*Vertices*/, 24 /*GSP.FB.Vec3*/, false)
       && verifier.VerifyVectorOfData(tablePos, 6 /*Faces*/, 12 /*GSP.FB.Vec3i*/, false)
+      && verifier.VerifyVectorOfData(tablePos, 8 /*QuadFaces*/, 16 /*GSP.FB.Vec4i*/, false)
       && verifier.VerifyTableEnd(tablePos);
   }
 }

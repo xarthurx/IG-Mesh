@@ -44,6 +44,37 @@ public class IGM_quad_planarity : GH_Component {
       return;
     }
     if (!mesh.IsValid) {
+      AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input mesh is not valid.");
+      return;
+    }
+
+    // Validate that the mesh is a pure quad mesh
+    bool hasTriangles = false;
+    bool hasQuads = false;
+
+    foreach (var face in mesh.Faces) {
+      if (face.IsTriangle) {
+        hasTriangles = true;
+      } else {
+        hasQuads = true;
+      }
+
+      // Early exit if we detect mixed mesh
+      if (hasTriangles && hasQuads) {
+        break;
+      }
+    }
+
+    // Check if mesh is not pure quad
+    if (hasTriangles) {
+      AddRuntimeMessage(
+          GH_RuntimeMessageLevel.Error,
+          "Input mesh contains only triangles. This component requires a pure quad mesh.");
+      return;
+    }
+
+    if (!hasQuads) {
+      AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input mesh has no faces.");
       return;
     }
 
@@ -120,6 +151,7 @@ public class IGM_quad_planarize : GH_Component {
       return;
     }
     if (!mesh.IsValid) {
+      AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input mesh is not valid.");
       return;
     }
 
@@ -130,6 +162,37 @@ public class IGM_quad_planarize : GH_Component {
     double thres = 0.005;
     if (!DA.GetData(2, ref thres) || thres <= 0) {
       thres = 0.005;
+    }
+
+    // Validate that the mesh is a pure quad mesh
+    bool hasTriangles = false;
+    bool hasQuads = false;
+
+    foreach (var face in mesh.Faces) {
+      if (face.IsTriangle) {
+        hasTriangles = true;
+      } else {
+        hasQuads = true;
+      }
+
+      // Early exit if we detect mixed mesh
+      if (hasTriangles && hasQuads) {
+        break;
+      }
+    }
+
+    // Check if mesh is not pure quad
+    if (hasTriangles) {
+      AddRuntimeMessage(
+          GH_RuntimeMessageLevel.Error,
+          "Input mesh contains triangle faces. This component requires a pure quad mesh. " +
+              "Quad planarization only works on quadrilateral faces.");
+      return;
+    }
+
+    if (!hasQuads) {
+      AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Input mesh has no faces.");
+      return;
     }
 
     // call the cpp function to solve the adjacency list

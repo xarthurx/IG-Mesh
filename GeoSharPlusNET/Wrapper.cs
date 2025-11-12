@@ -103,34 +103,77 @@ public static class Wrapper {
 
 #region Mesh Operations
 
-  public static byte[] ToMeshBuffer(Mesh mesh) {
+  public static byte[] ToMeshBuffer(Mesh mesh, bool preserveQuads = false) {
     var builder = new FlatBufferBuilder(1024);
 
-    // Triangulate the mesh if it's not already triangulated
-    Mesh triangulatedMesh = mesh.DuplicateMesh();
-    if (!triangulatedMesh.Faces.TriangleCount.Equals(triangulatedMesh.Faces.Count)) {
-      triangulatedMesh.Faces.ConvertQuadsToTriangles();
+    // Check if mesh has quads
+    bool hasQuads = false;
+    bool hasTriangles = false;
+
+    foreach (var face in mesh.Faces) {
+      if (face.IsTriangle) {
+        hasTriangles = true;
+      } else {
+        hasQuads = true;
+      }
+
+      // If we find a mixed mesh, break early
+      if (hasQuads && hasTriangles) {
+        break;
+      }
+    }
+
+    Mesh workingMesh = mesh;
+
+    // Strategy:
+    // - If mixed mesh OR (has quads AND not preserving), triangulate
+    // - Otherwise keep as-is
+    bool isMixed = hasQuads && hasTriangles;
+    if (isMixed || (hasQuads && !preserveQuads)) {
+      workingMesh = mesh.DuplicateMesh();
+      workingMesh.Faces.ConvertQuadsToTriangles();
+      hasQuads = false;
+      hasTriangles = true;
     }
 
     // Add vertices
-    FB.MeshData.StartVerticesVector(builder, triangulatedMesh.Vertices.Count);
-    for (int i = triangulatedMesh.Vertices.Count - 1; i >= 0; i--) {
-      var vertex = triangulatedMesh.Vertices[i];
+    FB.MeshData.StartVerticesVector(builder, workingMesh.Vertices.Count);
+    for (int i = workingMesh.Vertices.Count - 1; i >= 0; i--) {
+      var vertex = workingMesh.Vertices[i];
       FB.Vec3.CreateVec3(builder, vertex.X, vertex.Y, vertex.Z);
     }
     var verticesOffset = builder.EndVector();
 
-    // Add faces (triangles)
-    FB.MeshData.StartFacesVector(builder, triangulatedMesh.Faces.Count);
-    for (int i = triangulatedMesh.Faces.Count - 1; i >= 0; i--) {
-      var face = triangulatedMesh.Faces[i];
-      FB.Vec3i.CreateVec3i(builder, face.A, face.B,
-                           face.C);  // Using Vec3 to store three integers
+    VectorOffset facesOffset = default;
+    VectorOffset quadFacesOffset = default;
+
+    if (hasQuads && !hasTriangles) {
+      // Pure quad mesh
+      FB.MeshData.StartQuadFacesVector(builder, workingMesh.Faces.Count);
+      for (int i = workingMesh.Faces.Count - 1; i >= 0; i--) {
+        var face = workingMesh.Faces[i];
+        FB.Vec4i.CreateVec4i(builder, face.A, face.B, face.C, face.D);
+      }
+      quadFacesOffset = builder.EndVector();
+    } else {
+      // Pure triangle mesh (or was converted to triangles)
+      FB.MeshData.StartFacesVector(builder, workingMesh.Faces.Count);
+      for (int i = workingMesh.Faces.Count - 1; i >= 0; i--) {
+        var face = workingMesh.Faces[i];
+        FB.Vec3i.CreateVec3i(builder, face.A, face.B, face.C);
+      }
+      facesOffset = builder.EndVector();
     }
-    var facesOffset = builder.EndVector();
 
     // Create the mesh data
-    var meshOffset = FB.MeshData.CreateMeshData(builder, verticesOffset, facesOffset);
+    FB.MeshData.StartMeshData(builder);
+    FB.MeshData.AddVertices(builder, verticesOffset);
+    if (hasQuads && !hasTriangles) {
+      FB.MeshData.AddQuadFaces(builder, quadFacesOffset);
+    } else {
+      FB.MeshData.AddFaces(builder, facesOffset);
+    }
+    var meshOffset = FB.MeshData.EndMeshData(builder);
     builder.Finish(meshOffset.Value);
 
     return builder.SizedByteArray();
@@ -150,11 +193,24 @@ public static class Wrapper {
       }
     }
 
-    // Add faces
-    for (int i = 0; i < meshData.FacesLength; i++) {
-      var face = meshData.Faces(i);
-      if (face.HasValue) {
-        mesh.Faces.AddFace(face.Value.X, face.Value.Y, face.Value.Z);
+    // Check if we have quad faces
+    bool hasQuadFaces = meshData.QuadFacesLength > 0;
+
+    if (hasQuadFaces) {
+      // Add quad faces
+      for (int i = 0; i < meshData.QuadFacesLength; i++) {
+        var face = meshData.QuadFaces(i);
+        if (face.HasValue) {
+          mesh.Faces.AddFace(face.Value.X, face.Value.Y, face.Value.Z, face.Value.W);
+        }
+      }
+    } else {
+      // Add triangle faces
+      for (int i = 0; i < meshData.FacesLength; i++) {
+        var face = meshData.Faces(i);
+        if (face.HasValue) {
+          mesh.Faces.AddFace(face.Value.X, face.Value.Y, face.Value.Z);
+        }
       }
     }
 
