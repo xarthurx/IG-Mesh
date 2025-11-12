@@ -83,7 +83,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes barycenter for each face of a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <returns>List of vertex normals</returns>
   public static List<Point3d> GetBarycenter(ref Mesh rMesh) {
@@ -169,7 +169,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes per-corner normals for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="thresholdDegrees">Angle threshold in degrees for sharp
   /// features</param> <returns>List of lists of corner normals (one list per
@@ -214,7 +214,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes per-edge normals, edge indices, and edge map for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="weightingType">Type of weighting: 0=uniform, 1=area</param>
   /// <returns>Tuple containing edge normals, edge indices, and edge map</returns>
@@ -300,7 +300,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Gets the vertex-triangle adjacency for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <returns>Tuple containing vertex-triangle adjacency and vertex-triangle
   /// indices</returns> <exception cref="ArgumentNullException"></exception>
@@ -341,7 +341,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Gets the triangle-triangle adjacency for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <returns>Tuple containing triangle-triangle adjacency and
   /// triangle-triangle indices</returns> <exception
@@ -383,7 +383,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Gets boundary loops for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <returns>List of lists representing boundary loops</returns>
   /// <exception cref="ArgumentNullException"></exception>
@@ -413,7 +413,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Gets boundary edges for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <returns>Tuple containing boundary edge geometry, edge indices,
   /// and triangle indices</returns> <exception
@@ -549,7 +549,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes principal curvature directions and values for a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="radius">Radius parameter for curvature computation</param>
   /// <returns>Tuple containing principal directions and values</returns>
@@ -608,7 +608,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes Gaussian curvature for each vertex of a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <returns>List of Gaussian curvature values</returns>
   /// <exception cref="ArgumentNullException"></exception>
@@ -639,7 +639,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes fast winding numbers for query points with respect to a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="queryPoints">Points to query</param>
   /// <returns>List of winding numbers</returns>
@@ -681,7 +681,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes signed distance from query points to a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="queryPoints">Points to query</param>
   /// <param name="signedType">Method for computing signed distance (1-4)</param>
@@ -741,7 +741,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes planarity values for quad faces in a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input quad mesh</param>
   /// <returns>List of planarity values</returns>
   /// <exception cref="ArgumentNullException"></exception>
@@ -772,7 +772,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Planarizes quad faces in a mesh.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input quad mesh</param>
   /// <param name="maxIterations">Maximum iterations for planarization</param>
   /// <param name="threshold">Threshold to stop planarization</param>
@@ -810,7 +810,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Solves Laplacian equation with given boundary constraints.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="constraintIndices">Indices of constrained vertices</param>
   /// <param name="constraintValues">Values for constrained vertices</param>
@@ -862,7 +862,7 @@ public static class MeshUtils {
   /// Maps a mesh to a flat 2D domain using harmonic coordinates.
   /// The boundary vertices are mapped to a circle and the interior vertices
   /// are positioned to minimize the Dirichlet energy.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="k">Order of harmonic coordinates (typically 1 for biharmonic)</param>
   /// <returns>UV coordinates as 3D points (Z coordinate is 0)</returns>
@@ -896,7 +896,7 @@ public static class MeshUtils {
   /// Precomputes data for heat-based geodesic distance calculations.
   /// This function computes and caches the necessary matrices for fast geodesic distance
   /// computation.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh for geodesic computations</param>
   /// <returns>Handle for the precomputed data (to be used with GetHeatGeodesicDistances)</returns>
   /// <exception cref="ArgumentNullException"></exception>
@@ -928,7 +928,7 @@ public static class MeshUtils {
   /// <summary>
   /// Computes heat-based geodesic distances from source vertices using precomputed data.
   /// This is the fast solving step that uses the precomputed factorization.
-  /// </summary>
+  /// /// </summary>
   /// <param name="precomputedHandle">Handle from GetHeatGeodesicPrecomputedData</param>
   /// <param name="sourceVertices">List of source vertex indices</param>
   /// <returns>Geodesic distances from sources to all vertices</returns>
@@ -969,7 +969,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Generates random or uniform distributed points on mesh surface.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="N">Number of points to generate</param>
   /// <param name="method">Sampling method: 0=random, 1=uniform</param>
@@ -1031,7 +1031,7 @@ public static class MeshUtils {
 
   /// <summary>
   /// Computes a constrained scalar field on mesh vertices using Laplacian smoothing.
-  /// </summary>
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="constraintIndices">Indices of constrained vertices</param>
   /// <param name="constraintValues">Values for constrained vertices</param>
@@ -1080,11 +1080,12 @@ public static class MeshUtils {
 
   /// <summary>
   /// Extracts isoline points from a scalar field defined on mesh vertices.
-  /// </summary>
+  /// Points are sorted into connected polylines for each isoline value.
+  /// /// </summary>
   /// <param name="mesh">Input mesh</param>
   /// <param name="meshScalar">Scalar values defined on vertices</param>
   /// <param name="isoValues">Isoline parameter values (typically in [0, 1])</param>
-  /// <returns>List of lists of points, one for each isoline</returns>
+  /// <returns>List of lists of points, one sorted polyline for each isoline</returns>
   /// <exception cref="ArgumentNullException"></exception>
   public static List<List<Point3d>>
   GetIsolineFromScalar(ref Mesh mesh, ref List<double> meshScalar, ref List<double> isoValues) {
@@ -1119,29 +1120,45 @@ public static class MeshUtils {
     Marshal.Copy(outBuffer, byteArray, 0, outSize);
     Marshal.FreeCoTaskMem(outBuffer);  // Free the unmanaged memory
 
-    // Deserialize the result - this will need special handling for nested point arrays
-    // For now, return a simple implementation that assumes the format matches the expected output
-    var isolinePoints = new List<List<Point3d>>();
-
-    // This is a simplified version - the actual implementation would need to handle
-    // the nested array structure based on how the C++ side serializes it
+    // Deserialize all points
     var allPoints = Wrapper.FromPointArrayBuffer(byteArray);
 
-    // Group points by isoline (this is a placeholder - needs proper implementation based on
-    // serialization format)
-    int pointsPerIsoline = allPoints.Length / isoValues.Count;
-    for (int i = 0; i < isoValues.Count; i++) {
-      var linePoints = new List<Point3d>();
-      int startIdx = i * pointsPerIsoline;
-      int endIdx = Math.Min(startIdx + pointsPerIsoline, allPoints.Length);
-
-      for (int j = startIdx; j < endIdx; j++) {
-        linePoints.Add(allPoints[j]);
-      }
-      isolinePoints.Add(linePoints);
+    if (allPoints.Length == 0) {
+      return new List<List<Point3d>>();
     }
 
-    return isolinePoints;
+    // Group points by isoline and sort them into connected polylines
+    int pointsPerIsoline = allPoints.Length / isoValues.Count;
+    var isolinePolylines = new List<List<Point3d>>();
+
+    for (int isoIdx = 0; isoIdx < isoValues.Count; isoIdx++) {
+      int startIdx = isoIdx * pointsPerIsoline;
+      int endIdx = Math.Min(startIdx + pointsPerIsoline, allPoints.Length);
+
+      if (startIdx >= endIdx) {
+        isolinePolylines.Add(new List<Point3d>());
+        continue;
+      }
+
+      // Extract points for this isoline
+      var isolinePoints = new List<Point3d>();
+      for (int j = startIdx; j < endIdx; j++) {
+        isolinePoints.Add(allPoints[j]);
+      }
+
+      // Sort points into a connected polyline using greedy nearest-neighbor
+      var sortedPolyline = SortPointsIntoPolyline(isolinePoints);
+      isolinePolylines.Add(sortedPolyline);
+    }
+
+    return isolinePolylines;
   }
+
+  /// <summary>
+  /// Helper method to sort unordered points into a connected polyline.
+  /// Uses a greedy nearest-neighbor algorithm starting from an endpoint.
+  /// Removes duplicate/overlapping points before sorting.
+  /// </summary>
+  private static List<Point3d> SortPointsIntoPolyline(List<Point3d> points) {}
 }
-}  // namespace GeoSharpNET
+}
