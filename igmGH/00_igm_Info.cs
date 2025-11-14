@@ -6,8 +6,33 @@ using System.IO;
 namespace igmGH {
 public class igmInfo : GH_AssemblyInfo {
   public override string Name => "IG-Mesh";
-  public override Bitmap Icon => Properties.Resources.pluginIcon;
-  public override Bitmap AssemblyIcon => Properties.Resources.pluginIcon;
+  
+  private static Bitmap? _cachedIcon = null;
+  
+  public override Bitmap? Icon {
+    get {
+      try {
+        if (_cachedIcon == null) {
+          _cachedIcon = Properties.Resources.pluginIcon;
+        }
+        return _cachedIcon;
+      } catch {
+        // Icon loading failed - return null to avoid breaking assembly load
+        return null;
+      }
+    }
+  }
+  
+  public override Bitmap? AssemblyIcon {
+    get {
+      try {
+        return Icon;
+      } catch {
+        return null;
+      }
+    }
+  }
+  
   public override string Description =>
       "IG-Mesh is a one-stop solution for low-level (vertex-based, edge-based) mesh processing, " +
       "featuring many advanced algorithms from computer graphics community.";
@@ -27,9 +52,16 @@ public class igmInfo : GH_AssemblyInfo {
 // update plugin icons in the tab
 public class IGM_CategoryIcon : GH_AssemblyPriority {
   public override GH_LoadingInstruction PriorityLoad() {
-    Grasshopper.Instances.ComponentServer.AddCategoryIcon("IG-Mesh",
-                                                          Properties.Resources.pluginIcon);
-    Grasshopper.Instances.ComponentServer.AddCategorySymbolName("IG-Mesh", 'I');
+    try {
+      var icon = new igmInfo().Icon;
+      if (icon != null) {
+        Grasshopper.Instances.ComponentServer.AddCategoryIcon("IG-Mesh", icon);
+      }
+      Grasshopper.Instances.ComponentServer.AddCategorySymbolName("IG-Mesh", 'I');
+    } catch (Exception ex) {
+      // Log error but don't prevent plugin from loading
+      System.Diagnostics.Debug.WriteLine($"Failed to set category icon: {ex.Message}");
+    }
     return GH_LoadingInstruction.Proceed;
   }
 }

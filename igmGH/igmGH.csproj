@@ -17,8 +17,9 @@
 		<Company>Synestia.LTD</Company>
 		<Authors>Dr. Zhao MA</Authors>
 		<AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
-		<Version>$(AssemblyVersion)</Version>
-		<AssemblyVersion></AssemblyVersion>
+		<Version>0.5.5</Version>
+		<AssemblyVersion>0.5.5.0</AssemblyVersion>
+		<FileVersion>0.5.5.0</FileVersion>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
@@ -187,10 +188,39 @@
 		<!-- Rhino 8.11 and later you can use this -->
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
 	</ItemGroup>
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	
+	<!-- Only run prebuild on Windows - PowerShell not available on macOS -->
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
 		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)prebuild.ps1' -TargetDir '$(TargetDir)' -SourceDir '$(SolutionDir)GeoSharPlusCPP\build\' -Configuration '$(Configuration)'&quot;" />
 	</Target>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	
+	<!-- Only run postbuild on Windows - PowerShell not available on macOS -->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
 		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)postbuild.ps1' -TargetDir '$(TargetDir)' -SolutionDir '$(SolutionDir)' -Configuration '$(Configuration)'&quot;" />
+	</Target>
+	
+	<!-- Copy native libraries for macOS - runs on all platforms -->
+	<Target Name="CopyNativeLibraries" AfterTargets="Build">
+		<ItemGroup>
+			<!-- Find Windows DLL -->
+			<WindowsDll Include="$(SolutionDir)cppPrebuild\GeoSharPlusCPP.dll" Condition="Exists('$(SolutionDir)cppPrebuild\GeoSharPlusCPP.dll')" />
+			<WindowsDll Include="$(SolutionDir)GeoSharPlusCPP\build\Release\GeoSharPlusCPP.dll" Condition="Exists('$(SolutionDir)GeoSharPlusCPP\build\Release\GeoSharPlusCPP.dll') And '@(WindowsDll)' == ''" />
+			
+			<!-- Find macOS dylib -->
+			<MacDylib Include="$(SolutionDir)cppPrebuild\libGeoSharPlusCPP.dylib" Condition="Exists('$(SolutionDir)cppPrebuild\libGeoSharPlusCPP.dylib')" />
+			<MacDylib Include="$(SolutionDir)GeoSharPlusCPP\build\Release\libGeoSharPlusCPP.dylib" Condition="Exists('$(SolutionDir)GeoSharPlusCPP\build\Release\libGeoSharPlusCPP.dylib') And '@(MacDylib)' == ''" />
+		</ItemGroup>
+		
+		<!-- Copy Windows DLL if found -->
+		<Copy SourceFiles="@(WindowsDll)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="'@(WindowsDll)' != ''" />
+		
+		<!-- Copy macOS dylib if found -->
+		<Copy SourceFiles="@(MacDylib)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="'@(MacDylib)' != ''" />
+		
+		<!-- Log what was copied -->
+		<Message Text="Copied native library: @(WindowsDll)" Importance="high" Condition="'@(WindowsDll)' != ''" />
+		<Message Text="Copied native library: @(MacDylib)" Importance="high" Condition="'@(MacDylib)' != ''" />
+		<Warning Text="Native library not found - Windows DLL" Condition="'@(WindowsDll)' == ''" />
+		<Warning Text="Native library not found - macOS dylib" Condition="'@(MacDylib)' == ''" />
 	</Target>
 </Project>
