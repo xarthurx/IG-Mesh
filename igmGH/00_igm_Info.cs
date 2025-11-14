@@ -34,7 +34,7 @@ public class igmInfo : GH_AssemblyInfo {
   public override string AuthorName => "Dr. Zhao MA";
   public override string AuthorContact => "https://github.com/xarthurx/IG-Mesh";
 
-  public override string AssemblyVersion => "0.5.5";
+  public override string AssemblyVersion => "0.5.6";
   public override string Version => AssemblyVersion;
   public override Guid Id => new Guid("18bfce35-2f9a-4442-9028-9d0821505dcf");
   public override GH_LibraryLicense License => GH_LibraryLicense.opensource;
