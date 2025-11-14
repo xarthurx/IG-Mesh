@@ -2,6 +2,7 @@ using GSP;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
+using System.Windows.Forms;
 
 namespace igmGH {
 public class IGM_random_points : GH_Component {
@@ -152,7 +153,7 @@ public class IGM_random_points : GH_Component {
     Message = mode.ToUpper();
   }
 
-  public override void AppendAdditionalMenuItems(System.Windows.Forms.ToolStripDropDown menu) {
+  public override void AppendAdditionalMenuItems(ToolStripDropDown menu) {
     base.AppendAdditionalMenuItems(menu);
 
     Menu_AppendSeparator(menu);

@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<!-- Multi-target for both Windows and macOS compatibility -->
 		<!-- net8.0: Cross-platform build for macOS -->
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<TargetExt>.gha</TargetExt>
 		<NoWarn>NU1701;NETSDK1086</NoWarn>
@@ -11,10 +11,10 @@
 
 	<PropertyGroup>
 		<!-- Specifies information for Assembly and Yak -->
+		<Version>1.0</Version>
 		<Title>IG-Mesh</Title>
 		<Company>Synestia.LTD</Company>
 		<Authors>Dr. Zhao MA</Authors>
-		<Version>0.5.5</Version>
 	</PropertyGroup>
 
 
@@ -41,8 +41,8 @@
 	<ItemGroup>
 		<PackageReference Include="Grasshopper" Version="8.21.25188.17001" ExcludeAssets="runtime" />
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-		<PackageReference Include="RhinoCommon" Version="8.21.25188.17001" />
 		<PackageReference Include="System.Drawing.Common" Version="8.0.21" />
+		<PackageReference Include="System.Resources.Extensions" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -65,97 +65,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-<!-- 
-	<ItemGroup>
-		<None Include="Properties\icons\meshIsoline.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\ioReadTriMesh.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\ioWriteTriMesh.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshInfo.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshBarycenter.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalCorner.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalFace.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalVertex.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\scalarRemapFtoV.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\scalarRemapVtoF.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshAdjacencyTriTri.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshAdjacencyVertTri.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshAdjacencyVertVert.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshConstrainedScalar.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshRandomPtsOnMesh.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshSignedDist.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshWindingNumber.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshBoundEdge.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshBoundLoop.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshCurvatureGaussian.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshCurvaturePrincipal.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshColourFace.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshHeatGeodesic.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalEdge.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshPlanarity.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshPlanarize.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\pluginIcon.png" /> -->
-	<!-- </ItemGroup> -->
 
 	<!-- Only run prebuild on Windows - PowerShell not available on macOS -->
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
