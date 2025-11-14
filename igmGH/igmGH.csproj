@@ -3,7 +3,7 @@
 		<!-- Multi-target for both Windows and macOS compatibility -->
 		<!-- net8.0-windows: Windows-specific build -->
 		<!-- net8.0: Cross-platform build for macOS -->
-		<TargetFrameworks>net8.0-windows;net8.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<TargetExt>.gha</TargetExt>
 		<NoWarn>NU1701;NETSDK1086</NoWarn>
