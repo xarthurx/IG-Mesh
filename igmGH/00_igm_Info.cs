@@ -7,15 +7,10 @@ namespace igmGH {
 public class igmInfo : GH_AssemblyInfo {
   public override string Name => "IG-Mesh";
   
-  private static Bitmap? _cachedIcon = null;
-  
-  public override Bitmap? Icon {
+  public override Bitmap Icon {
     get {
       try {
-        if (_cachedIcon == null) {
-          _cachedIcon = Properties.Resources.pluginIcon;
-        }
-        return _cachedIcon;
+        return Properties.Resources.pluginIcon;
       } catch {
         // Icon loading failed - return null to avoid breaking assembly load
         return null;
@@ -23,10 +18,10 @@ public class igmInfo : GH_AssemblyInfo {
     }
   }
   
-  public override Bitmap? AssemblyIcon {
+  public override Bitmap AssemblyIcon {
     get {
       try {
-        return Icon;
+        return Properties.Resources.pluginIcon;
       } catch {
         return null;
       }
@@ -38,12 +33,7 @@ public class igmInfo : GH_AssemblyInfo {
       "featuring many advanced algorithms from computer graphics community.";
   public override string AuthorName => "Dr. Zhao MA";
   public override string AuthorContact => "https://github.com/xarthurx/IG-Mesh";
-  // controls the package manager version.
-  // public override string Version =>
-  //    System.Diagnostics.FileVersionInfo
-  //        .GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location)
-  //        .FileVersion;
-
+  
   public override string Version => "0.5.5";
   public override Guid Id => new Guid("18bfce35-2f9a-4442-9028-9d0821505dcf");
   public override GH_LibraryLicense License => GH_LibraryLicense.opensource;
@@ -53,7 +43,7 @@ public class igmInfo : GH_AssemblyInfo {
 public class IGM_CategoryIcon : GH_AssemblyPriority {
   public override GH_LoadingInstruction PriorityLoad() {
     try {
-      var icon = new igmInfo().Icon;
+      var icon = Properties.Resources.pluginIcon;
       if (icon != null) {
         Grasshopper.Instances.ComponentServer.AddCategoryIcon("IG-Mesh", icon);
       }

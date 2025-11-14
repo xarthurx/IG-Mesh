@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Select the framework(s) you wish to target.
-        Rhino 8.0-8.10: net7.0, net7.0-windows
-        Rhino 8.11+: net7.0, net7.0-windows, net8.0, net8.0-windows
-	-->
-		<TargetFramework>net8.0</TargetFramework>
+		<!-- Target net7.0 for Rhino 8.0-8.10 compatibility -->
+		<!-- Rhino 8.11+ supports net8.0, but net7.0 works on all versions -->
+		<TargetFramework>net7.0</TargetFramework>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<TargetExt>.gha</TargetExt>
 		<NoWarn>NU1701;NETSDK1086</NoWarn>
-		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -178,17 +175,6 @@
 		<None Include="Properties\icons\pluginIcon.png" />
 	</ItemGroup>
 
-	<!-- For Windows only builds -->
-	<PropertyGroup Condition="$(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4'))">
-		<UseWindowsForms>true</UseWindowsForms>
-	</PropertyGroup>
-
-	<!-- Reference WinForms for .NET 7.0 on macOS -->
-	<ItemGroup Condition="!($(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4')))">
-		<!-- Rhino 8.11 and later you can use this -->
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
-	</ItemGroup>
-	
 	<!-- Only run prebuild on Windows - PowerShell not available on macOS -->
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
 		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)prebuild.ps1' -TargetDir '$(TargetDir)' -SourceDir '$(SolutionDir)GeoSharPlusCPP\build\' -Configuration '$(Configuration)'&quot;" />
