@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Select the framework(s) you wish to target.
-        Rhino 8.0-8.10: net7.0, net7.0-windows
-        Rhino 8.11+: net7.0, net7.0-windows, net8.0, net8.0-windows
-	-->
-		<TargetFramework>net8.0</TargetFramework>
+		<!-- Multi-target for both Windows and macOS compatibility -->
+		<!-- net8.0: Cross-platform build for macOS -->
+		<TargetFramework>net7.0</TargetFramework>
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<TargetExt>.gha</TargetExt>
 		<NoWarn>NU1701;NETSDK1086</NoWarn>
@@ -13,13 +11,10 @@
 
 	<PropertyGroup>
 		<!-- Specifies information for Assembly and Yak -->
+		<Version>1.0</Version>
 		<Title>IG-Mesh</Title>
 		<Company>Synestia.LTD</Company>
 		<Authors>Dr. Zhao MA</Authors>
-		<AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
-		<Version>$(AssemblyVersion)</Version>
-		<AssemblyVersion></AssemblyVersion>
-		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
 
@@ -44,10 +39,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grasshopper" Version="8.21.25188.17001" />
+		<PackageReference Include="Grasshopper" Version="8.21.25188.17001" ExcludeAssets="runtime" />
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-		<PackageReference Include="RhinoCommon" Version="8.21.25188.17001" />
-		<PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.21" />
+		<PackageReference Include="System.Resources.Extensions" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,21 +50,6 @@
 			<TreatAsUsed>true</TreatAsUsed>
 		</ProjectReference>
 	</ItemGroup>
-
-
-	<!-- <ItemGroup>
-		<Compile Update="Properties\Settings.Designer.cs">
-			<DesignTimeSharedInput>True</DesignTimeSharedInput>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Settings.settings</DependentUpon>
-		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Properties\Settings.settings">
-			<Generator>SettingsSingleFileGenerator</Generator>
-			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
-		</None>
-	</ItemGroup> -->
 
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -86,111 +66,14 @@
     </EmbeddedResource>
   </ItemGroup>
 
-	<ItemGroup>
-		<None Include="Properties\icons\meshIsoline.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\ioReadTriMesh.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\ioWriteTriMesh.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshInfo.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshBarycenter.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalCorner.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalFace.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalVertex.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\scalarRemapFtoV.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="Properties\icons\scalarRemapVtoF.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshAdjacencyTriTri.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshAdjacencyVertTri.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshAdjacencyVertVert.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshConstrainedScalar.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshRandomPtsOnMesh.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshSignedDist.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshWindingNumber.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshBoundEdge.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshBoundLoop.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshCurvatureGaussian.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshCurvaturePrincipal.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshColourFace.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshHeatGeodesic.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshNormalEdge.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshPlanarity.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\meshPlanarize.png" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Properties\icons\pluginIcon.png" />
-	</ItemGroup>
-
-	<!-- For Windows only builds -->
-	<PropertyGroup Condition="$(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4'))">
-		<UseWindowsForms>true</UseWindowsForms>
-	</PropertyGroup>
-
-	<!-- Reference WinForms for .NET 7.0 on macOS -->
-	<ItemGroup Condition="!($(TargetFramework.Contains('-windows')) or $(TargetFramework.StartsWith('net4')))">
-		<!-- Rhino 8.11 and later you can use this -->
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
-	</ItemGroup>
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	<!-- Only run prebuild on Windows - PowerShell not available on macOS -->
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
 		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)prebuild.ps1' -TargetDir '$(TargetDir)' -SourceDir '$(SolutionDir)GeoSharPlusCPP\build\' -Configuration '$(Configuration)'&quot;" />
 	</Target>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	
+	<!-- Only run postbuild on Windows - PowerShell not available on macOS -->
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
 		<Exec Command="powershell -NonInteractive -ExecutionPolicy Bypass -Command &quot;&amp; '$(MSBuildThisFileDirectory)postbuild.ps1' -TargetDir '$(TargetDir)' -SolutionDir '$(SolutionDir)' -Configuration '$(Configuration)'&quot;" />
 	</Target>
+	
 </Project>

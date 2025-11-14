@@ -13,16 +13,31 @@ public static class NativeBridge {
   private static readonly List<string> _errorLog = new List<string>();
   private static bool _isNativeLibraryLoaded = false;
   private static string _loadedLibraryPath = string.Empty;
+  private static bool _initializationAttempted = false;
 
   /// <summary>
   /// Returns true if the native library was successfully loaded
   /// </summary>
-  public static bool IsNativeLibraryLoaded => _isNativeLibraryLoaded;
+  public static bool IsNativeLibraryLoaded {
+    get {
+      if (!_initializationAttempted) {
+        InitializeNativeLibrary();
+      }
+      return _isNativeLibraryLoaded;
+    }
+  }
 
   /// <summary>
   /// Path where the library was loaded from (empty if not loaded)
   /// </summary>
-  public static string LoadedLibraryPath => _loadedLibraryPath;
+  public static string LoadedLibraryPath {
+    get {
+      if (!_initializationAttempted) {
+        InitializeNativeLibrary();
+      }
+      return _loadedLibraryPath;
+    }
+  }
 
   /// <summary>
   /// Get error messages that can be displayed in Grasshopper components
@@ -55,104 +70,138 @@ public static class NativeBridge {
     }
   }
 
-  // Set DllImport search path to include the current assembly directory for macOS
-  static NativeBridge() {
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+  // P/Invoke declarations for macOS dynamic library loading
+  [DllImport("libdl.dylib", EntryPoint = "dlopen")]
+  private static extern IntPtr dlopen_mac(string path, int flags);
+
+  [DllImport("libdl.dylib", EntryPoint = "dlerror")]
+  private static extern IntPtr dlerror_mac();
+  
+  private static string dlerror() {
+    IntPtr ptr = dlerror_mac();
+    if (ptr == IntPtr.Zero) return string.Empty;
+    return Marshal.PtrToStringAnsi(ptr) ?? string.Empty;
+  }
+
+  /// <summary>
+  /// Initialize native library loading - called lazily instead of in static constructor
+  /// This prevents the entire assembly from failing to load if the native lib isn't found
+  /// </summary>
+  private static void InitializeNativeLibrary() {
+    if (_initializationAttempted) return;
+    
+    lock (_errorLog) {
+      if (_initializationAttempted) return;
+      _initializationAttempted = true;
+      
       try {
-        // List all possible library locations to try
-        var searchLocations = new List<string>();
-
-        // 1. Load from assembly directory
-        string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-        string? assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
-        if (assemblyDirectory != null) {
-          searchLocations.Add(Path.Combine(assemblyDirectory, MacLibName));
-        }
-
-        // 2. Try parent directory (sometimes needed for GH plugins)
-        if (assemblyDirectory != null) {
-          string? parentDir = Path.GetDirectoryName(assemblyDirectory);
-          if (parentDir != null) {
-            searchLocations.Add(Path.Combine(parentDir, MacLibName));
-          }
-        }
-
-        // 3. Try current directory
-        searchLocations.Add(Path.Combine(Directory.GetCurrentDirectory(), MacLibName));
-
-        // 4. Add standard system locations
-        searchLocations.Add(MacLibName);  // Default system search paths
-
-        LogError($"Searching for {MacLibName} in the following locations:");
-        foreach (var path in searchLocations) {
-          LogError($"- {path} (exists: {File.Exists(path)})");
-        }
-
-        // Try to load from each location
-        IntPtr handle = IntPtr.Zero;
-        foreach (var libraryPath in searchLocations) {
-          if (File.Exists(libraryPath)) {
-            LogError($"Attempting to load native library from: {libraryPath}");
-            handle = dlopen(libraryPath, 2);  // RTLD_NOW = 2
-
-            if (handle != IntPtr.Zero) {
-              _isNativeLibraryLoaded = true;
-              _loadedLibraryPath = libraryPath;
-              LogError($"Successfully loaded native library from: {libraryPath}");
-              break;
-            } else {
-              string errorMsg = dlerror();
-              LogError($"Failed to load library from {libraryPath}: {errorMsg}");
-            }
-          }
-        }
-
-        if (handle == IntPtr.Zero) {
-          LogError(
-              $"Failed to load native library from any location. Calls to native methods will likely fail.");
-        }
-      } catch (Exception ex) {
-        LogError($"Exception while setting up native library path: {ex.Message}");
-        LogError($"Stack trace: {ex.StackTrace}");
-      }
-    } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-      try {
-        // Locate the DLL file for Windows
-        string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-        string? assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
-        string dllPath = string.Empty;
-
-        if (assemblyDirectory != null) {
-          dllPath = Path.Combine(assemblyDirectory, WinLibName);
-          if (!File.Exists(dllPath)) {
-            // Try parent directory
-            string? parentDir = Path.GetDirectoryName(assemblyDirectory);
-            if (parentDir != null) {
-              dllPath = Path.Combine(parentDir, WinLibName);
-            }
-          }
-        }
-
-        if (File.Exists(dllPath)) {
-          _isNativeLibraryLoaded = true;
-          _loadedLibraryPath = dllPath;
-          LogError($"Successfully located native library at: {dllPath}");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+          InitializeMacOSLibrary();
+        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+          InitializeWindowsLibrary();
         } else {
-          LogError($"Failed to locate native library {WinLibName} in expected locations.");
+          LogError("Unsupported operating system. Only Windows and macOS are supported.");
         }
       } catch (Exception ex) {
-        LogError($"Exception while locating native library path: {ex.Message}");
+        LogError($"Exception during native library initialization: {ex.Message}");
         LogError($"Stack trace: {ex.StackTrace}");
       }
     }
   }
 
-  // P/Invoke declarations for macOS dynamic library loading
-  [DllImport("libdl.dylib")]
-  private static extern IntPtr dlopen(string path, int flags);
+  private static void InitializeMacOSLibrary() {
+    try {
+      // List all possible library locations to try
+      var searchLocations = new List<string>();
 
-  [DllImport("libdl.dylib")]
-  private static extern string dlerror();
+      // 1. Load from assembly directory
+      string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+      string? assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+      if (assemblyDirectory != null) {
+        searchLocations.Add(Path.Combine(assemblyDirectory, MacLibName));
+      }
+
+      // 2. Try parent directory (sometimes needed for GH plugins)
+      if (assemblyDirectory != null) {
+        string? parentDir = Path.GetDirectoryName(assemblyDirectory);
+        if (parentDir != null) {
+          searchLocations.Add(Path.Combine(parentDir, MacLibName));
+        }
+      }
+
+      // 3. Try current directory
+      searchLocations.Add(Path.Combine(Directory.GetCurrentDirectory(), MacLibName));
+
+      // 4. Add standard system locations
+      searchLocations.Add(MacLibName);  // Default system search paths
+
+      LogError($"Searching for {MacLibName} in the following locations:");
+      foreach (var path in searchLocations) {
+        LogError($"- {path} (exists: {File.Exists(path)})");
+      }
+
+      // Try to load from each location
+      IntPtr handle = IntPtr.Zero;
+      foreach (var libraryPath in searchLocations) {
+        if (File.Exists(libraryPath)) {
+          LogError($"Attempting to load native library from: {libraryPath}");
+          
+          try {
+            handle = dlopen_mac(libraryPath, 2);  // RTLD_NOW = 2
+
+            if (handle != IntPtr.Zero) {
+              _isNativeLibraryLoaded = true;
+              _loadedLibraryPath = libraryPath;
+              LogError($"Successfully loaded native library from: {libraryPath}");
+              return;
+            } else {
+              string errorMsg = dlerror();
+              LogError($"Failed to load library from {libraryPath}: {errorMsg}");
+            }
+          } catch (Exception ex) {
+            LogError($"Exception loading from {libraryPath}: {ex.Message}");
+          }
+        }
+      }
+
+      LogError($"Failed to load native library from any location. Plugin functionality will be limited.");
+    } catch (Exception ex) {
+      LogError($"Exception while setting up native library path: {ex.Message}");
+      LogError($"Stack trace: {ex.StackTrace}");
+    }
+  }
+
+  private static void InitializeWindowsLibrary() {
+    try {
+      // Locate the DLL file for Windows
+      string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+      string? assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+      string dllPath = string.Empty;
+
+      if (assemblyDirectory != null) {
+        dllPath = Path.Combine(assemblyDirectory, WinLibName);
+        if (!File.Exists(dllPath)) {
+          // Try parent directory
+          string? parentDir = Path.GetDirectoryName(assemblyDirectory);
+          if (parentDir != null) {
+            dllPath = Path.Combine(parentDir, WinLibName);
+          }
+        }
+      }
+
+      if (File.Exists(dllPath)) {
+        _isNativeLibraryLoaded = true;
+        _loadedLibraryPath = dllPath;
+        LogError($"Successfully located native library at: {dllPath}");
+      } else {
+        LogError($"Failed to locate native library {WinLibName} in expected locations.");
+        LogError($"Searched: {dllPath}");
+      }
+    } catch (Exception ex) {
+      LogError($"Exception while locating native library path: {ex.Message}");
+      LogError($"Stack trace: {ex.StackTrace}");
+    }
+  }
 
 #endregion
 
