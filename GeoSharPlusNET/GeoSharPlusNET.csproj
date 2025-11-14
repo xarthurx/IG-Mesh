@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0-windows;net8.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
