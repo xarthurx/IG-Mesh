@@ -13,7 +13,7 @@ public class IGM_isoline_scalar : GH_Component {
       : base("Isoline",
              "igIsoline",
              "Extract the isolines of a given mesh from its scalar field.",
-             "IG-Mesh",
+             "igMesh",
              "09::Utils") {}
 
   /// <summary>

@@ -15,7 +15,7 @@ public class IGM_paramHarmonic : GH_Component {
       : base("Harmonic Parametrization.",
              "igParamHarmonic",
              "Harmonic parametrization of a mesh into a circular shape.",
-             "IG-Mesh",
+             "igMesh",
              "07::parametrization") {}
 
   // public override GH_Exposure Exposure => GH_Exposure.primary;

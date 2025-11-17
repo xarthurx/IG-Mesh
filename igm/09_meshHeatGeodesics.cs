@@ -16,7 +16,7 @@ public class IGM_heat_geodesic_dist : GH_Component {
              "igGeoDist",
              "Compute geodesic distance of multiple sources on a mesh using the " +
                  "heat-transfer-inspired fast approximation method.",
-             "IG-Mesh",
+             "igMesh",
              "06::measure") {}
 
   /// <summary>

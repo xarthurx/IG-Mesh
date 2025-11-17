@@ -14,7 +14,7 @@ public class IGM_random_points : GH_Component {
              "igRndPt",
              "Randomly sample N points on surface of the given mesh, Brep, or planar " +
                  "closed curve with random/uniform " + "distribution.",
-             "IG-Mesh",
+             "igMesh",
              "09::Utils") {}
 
   /// <summary>

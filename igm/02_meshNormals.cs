@@ -9,7 +9,7 @@ public class IGM_normals_vert : GH_Component {
       : base("Vertex Normal",
              "igNormals_V",
              "Compute per-vertex normals of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "02::Properties") {}
 
   public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -46,7 +46,7 @@ public class IGM_normals_face : GH_Component {
       : base("Face Normal",
              "igNormals_F",
              "Compute per-face normals of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "02::Properties") {}
 
   public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -84,7 +84,7 @@ public class IGL_normals_edge : GH_Component {
              "iNormals_E",
              "Compute per-edge normals for a triangle mesh by weighted face normals based on " +
                  "different weighting schemes.",
-             "IG-Mesh",
+             "igMesh",
              "02::Properties") {}
 
   public override GH_Exposure Exposure => GH_Exposure.secondary;
@@ -152,7 +152,7 @@ public class IGM_normals_corner : GH_Component {
              "Compute per-corner normals for a triangle mesh by computing the area-weighted " +
                  "average of normals at incident faces whose normals deviate  less than the " +
                  "provided " + "threshold.",
-             "IG-Mesh",
+             "igMesh",
              "02::Properties") {}
 
   public override GH_Exposure Exposure => GH_Exposure.secondary;

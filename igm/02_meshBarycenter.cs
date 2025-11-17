@@ -8,7 +8,7 @@ public class IGM_barycenter : GH_Component {
       : base("Barycenter",
              "igBarycenter",
              "compute the barycenter of each triangle of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "02::Properties") {}
 
   public override GH_Exposure Exposure => GH_Exposure.primary;

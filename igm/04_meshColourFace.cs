@@ -12,7 +12,7 @@ public class IGM_mapColorFace : GH_Component {
       : base("Mesh Colours ~ Face",
              "igMeshColourFace",
              "Map a list of face color to mesh faces.",
-             "IG-Mesh",
+             "igMesh",
              "04::Mapping") {}
 
   /// <summary>

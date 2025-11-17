@@ -11,7 +11,7 @@ public class IGM_principal_curvature : GH_Component {
       : base("Principal Curvature",
              "igCurvaturePrincipal",
              "Compute the principal curvature directions and magnitude of the given triangle mesh.",
-             "IG-Mesh",
+             "igMesh",
              "06::measure") {}
 
   /// <summary>
@@ -111,7 +111,7 @@ public class IGM_gaussian_curvature : GH_Component {
       : base("Gaussian Curvature",
              "igCurvatureGaussian",
              "Compute integral of gaussian curvature of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "06::measure") {}
 
   // icon position in a category

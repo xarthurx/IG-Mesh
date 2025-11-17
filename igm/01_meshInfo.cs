@@ -63,10 +63,10 @@ public class IGM_mesh_info : GH_Component {
 
 public class igmInfoExporter : GH_Component {
   public igmInfoExporter()
-      : base("IG-Mesh Libarary Info",
+      : base("igMesh Libarary Info",
              "igLibInfo",
              "Check IGM version and whether everything is loaded correctly on all platforms.",
-             "IG-Mesh",
+             "igMesh",
              "00::info") {}
 
   public override GH_Exposure Exposure => GH_Exposure.primary;

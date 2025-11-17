@@ -12,7 +12,7 @@ public class IGM_vert_vert_adjacency : GH_Component {
       : base("Vertex-Vertex Adjacency",
              "iAdjVV",
              "Compute the vertex-vertex adjacency relationship of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "03::Adjacency+Bound") {}
 
   public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -77,7 +77,7 @@ public class IGM_vert_tri_adjacency : GH_Component {
       : base("Vertex-Triangle Adjacency",
              "igAdjVT",
              "Compute the vertex-triangle adjacency relationship of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "03::Adjacency+Bound") {}
 
   public override GH_Exposure Exposure => GH_Exposure.primary;
@@ -143,7 +143,7 @@ public class IGM_tri_tri_adjacency : GH_Component {
       : base("Triangle-Triangle Adjacency",
              "igAdjTT",
              "Compute the triangle-triangle adjacency relationship of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "03::Adjacency+Bound") {}
 
   public override GH_Exposure Exposure => GH_Exposure.primary;

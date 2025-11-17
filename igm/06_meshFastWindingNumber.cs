@@ -12,7 +12,7 @@ public class IGM_winding_number : GH_Component {
       : base("Winding Number",
              "igWindingNum",
              "Compute the winding number for the query pts to the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "06::measure") {}
 
   /// <summary>

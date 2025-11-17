@@ -11,7 +11,7 @@ public class IGM_quad_planarity : GH_Component {
       : base("Quad Mesh Planarity",
              "igQuadPlanarity",
              "Compute the planarity of the quad faces in a quad mesh.",
-             "IG-Mesh",
+             "igMesh",
              "09::Utils") {}
 
   /// <summary>
@@ -112,7 +112,7 @@ public class IGM_quad_planarize : GH_Component {
       : base("Quad Mesh Planarize",
              "igQuadPlanarize",
              "Planarize the quad faces in a quad mesh.",
-             "IG-Mesh",
+             "igMesh",
              "09::Utils") {}
 
   /// <summary>

@@ -13,7 +13,7 @@ public class IGM_constrained_scalar : GH_Component {
       : base("Constrained Scalar",
              "igConstrainedScalar",
              "Compute a scalar field based on any vertex-based constraints.",
-             "IG-Mesh",
+             "igMesh",
              "09::Utils") {}
 
   /// <summary>

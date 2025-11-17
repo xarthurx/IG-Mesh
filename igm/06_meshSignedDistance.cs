@@ -12,7 +12,7 @@ public class IGM_signed_distance : GH_Component {
       : base("Signed Distance",
              "igSignedDist",
              "Compute the signed distance for the query pts to the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "06::measure") {}
 
   /// <summary>

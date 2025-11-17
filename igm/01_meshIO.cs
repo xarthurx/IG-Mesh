@@ -9,7 +9,7 @@ namespace igm {
         : base(
               "Load TriMesh", "igLoadMesh",
               "Load a triangle mesh directly from disk. Format supported: obj, off, stl, wrl, ply, mesh.",
-              "IG-Mesh", "01::Info+IO") {}
+              "igMesh", "01::Info+IO") {}
     public override GH_Exposure Exposure => GH_Exposure.primary;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.ioReadTriMesh;
     public override Guid ComponentGuid => new Guid("0b92e0c5-64a1-4edb-97dc-c8df9f9b088c");
@@ -47,7 +47,7 @@ namespace igm {
         : base(
               "Save TriMesh", "igSaveMesh",
               "Save a triangle mesh directly to disk. format supported: obj, off, stl, wrl, ply, mesh.",
-              "IG-Mesh", "01::Info+IO") {}
+              "igMesh", "01::Info+IO") {}
 
     public override GH_Exposure Exposure => GH_Exposure.primary;
     protected override System.Drawing.Bitmap Icon => Properties.Resources.ioWriteTriMesh;

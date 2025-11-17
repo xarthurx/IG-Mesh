@@ -12,7 +12,7 @@ public class IGM_remap_VtoF : GH_Component {
       : base("Remap Vertices To Faces",
              "igRemapVF",
              "Move a scalar field defined on vertices to faces by averaging.",
-             "IG-Mesh",
+             "igMesh",
              "04::Mapping") {}
 
   /// <summary>
@@ -91,7 +91,7 @@ public class IGM_remap_FtoV : GH_Component {
       : base("Remap Faces To Vertices",
              "igRemapFV",
              "Move a scalar field defined on faces to vertices by averaging.",
-             "IG-Mesh",
+             "igMesh",
              "04::Mapping") {}
 
   /// <summary>

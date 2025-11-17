@@ -12,7 +12,7 @@ public class IGM_BoundLoop : GH_Component {
       : base("Boundary Loop Points",
              "igBoundLoop",
              "compute the boundary loop of the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "03::Adjacency+Bound") {}
 
   /// <summary>
@@ -98,7 +98,7 @@ public class IGM_BoundEdge : GH_Component {
       : base("Boundary Edge",
              "igBoundEdge",
              "compute the boundary edges the given mesh.",
-             "IG-Mesh",
+             "igMesh",
              "03::Adjacency+Bound") {}
 
   /// <summary>
