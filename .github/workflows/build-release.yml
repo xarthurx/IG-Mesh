@@ -302,7 +302,8 @@ jobs:
           $yakExePath = Join-Path $binReleasePath "yak.exe"
           
           try {
-            Invoke-WebRequest -Uri "https://files.mcneel.com/yak/tools/latest/yak.exe" -OutFile $yakExePath
+            Invoke-WebRequest -Uri "https://files.mcneel.com/yak/tools/0.15.0/yak.exe" -OutFile $yakExePath
+            # Invoke-WebRequest -Uri "https://files.mcneel.com/yak/tools/latest/yak.exe" -OutFile $yakExePath
             Write-Host "[SUCCESS] Downloaded yak.exe to bin\Release" -ForegroundColor Green
           } catch {
             Write-Host "[ERROR] Failed to download yak.exe: $_" -ForegroundColor Red

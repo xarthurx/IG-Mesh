@@ -17,10 +17,12 @@
     <Version>0.5.6</Version>
     <Title>igm</Title>
     <Company>Synestia LTD</Company>
-    <Description>Description of igm</Description>
+    <Description>G-Mesh is a one-stop solution for low-level (vertex-based, edge-based) mesh processing, featuring many advanced algorithms from computer graphics community.
+</Description>
     <AssemblyTitle>igMesh</AssemblyTitle>
-    <Authors>Dr.ZhaoMA</Authors>
+    <Authors>Dr. Zhao MA</Authors>
     <NeutralLanguage>en</NeutralLanguage>
+    <PackageTags>geometry;mesh-processing;computer graphics</PackageTags>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">

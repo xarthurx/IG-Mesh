@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Reflection;
 using Grasshopper.Kernel;
 
 namespace igm {
@@ -15,18 +16,10 @@ public class igmInfo : GH_AssemblyInfo {
       "featuring many advanced algorithms from computer graphics community.";
 
   public override Guid Id => new Guid("9adf88b1-427d-4ce4-b72b-288d09821271");
-
-  // Return a string identifying you or your company.
   public override string AuthorName => "Dr. Zhao MA";
-
-  // Return a string representing your preferred contact details.
   public override string AuthorContact => "zhma@ethz.ch";
+  public override string Version => "0.5.7";
 
-  // Return a string representing the version.  This returns the same version as the assembly.
-
-  // public override string AssemblyVersion => GetType().Assembly.GetName().Version.ToString();
-  // public override string AssemblyVersion => "0.5.6";
-  // public override string Version => AssemblyVersion;
   public override GH_LibraryLicense License => GH_LibraryLicense.opensource;
 }
 
