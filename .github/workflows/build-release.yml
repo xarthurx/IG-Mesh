@@ -34,18 +34,46 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Generate cache key based on C++ source files
+      - name: Generate C++ Cache Key
+        id: cpp-cache-key
+        shell: bash
+        run: |
+          # Create hash of all C++ source and header files
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cpp_hash=$(find ${{ env.CPP_Project }}/src ${{ env.CPP_Project }}/include ${{ env.CPP_Project }}/CMakeLists.txt -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" -o -name "CMakeLists.txt" \) -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+          else
+            cpp_hash=$(find ${{ env.CPP_Project }}/src ${{ env.CPP_Project }}/include ${{ env.CPP_Project }}/CMakeLists.txt -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" -o -name "CMakeLists.txt" \) -exec shasum -a 256 {} \; | sort | shasum -a 256 | cut -d' ' -f1)
+          fi
+          echo "hash=$cpp_hash" >> $GITHUB_OUTPUT
+          echo "C++ source hash: $cpp_hash"
+
+      # Try to restore C++ build from cache
+      - name: Cache C++ Build Artifacts
+        id: cache-cpp
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.CPP_Project }}/build
+            ${{ env.CPP_PREBUILD_DIR }}
+          key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}
+          restore-keys: |
+            cpp-build-${{ matrix.os }}-
+
       # Setup vcpkg (required by the C++ project)
-      - uses: lukka/get-cmake@latest
+      - name: Setup CMake
+        if: steps.cache-cpp.outputs.cache-hit != 'true'
+        uses: lukka/get-cmake@latest
 
       - name: Setup vcpkg
+        if: steps.cache-cpp.outputs.cache-hit != 'true'
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: ce613c41372b23b1f51333815feb3edd87ef8a8b # 2025-04-09 version
 
-      # Configure and build using CMake (override VCPKG_ROOT for CI)
+      # Configure and build using CMake (only if cache miss)
       - name: Configure and Build with CMake
-        # env:
-        # VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+        if: steps.cache-cpp.outputs.cache-hit != 'true'
         uses: lukka/run-cmake@v10
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/${{ env.CPP_Project }}/CMakeLists.txt"
@@ -54,13 +82,14 @@ jobs:
 
       # Create platform-specific directory in cppPrebuild
       - name: Create platform directory
+        if: steps.cache-cpp.outputs.cache-hit != 'true'
         shell: bash
         run: |
           mkdir -p ${{ env.CPP_PREBUILD_DIR }}
 
-      # Copy the built libraries to the platform-specific directory
+      # Copy the built libraries to the platform-specific directory (only if cache miss)
       - name: Copy C++ artifacts (Windows)
-        if: matrix.os == 'windows-latest'
+        if: steps.cache-cpp.outputs.cache-hit != 'true' && matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           Write-Host ""
@@ -95,7 +124,7 @@ jobs:
           }
 
       - name: Copy C++ artifacts (MacOS)
-        if: matrix.os == 'macos-latest'
+        if: steps.cache-cpp.outputs.cache-hit != 'true' && matrix.os == 'macos-latest'
         shell: bash
         run: |
           echo ""
@@ -124,6 +153,28 @@ jobs:
             echo "Searching for dylib files..."
             find ${{ github.workspace }}/${{ env.CPP_Project }}/build -name "*.dylib" -type f
             exit 1
+          fi
+
+      # Report cache status
+      - name: Report Cache Status
+        shell: bash
+        run: |
+          if [ "${{ steps.cache-cpp.outputs.cache-hit }}" = "true" ]; then
+            echo ""
+            echo "========================================"
+            echo "  ✓ USING CACHED C++ BUILD"
+            echo "========================================"
+            echo ""
+            echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}"
+            echo "Build was restored from cache - no compilation needed!"
+          else
+            echo ""
+            echo "========================================"
+            echo "  ⚡ FRESH C++ BUILD COMPLETED"
+            echo "========================================"
+            echo ""
+            echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}"
+            echo "Build will be cached for future runs"
           fi
 
       # Upload C++ artifacts
@@ -167,7 +218,7 @@ jobs:
       # Build C# Project first - does NOT rebuild C++
       - name: Build C# Project
         run: |
-          $solutionPath = "${{ github.workspace }}\igm.slnx"
+          $solutionPath = "${{ github.workspace }}\${{ env.Solution_Name }}"
           msbuild ${{ env.CSProj_Path }} `
             /p:Configuration=${{ env.Configuration }} `
             /p:Platform=AnyCPU `
