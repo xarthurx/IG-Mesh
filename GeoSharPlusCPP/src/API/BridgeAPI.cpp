@@ -1,7 +1,9 @@
 #include "GeoSharPlusCPP/API/BridgeAPI.h"
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
+#include <ranges>
 #include <unordered_map>
 
 #define _USE_MATH_DEFINES
@@ -48,12 +50,12 @@ namespace GS = GeoSharPlusCPP::Serialization;
 // Helper functions for mesh type handling
 namespace {
 // Check if mesh requires triangulation for triangle-only functions
-bool requiresTriangulation(const GeoSharPlusCPP::Mesh& mesh) {
+[[nodiscard]] constexpr bool requiresTriangulation(const GeoSharPlusCPP::Mesh& mesh) noexcept {
   return mesh.F.cols() == 4;  // Quad mesh needs triangulation
 }
 
 // Triangulate a quad mesh by splitting each quad into 2 triangles
-GeoSharPlusCPP::Mesh triangulate(const GeoSharPlusCPP::Mesh& mesh) {
+[[nodiscard]] GeoSharPlusCPP::Mesh triangulate(const GeoSharPlusCPP::Mesh& mesh) {
   if (mesh.F.cols() == 3) {
     return mesh;  // Already triangulated
   }
@@ -77,6 +79,46 @@ GeoSharPlusCPP::Mesh triangulate(const GeoSharPlusCPP::Mesh& mesh) {
 
   return triMesh;
 }
+
+// C++20: Custom deleter for buffer cleanup
+struct BufferDeleter {
+  void operator()(uint8_t* ptr) const noexcept {
+    if (ptr) {
+      delete[] ptr;
+    }
+  }
+};
+
+// C++20: RAII wrapper for output buffers
+class OutputBuffer {
+public:
+  OutputBuffer() = default;
+
+  [[nodiscard]] uint8_t** data() noexcept {
+    return &buffer_;
+  }
+  [[nodiscard]] int* size() noexcept {
+    return &size_;
+  }
+
+  void release(uint8_t** outBuffer, int* outSize) noexcept {
+    *outBuffer = buffer_;
+    *outSize = size_;
+    buffer_ = nullptr;
+    size_ = 0;
+  }
+
+  ~OutputBuffer() {
+    if (buffer_) {
+      delete[] buffer_;
+    }
+  }
+
+private:
+  uint8_t* buffer_ = nullptr;
+  int size_ = 0;
+};
+
 }  // namespace
 
 extern "C" {

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -16,6 +16,10 @@
 		<Compile Include="..\generated\GSP_FB\csharp\**\*.cs">
 			<Link>Generated\%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\GeoSharPlusCPP\build\GeoSharPlusCPP.vcxproj" />
 	</ItemGroup>
 
 </Project>
