@@ -12,7 +12,7 @@ public class IGM_mesh_info : GH_Component {
              "igMesh",
              "01::Info+IO") {}
   public override GH_Exposure Exposure => GH_Exposure.secondary;
-  // protected override System.Drawing.Bitmap Icon => Properties.Resources.meshInfo;
+  protected override System.Drawing.Bitmap Icon => Properties.Resources.meshInfo;
   public override Guid ComponentGuid => new Guid("80bb92aa-6cc4-4cd0-bfa8-a841ecbb9da8");
 
   protected override void RegisterInputParams(GH_InputParamManager pManager) {
