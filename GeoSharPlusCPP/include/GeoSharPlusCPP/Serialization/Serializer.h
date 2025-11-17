@@ -12,6 +12,7 @@ bool serializeNumberArray(const NumberContainer& numbers, uint8_t*& resBuffer, i
 
 template <typename NumberContainer>
 bool deserializeNumberArray(const uint8_t* data, int size, NumberContainer& numberArray);
+
 // Index array (pairs of integers) serialization/deserialization
 template <typename IndexContainer>
 bool serializeNumberPairArray(const IndexContainer& indices, uint8_t*& resBuffer, int& resSize);

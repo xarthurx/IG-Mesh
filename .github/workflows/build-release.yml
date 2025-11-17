@@ -63,22 +63,34 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "  COPYING C++ ARTIFACTS (WINDOWS)" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
+          
+          $found = $false
+          
           # Check the specified output path first
           if (Test-Path "${{ github.workspace }}/${{ env.CPP_Project }}/${{ matrix.output-path }}") {
             Copy-Item "${{ github.workspace }}/${{ env.CPP_Project }}/${{ matrix.output-path }}" -Destination "${{ env.CPP_PREBUILD_DIR }}/GeoSharPlusCPP${{ matrix.output-ext }}"
-            Write-Host "Successfully copied from ${{ matrix.output-path }}"
+            Write-Host "[SUCCESS] Copied from ${{ matrix.output-path }}" -ForegroundColor Green
+            $found = $true
           }
           # Check build/Release subdirectory
           elseif (Test-Path "${{ github.workspace }}/${{ env.CPP_Project }}/build/Release/GeoSharPlusCPP.dll") {
             Copy-Item "${{ github.workspace }}/${{ env.CPP_Project }}/build/Release/GeoSharPlusCPP.dll" -Destination "${{ env.CPP_PREBUILD_DIR }}/GeoSharPlusCPP${{ matrix.output-ext }}"
-            Write-Host "Successfully copied from build/Release/"
+            Write-Host "[SUCCESS] Copied from build/Release/" -ForegroundColor Green
+            $found = $true
           }
-          else {
-            # List all files in build directory to help diagnose
-            Write-Host "Searching for DLL in build directory..."
-            Get-ChildItem -Path "${{ github.workspace }}/${{ env.CPP_Project }}/build" -Recurse -Filter "*.dll" | ForEach-Object { Write-Host $_.FullName }
-            
-            Write-Error "ERROR: Built library not found at expected locations"
+          
+          if (-not $found) {
+            Write-Host "[ERROR] Built library not found at expected locations" -ForegroundColor Red
+            Write-Host ""
+            Write-Host "Searching for DLL in build directory..." -ForegroundColor Yellow
+            Get-ChildItem -Path "${{ github.workspace }}/${{ env.CPP_Project }}/build" -Recurse -Filter "*.dll" | ForEach-Object { 
+              Write-Host "  - $($_.FullName)" -ForegroundColor Gray
+            }
             exit 1
           }
 
@@ -86,16 +98,29 @@ jobs:
         if: matrix.os == 'macos-latest'
         shell: bash
         run: |
+          echo ""
+          echo "========================================"
+          echo "  COPYING C++ ARTIFACTS (MACOS)"
+          echo "========================================"
+          echo ""
+          
+          found=false
+          
           # Check the specified output path first
           if [ -f "${{ github.workspace }}/${{ env.CPP_Project }}/${{ matrix.output-path }}" ]; then
             cp ${{ github.workspace }}/${{ env.CPP_Project }}/${{ matrix.output-path }} ${{ env.CPP_PREBUILD_DIR }}/libGeoSharPlusCPP${{ matrix.output-ext }}
-            echo "Successfully copied from ${{ matrix.output-path }}"
+            echo "[SUCCESS] Copied from ${{ matrix.output-path }}"
+            found=true
           # Check build/Release subdirectory
           elif [ -f "${{ github.workspace }}/${{ env.CPP_Project }}/build/Release/libGeoSharPlusCPP.dylib" ]; then
             cp ${{ github.workspace }}/${{ env.CPP_Project }}/build/Release/libGeoSharPlusCPP.dylib ${{ env.CPP_PREBUILD_DIR }}/libGeoSharPlusCPP${{ matrix.output-ext }}
-            echo "Successfully copied from build/Release/"
-          else
-            echo "ERROR: Built library not found at expected locations"
+            echo "[SUCCESS] Copied from build/Release/"
+            found=true
+          fi
+          
+          if [ "$found" = false ]; then
+            echo "[ERROR] Built library not found at expected locations"
+            echo ""
             echo "Searching for dylib files..."
             find ${{ github.workspace }}/${{ env.CPP_Project }}/build -name "*.dylib" -type f
             exit 1
@@ -134,7 +159,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 8.0.x
 
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.CSProj_Path }}
@@ -165,89 +190,185 @@ jobs:
       - name: Copy C++ libraries to output directories
         shell: pwsh
         run: |
-          Write-Host "Copying C++ libraries to bin output directories..."
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "  COPYING C++ LIBS TO OUTPUT" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
 
           # Find all target framework directories in bin/Release/
           $targetDirs = Get-ChildItem -Path "${{ github.workspace }}\bin\Release" -Directory
 
           foreach ($targetDir in $targetDirs) {
-            Write-Host "`nCopying to: $($targetDir.FullName)"
+            Write-Host "[TARGET] $($targetDir.Name)" -ForegroundColor Yellow
             
             # Copy Windows DLL
             $windowsDll = "${{ env.CPP_PREBUILD_DIR }}\windows\GeoSharPlusCPP.dll"
             if (Test-Path $windowsDll) {
               Copy-Item -Path $windowsDll -Destination $targetDir.FullName -Force
-              Write-Host "  ✓ Copied GeoSharPlusCPP.dll"
+              Write-Host "  ✓ Copied GeoSharPlusCPP.dll" -ForegroundColor Green
             } else {
-              Write-Warning "Windows DLL not found at $windowsDll"
+              Write-Host "  [WARNING] Windows DLL not found at $windowsDll" -ForegroundColor Yellow
             }
             
             # Copy macOS dylib
             $macosDylib = "${{ env.CPP_PREBUILD_DIR }}\macos\libGeoSharPlusCPP.dylib"
             if (Test-Path $macosDylib) {
               Copy-Item -Path $macosDylib -Destination $targetDir.FullName -Force
-              Write-Host "  ✓ Copied libGeoSharPlusCPP.dylib"
+              Write-Host "  ✓ Copied libGeoSharPlusCPP.dylib" -ForegroundColor Green
             } else {
-              Write-Warning "macOS dylib not found at $macosDylib"
+              Write-Host "  [WARNING] macOS dylib not found at $macosDylib" -ForegroundColor Yellow
             }
           }
 
           # List contents of bin/Release directories to verify
-          Write-Host "`n=== Contents of bin/Release directories ==="
+          Write-Host ""
+          Write-Host "[VERIFICATION] Contents of bin/Release directories" -ForegroundColor Green
           Get-ChildItem -Path "${{ github.workspace }}\bin\Release" -Recurse -File | 
             Where-Object { $_.Extension -in '.dll', '.gha', '.dylib' } | 
             ForEach-Object { 
-              Write-Host "$($_.FullName.Replace('${{ github.workspace }}\', ''))" 
+              Write-Host "  - $($_.FullName.Replace('${{ github.workspace }}\', ''))" -ForegroundColor Gray
             }
 
       - name: Prepare Artifacts
         shell: pwsh
         run: |
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "  PREPARING RELEASE ARTIFACTS" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
+          
           # Create artifacts directory
-          New-Item -ItemType Directory -Path ${{ env.ARTIFACTS_DIR }} -Force
+          New-Item -ItemType Directory -Path ${{ env.ARTIFACTS_DIR }} -Force | Out-Null
+          Write-Host "[CREATED] Artifacts directory" -ForegroundColor Green
 
-          # Copy entire bin directory (includes DLLs from postbuild.ps1)
-          Copy-Item -Path "${{ github.workspace }}\bin" -Destination ${{ env.ARTIFACTS_DIR }} -Recurse -Force
-
-          # Change to _release directory and run Yak packaging script
-          Push-Location "${{ github.workspace }}\_release"
-          & ".\prepare_yak_pkg.ps1"
-          Pop-Location
-
-          # Debug: Check where releaseRH8 was created
-          Write-Host "Checking for releaseRH8 in _release:"
-          if (Test-Path "${{ github.workspace }}\_release\releaseRH8") {
-            Write-Host "Found in _release directory"
-            Get-ChildItem -Path "${{ github.workspace }}\_release\releaseRH8" | ForEach-Object { Write-Host $_.Name }
-          }
-
-          Write-Host "Checking for releaseRH8 in workspace root:"
-          if (Test-Path "${{ github.workspace }}\releaseRH8") {
-            Write-Host "Found in workspace root directory"
-            Get-ChildItem -Path "${{ github.workspace }}\releaseRH8" | ForEach-Object { Write-Host $_.Name }
-          }
-
-          # Copy Yak file and releaseRH8 folder from wherever they were created
-          $releaseRH8Path = if (Test-Path "${{ github.workspace }}\_release\releaseRH8") {
-            "${{ github.workspace }}\_release\releaseRH8"
-          } elseif (Test-Path "${{ github.workspace }}\releaseRH8") {
-            "${{ github.workspace }}\releaseRH8"
-          } else {
-            $null
-          }
-
-          if ($releaseRH8Path) {
-            # Copy .yak file to artifacts
-            Copy-Item -Path "$releaseRH8Path\*.yak" -Destination ${{ env.ARTIFACTS_DIR }} -Force
-            Write-Host "Copied .yak file from $releaseRH8Path"
-            
-            # Copy releaseRH8 folder to artifacts
-            Copy-Item -Path $releaseRH8Path -Destination ${{ env.ARTIFACTS_DIR }} -Recurse -Force
-            Write-Host "Copied releaseRH8 folder to artifacts"
-          } else {
-            Write-Error "releaseRH8 folder not found in expected locations"
+          # Download Yak.exe to the bin/Release directory
+          Write-Host ""
+          Write-Host "[DOWNLOADING] Yak.exe..." -ForegroundColor Yellow
+          
+          $binReleasePath = "${{ github.workspace }}\bin\Release"
+          $yakExePath = Join-Path $binReleasePath "yak.exe"
+          
+          try {
+            Invoke-WebRequest -Uri "https://files.mcneel.com/yak/tools/latest/yak.exe" -OutFile $yakExePath
+            Write-Host "[SUCCESS] Downloaded yak.exe to bin\Release" -ForegroundColor Green
+          } catch {
+            Write-Host "[ERROR] Failed to download yak.exe: $_" -ForegroundColor Red
             exit 1
           }
+
+          # Find the target framework directory (e.g., net8.0-windows)
+          $targetFrameworkDir = Get-ChildItem -Path $binReleasePath -Directory | Select-Object -First 1
+          
+          if (-not $targetFrameworkDir) {
+            Write-Host "[ERROR] No target framework directory found in bin\Release" -ForegroundColor Red
+            exit 1
+          }
+          
+          Write-Host ""
+          Write-Host "[TARGET FRAMEWORK] $($targetFrameworkDir.Name)" -ForegroundColor Yellow
+          
+          # Change to target framework directory
+          Push-Location $targetFrameworkDir.FullName
+          
+          # Verify all required files are present
+          Write-Host ""
+          Write-Host "[VERIFICATION] Checking for required files..." -ForegroundColor Yellow
+          $requiredFiles = @("*.gha", "GeoSharPlusCPP.dll", "libGeoSharPlusCPP.dylib")
+          foreach ($pattern in $requiredFiles) {
+            $files = Get-ChildItem -Filter $pattern
+            if ($files.Count -gt 0) {
+              Write-Host "  ✓ Found: $pattern" -ForegroundColor Green
+            } else {
+              Write-Host "  [WARNING] Not found: $pattern" -ForegroundColor Yellow
+            }
+          }
+
+          # Generate manifest using yak spec
+          Write-Host ""
+          Write-Host "[GENERATING] Manifest..." -ForegroundColor Yellow
+          
+          try {
+            & "..\yak.exe" spec
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "[SUCCESS] Generated manifest.yml" -ForegroundColor Green
+            } else {
+              Write-Host "[ERROR] Failed to generate manifest" -ForegroundColor Red
+              Pop-Location
+              exit 1
+            }
+          } catch {
+            Write-Host "[ERROR] Exception during manifest generation: $_" -ForegroundColor Red
+            Pop-Location
+            exit 1
+          }
+
+          # Copy plugin icon if it exists
+          $iconPath = "${{ github.workspace }}\scripts\pluginIcon.png"
+          if (Test-Path $iconPath) {
+            Copy-Item -Path $iconPath -Destination "." -Force
+            Write-Host "[COPIED] Plugin icon" -ForegroundColor Green
+          } else {
+            Write-Host "[WARNING] Plugin icon not found at: $iconPath" -ForegroundColor Yellow
+          }
+
+          # Append additional manifest entries
+          Write-Host ""
+          Write-Host "[UPDATING] Manifest metadata..." -ForegroundColor Yellow
+          if (Test-Path $iconPath) {
+            Add-Content manifest.yml "`nicon: pluginIcon.png"
+          }
+          Add-Content manifest.yml "`nkeywords: `n - mesh `n - geometry `n - high-performance"
+          Write-Host "[SUCCESS] Added metadata" -ForegroundColor Green
+
+          # Display manifest content
+          Write-Host ""
+          Write-Host "[MANIFEST CONTENT]" -ForegroundColor Green
+          Write-Host "--------------------------------------" -ForegroundColor Gray
+          Get-Content manifest.yml | ForEach-Object { Write-Host "  $_" -ForegroundColor Gray }
+          Write-Host "--------------------------------------" -ForegroundColor Gray
+
+          # Build the Yak package
+          Write-Host ""
+          Write-Host "[BUILDING] Yak package..." -ForegroundColor Yellow
+          
+          try {
+            & "..\yak.exe" build
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "[SUCCESS] Package built successfully" -ForegroundColor Green
+              
+              # Display generated .yak file
+              $yakFiles = Get-ChildItem -Path "." -Filter "*.yak"
+              if ($yakFiles.Count -gt 0) {
+                Write-Host ""
+                Write-Host "[GENERATED PACKAGE]" -ForegroundColor Green
+                foreach ($yakFile in $yakFiles) {
+                  Write-Host "  - $($yakFile.Name) ($('{0:N2}' -f ($yakFile.Length / 1MB)) MB)" -ForegroundColor Yellow
+                  
+                  # Copy .yak file to artifacts
+                  Copy-Item -Path $yakFile.FullName -Destination "${{ env.ARTIFACTS_DIR }}" -Force
+                  Write-Host "  - Copied to artifacts directory" -ForegroundColor Green
+                }
+              }
+            } else {
+              Write-Host "[ERROR] Failed to build package" -ForegroundColor Red
+              Pop-Location
+              exit 1
+            }
+          } catch {
+            Write-Host "[ERROR] Exception during package build: $_" -ForegroundColor Red
+            Pop-Location
+            exit 1
+          }
+
+          Pop-Location
+
+          # Copy entire bin directory to artifacts for reference
+          Write-Host ""
+          Write-Host "[COPYING] Bin directory to artifacts..." -ForegroundColor Yellow
+          Copy-Item -Path "${{ github.workspace }}\bin" -Destination ${{ env.ARTIFACTS_DIR }} -Recurse -Force
+          Write-Host "[SUCCESS] Copied bin directory" -ForegroundColor Green
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
@@ -255,62 +376,74 @@ jobs:
           name: release-packages
           path: |
             ${{ env.ARTIFACTS_DIR }}/*.yak
-            # ${{ env.ARTIFACTS_DIR }}/bin/
 
-      # Push to Yak server
+      # Push to Yak server using the downloaded yak.exe
       - name: Push to Yak Server
         if: github.ref_type == 'tag' && env.YAK_TOKEN != ''
         shell: pwsh
         run: |
-          Write-Host "Pushing .yak package to Yak server..."
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "  PUSHING TO YAK SERVER" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
 
           # Find the .yak file
           $yakFile = Get-ChildItem -Path "${{ env.ARTIFACTS_DIR }}" -Filter "*.yak" | Select-Object -First 1
 
-          if ($yakFile) {
-            Write-Host "Found .yak file: $($yakFile.Name)"
-            
-            # The yak.exe should already be downloaded by prepare_yak_pkg.ps1
-            $yakExe = "${{ github.workspace }}\_release\yak.exe"
-            
-            if (Test-Path $yakExe) {
-              Write-Host "Using yak.exe from: $yakExe"
-              
-              # Retry logic for push (up to 3 attempts)
-              $maxRetries = 3
-              $retryCount = 0
-              $success = $false
-              
-              while (-not $success -and $retryCount -lt $maxRetries) {
-                $retryCount++
-                Write-Host "Attempt $retryCount of $maxRetries..."
-                
-                & $yakExe push $yakFile.FullName
-                
-                if ($LASTEXITCODE -eq 0) {
-                  Write-Host "✓ Successfully pushed $($yakFile.Name) to Yak server"
-                  $success = $true
-                } else {
-                  Write-Warning "Push failed with exit code: $LASTEXITCODE"
-                  if ($retryCount -lt $maxRetries) {
-                    Write-Host "Waiting 30 seconds before retry..."
-                    Start-Sleep -Seconds 30
-                  }
-                }
-              }
-              
-              if (-not $success) {
-                Write-Error "Failed to push to Yak server after $maxRetries attempts"
-                exit 1
-              }
-            } else {
-              Write-Error "yak.exe not found at $yakExe"
-              exit 1
-            }
-          } else {
-            Write-Error "No .yak file found in ${{ env.ARTIFACTS_DIR }}"
+          if (-not $yakFile) {
+            Write-Host "[ERROR] No .yak file found in ${{ env.ARTIFACTS_DIR }}" -ForegroundColor Red
             exit 1
           }
+          
+          Write-Host "[PACKAGE] $($yakFile.Name) ($('{0:N2}' -f ($yakFile.Length / 1MB)) MB)" -ForegroundColor Yellow
+
+          # Use the yak.exe downloaded to bin/Release
+          $yakExe = "${{ github.workspace }}\bin\Release\yak.exe"
+          
+          if (-not (Test-Path $yakExe)) {
+            Write-Host "[ERROR] yak.exe not found at $yakExe" -ForegroundColor Red
+            exit 1
+          }
+          
+          Write-Host "[TOOL] Using yak.exe from: $yakExe" -ForegroundColor Gray
+          Write-Host ""
+
+          # Retry logic for push (up to 3 attempts)
+          $maxRetries = 3
+          $retryCount = 0
+          $success = $false
+          
+          while (-not $success -and $retryCount -lt $maxRetries) {
+            $retryCount++
+            Write-Host "[ATTEMPT] $retryCount of $maxRetries..." -ForegroundColor Yellow
+            
+            & $yakExe push $yakFile.FullName
+            
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host ""
+              Write-Host "[SUCCESS] ✓ Pushed $($yakFile.Name) to Yak server" -ForegroundColor Green
+              $success = $true
+            } else {
+              Write-Host "[FAILED] Push failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+              if ($retryCount -lt $maxRetries) {
+                Write-Host "[RETRY] Waiting 30 seconds before next attempt..." -ForegroundColor Yellow
+                Start-Sleep -Seconds 30
+              }
+            }
+          }
+          
+          if (-not $success) {
+            Write-Host ""
+            Write-Host "[ERROR] Failed to push to Yak server after $maxRetries attempts" -ForegroundColor Red
+            exit 1
+          }
+          
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "  YAK PUSH COMPLETED" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
 
       # Extract tag message for release notes
       - name: Extract Tag Message
@@ -318,15 +451,21 @@ jobs:
         id: tag_message
         shell: pwsh
         run: |
+          Write-Host ""
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host "  EXTRACTING TAG MESSAGE" -ForegroundColor Cyan
+          Write-Host "========================================" -ForegroundColor Cyan
+          Write-Host ""
+          
           # Get the tag annotation message
           $tagMessage = git tag -l --format='%(contents)' ${{ github.ref_name }}
 
           if ([string]::IsNullOrWhiteSpace($tagMessage)) {
-            Write-Host "No tag annotation found, will use auto-generated notes only"
+            Write-Host "[INFO] No tag annotation found, will use auto-generated notes only" -ForegroundColor Yellow
             echo "has_message=false" >> $env:GITHUB_OUTPUT
           } else {
-            Write-Host "Found tag annotation message:"
-            Write-Host $tagMessage
+            Write-Host "[TAG MESSAGE]" -ForegroundColor Green
+            Write-Host $tagMessage -ForegroundColor Gray
             
             # Escape for JSON/multiline
             $tagMessage = $tagMessage -replace "`r`n", "%0A" -replace "`n", "%0A" -replace '"', '\"'

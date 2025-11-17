@@ -1,7 +1,12 @@
-cmake_minimum_required(VERSION 3.15)
-
+cmake_minimum_required(VERSION 3.31)
 
 set(PROJECT_NAME GeoSharPlusCPP)
+
+# Set the Visual Studio toolset to the latest version
+if(MSVC)
+    set(CMAKE_GENERATOR_TOOLSET "v145" CACHE STRING "Visual Studio toolset version" FORCE)
+    message(STATUS "Using Visual Studio 2026 (Insider) toolset: ${CMAKE_GENERATOR_TOOLSET}")
+endif()
 
 # Check for VCPKG_ROOT environment variable
 if(DEFINED ENV{VCPKG_ROOT})
@@ -28,13 +33,14 @@ endif()
 # Set C++ standard
 project(${PROJECT_NAME} LANGUAGES C CXX)
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
+# Set C++ standard to C++20
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "C++ standard: C++${CMAKE_CXX_STANDARD}")
 message(STATUS "Generator: ${CMAKE_GENERATOR}")
 
 # Find dependencies

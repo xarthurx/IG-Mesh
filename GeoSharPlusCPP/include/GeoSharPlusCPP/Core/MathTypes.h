@@ -1,4 +1,6 @@
 #pragma once
+#include <span>
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
@@ -17,6 +19,10 @@ using MatrixX4i = Eigen::Matrix<int, Eigen::Dynamic, 4, Eigen::RowMajor>;  // Fo
 using MatrixXi = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using MatrixXd = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
+// C++20 span types for safer buffer handling
+using ByteSpan = std::span<const uint8_t>;
+using MutableByteSpan = std::span<uint8_t>;
+
 // Geometry primitives
 struct Point {
   Vector3d position;
@@ -25,5 +31,13 @@ struct Point {
 struct LineSegment {
   Vector3d start;
   Vector3d end;
+
+  [[nodiscard]] double length() const noexcept {
+    return (end - start).norm();
+  }
+
+  [[nodiscard]] Vector3d midpoint() const noexcept {
+    return (start + end) * 0.5;
+  }
 };
 }  // namespace GeoSharPlusCPP

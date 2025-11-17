@@ -2,21 +2,24 @@
 
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TargetFrameworks>net7.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
 		<PackageReference Include="KdTree" Version="1.4.1" />
-		<PackageReference Include="RhinoCommon" Version="8.0.23304.9001" />
-		<PackageReference Include="System.Resources.Extensions" Version="10.0.0" />
+		<PackageReference Include="RhinoCommon" Version="8.21.25188.17001" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="..\generated\GSP_FB\csharp\**\*.cs">
 			<Link>Generated\%(RecursiveDir)%(Filename)%(Extension)</Link>
 		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\GeoSharPlusCPP\build\GeoSharPlusCPP.vcxproj" />
 	</ItemGroup>
 
 </Project>

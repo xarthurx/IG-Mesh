@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net8.0' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)rhinocommon\8.21.25188.17001\build\net7.0\RhinoCommon.targets" Condition="Exists('$(NuGetPackageRoot)rhinocommon\8.21.25188.17001\build\net7.0\RhinoCommon.targets')" />
+    <Import Project="$(NuGetPackageRoot)grasshopper\8.21.25188.17001\build\net7.0\Grasshopper.targets" Condition="Exists('$(NuGetPackageRoot)grasshopper\8.21.25188.17001\build\net7.0\Grasshopper.targets')" />
+  </ImportGroup>
+</Project>

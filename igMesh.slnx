@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="MinSizeRel" />
+    <BuildType Name="Release" />
+    <BuildType Name="RelWithDebInfo" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="GeoSharPlusCPP/build/GeoSharPlusCPP.vcxproj" Id="46c7d0ff-e068-3e81-aad9-e04bb02cfc7b" />
+  <Project Path="GeoSharPlusNET/GeoSharPlusNET.csproj">
+    <BuildType Solution="MinSizeRel|*" Project="Release" />
+    <BuildType Solution="RelWithDebInfo|*" Project="Debug" />
+  </Project>
+  <Project Path="igm/igm.csproj">
+    <BuildDependency Project="GeoSharPlusNET/GeoSharPlusNET.csproj" />
+    <BuildType Solution="MinSizeRel|*" Project="Release" />
+    <BuildType Solution="RelWithDebInfo|*" Project="Debug" />
+  </Project>
+</Solution>
