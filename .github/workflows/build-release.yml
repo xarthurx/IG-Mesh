@@ -138,8 +138,8 @@ jobs:
     needs: build-cpp
     runs-on: windows-latest
     env:
-      Solution_Name: igm.slnx
-      CSProj_Path: ./igmGH/igmGH.csproj
+      Solution_Name: igMesh.slnx
+      CSProj_Path: ./igm/igm.csproj
       Configuration: Release
       ARTIFACTS_DIR: artifacts/release
       CPP_PREBUILD_DIR: cppPrebuild
