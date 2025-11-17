@@ -397,8 +397,9 @@ jobs:
                 foreach ($yakFile in $yakFiles) {
                   Write-Host "  - $($yakFile.Name) ($('{0:N2}' -f ($yakFile.Length / 1MB)) MB)" -ForegroundColor Yellow
                   
-                  # Copy .yak file to artifacts
-                  Copy-Item -Path $yakFile.FullName -Destination "${{ env.ARTIFACTS_DIR }}" -Force
+                  # Copy .yak file to artifacts (use absolute path)
+                  $artifactsPath = "${{ github.workspace }}\${{ env.ARTIFACTS_DIR }}"
+                  Copy-Item -Path $yakFile.FullName -Destination $artifactsPath -Force
                   Write-Host "  - Copied to artifacts directory" -ForegroundColor Green
                 }
               }
@@ -418,7 +419,7 @@ jobs:
           # Copy entire bin directory to artifacts for reference
           Write-Host ""
           Write-Host "[COPYING] Bin directory to artifacts..." -ForegroundColor Yellow
-          Copy-Item -Path "${{ github.workspace }}\bin" -Destination ${{ env.ARTIFACTS_DIR }} -Recurse -Force
+          Copy-Item -Path "${{ github.workspace }}\bin" -Destination "${{ github.workspace }}\${{ env.ARTIFACTS_DIR }}" -Recurse -Force
           Write-Host "[SUCCESS] Copied bin directory" -ForegroundColor Green
 
       - name: Upload Build Artifacts
