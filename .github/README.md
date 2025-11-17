@@ -1,13 +1,13 @@
 <!-- title img and links -->
-![](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/title_img.png)
+![](https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/title_img.png)
 
-<h1 align="center">IG-Mesh</h1>
+<h1 align="center">igMesh</h1>
 <div align="center">
-	<a href="https://github.com/xarthurx/IG-Mesh/">Home</a>
+	<a href="https://github.com/xarthurx/igMesh/">Home</a>
   <span> • </span>
-	<a href="https://github.com/xarthurx/IG-Mesh/#Installation">Install</a>
+	<a href="https://github.com/xarthurx/igMesh/#Installation">Install</a>
   <span> • </span>
-       	<a href="https://github.com/xarthurx/IG-Mesh/#Contribution">Contribute</a>
+       	<a href="https://github.com/xarthurx/igMesh/#Contribution">Contribute</a>
   <p></p>
 </div> 
 
@@ -21,44 +21,44 @@
 <a href="https://www.grasshopper3d.com" >
 <img alt="License" src="https://img.shields.io/badge/Grasshopper-1.0-brightgreen?style=flat-square"> </a>
 
-<a href="https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE" >
-<img alt="License" src="https://img.shields.io/github/license/xarthurx/IG-Mesh?style=flat-square"> </a>
+<a href="https://github.com/xarthurx/igMesh/blob/master/LICENSE" >
+<img alt="License" src="https://img.shields.io/github/license/xarthurx/igMesh?style=flat-square"> </a>
 
 </div> 
 
 ## A mesh processing library for Grasshopper & Rhino
 
-[**IG-Mesh**](https://github.com/xarthurx/IG-Mesh/) (standing for "I Get a Mesh..." or "Igl-Grasshopper Mesh") is a grasshopper plugin for both low-level and advanced mesh processing.
+[**igMesh**](https://github.com/xarthurx/igMesh/) (standing for "I Get a Mesh..." or "Igl-Grasshopper Mesh") is a grasshopper plugin for both low-level and advanced mesh processing.
 
 The library features tools for extracting both low-level information (e.g. vertex, edge, face relationship) and high-level properties (e.g. isolines, quad-planarization) that many mesh processing plugins do not provide.
 
-**IG-Mesh** is developed for the general architecture, design, and fabrication community, hoping to fill the gap of mesh operations in any design-to-fabrication pipelines. The goal is to resolve the long-lasting pain of interactive mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
+**igMesh** is developed for the general architecture, design, and fabrication community, hoping to fill the gap of mesh operations in any design-to-fabrication pipelines. The goal is to resolve the long-lasting pain of interactive mesh processing on the [Rhino](https://www.rhino3d.com) \& [Grasshopper](https://www.grasshopper3d.com) platform.
 
 ### Components Overview
-![](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/overview_img.png)
+![](https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/overview_img.png)
 
 ### Showcase 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/demo.gif" alt="demo.gif"/>
+  <img src="https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/demo.gif" alt="demo.gif"/>
 </p>
 
 
 ### Highlighted Components
 #### <u>universal random points (blue noise)</u>:
-![Universal Random Distribution](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_randomPts.png)
+![Universal Random Distribution](https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/showcase_randomPts.png)
 
 <details><summary> More (Click to expand!)... </summary>
 
 #### <u>fast geodesic distance</u>:
-![Heat Geodesics](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_heatGeodesics.png)
+![Heat Geodesics](https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/showcase_heatGeodesics.png)
 
 
 #### <u>mesh isoline</u>:
-![Mesh Isoline](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_isoline.png)
+![Mesh Isoline](https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/showcase_isoline.png)
 
 
 #### <u>quad-mesh planarization</u>:
-![Quad Planarization](https://raw.githubusercontent.com/xarthurx/IG-Mesh/master/graphics/showcase_planarization.png)
+![Quad Planarization](https://raw.githubusercontent.com/xarthurx/igMesh/master/graphics/showcase_planarization.png)
 
 
 </details>
@@ -75,16 +75,16 @@ I will add the corresponding functions to the library after evaluation, ASAP.
 
 ### Install with **PackageManager** (Rhino 7+)
 1. Open Rhino and run command `PackageManager`.
-2. Search for "**IG-Mesh**".
+2. Search for "**igMesh**".
 3. Install the plugin and restart Rhino.
 
 ### Food4Rhino 
 The [Project Page](https://www.food4rhino.com/en/app/ig-mesh) on Food4Rhino also holds major release versions of this library.
 
 ### Pre-compiled release
-Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/IG-Mesh).
+Pre-compiled releases are available on the [GitHub repo](https://github.com/xarthurx/igMesh).
 
-1. Download the `.zip` file from [the latest release](https://github.com/xarthurx/IG-Mesh/releases/latest).
+1. Download the `.zip` file from [the latest release](https://github.com/xarthurx/igMesh/releases/latest).
 2. Unzip the `.zip` file and put the folder into you *Grasshopper Component Folder*.
 3. Restart *Rhino* and *Grasshopper*.
 
@@ -100,7 +100,7 @@ Below are the current planned features to be added in the next release:
 
 
 ### Future Plan (Non-Goal TODO)
-Below is an incomplete list of functions that `IG-Mesh` plans to provide. The list is constantly adjusted based on feedback:
+Below is an incomplete list of functions that `igMesh` plans to provide. The list is constantly adjusted based on feedback:
 
 - edge-related functions for vector fields operation 
 - Various approaches for unrolling mesh (parametrization)
@@ -130,18 +130,18 @@ The author would like to pay his deepest gratitude to the developers for this li
 
 [^1]: *The name of this library is also partially inspired by the [libigl](https://libigl.github.io) library.*
 
-**The library is released under the [GPL licence](https://github.com/xarthurx/IG-Mesh/blob/master/LICENSE).**
+**The library is released under the [GPL licence](https://github.com/xarthurx/igMesh/blob/master/LICENSE).**
 
 ---
 ## Credit & Citation 
 Author: [Zhao Ma](https://beyond-disciplines.com)
 
-If `IG-Mesh` contributes to an academic publication, please cite it as:
+If `igMesh` contributes to an academic publication, please cite it as:
 ```bib
 @software{ig-mesh,
   title = {IG-Mesh},
   author = {Zhao Ma},
-  url = {https://github.com/xarthurx/IG-Mesh},
+  url = {https://github.com/xarthurx/igMesh},
   doi = {10.5281/zenodo.6499203},
   version = {0.5.3}
   year = {2022}
