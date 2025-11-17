@@ -35,17 +35,41 @@ jobs:
           fetch-depth: 0
 
       # Generate cache key based on C++ source files
-      - name: Generate C++ Cache Key
+      - name: Generate C++ Cache Key (macOS)
+        if: matrix.os == 'macos-latest'
         id: cpp-cache-key
         shell: bash
         run: |
-          # Create hash of all C++ source and header files
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            cpp_hash=$(find ${{ env.CPP_Project }}/src ${{ env.CPP_Project }}/include ${{ env.CPP_Project }}/CMakeLists.txt -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" -o -name "CMakeLists.txt" \) -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
-          else
-            cpp_hash=$(find ${{ env.CPP_Project }}/src ${{ env.CPP_Project }}/include ${{ env.CPP_Project }}/CMakeLists.txt -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" -o -name "CMakeLists.txt" \) -exec shasum -a 256 {} \; | sort | shasum -a 256 | cut -d' ' -f1)
-          fi
+          # macOS: Use standard Unix tools
+          cpp_hash=$(find ${{ env.CPP_Project }}/src ${{ env.CPP_Project }}/include ${{ env.CPP_Project }}/CMakeLists.txt -type f \( -name "*.cpp" -o -name "*.h" -o -name "*.hpp" -o -name "CMakeLists.txt" \) -exec shasum -a 256 {} \; | sort | shasum -a 256 | cut -d' ' -f1)
           echo "hash=$cpp_hash" >> $GITHUB_OUTPUT
+          echo "C++ source hash: $cpp_hash"
+
+      - name: Generate C++ Cache Key (Windows)
+        if: matrix.os == 'windows-latest'
+        id: cpp-cache-key-windows
+        shell: pwsh
+        run: |
+          # Windows: Use PowerShell for consistent hashing
+          $files = Get-ChildItem -Path "${{ env.CPP_Project }}" -Recurse -Include *.cpp,*.h,*.hpp,CMakeLists.txt | 
+            Where-Object { $_.FullName -notmatch '[\\/]build[\\/]' } |
+            Sort-Object FullName
+          
+          $hashInput = ""
+          foreach ($file in $files) {
+            $relativePath = $file.FullName.Replace("${{ github.workspace }}\", "").Replace("\", "/")
+            $contentHash = (Get-FileHash -Path $file.FullName -Algorithm SHA256).Hash
+            $hashInput += "$relativePath`:$contentHash`n"
+          }
+          
+          $stringAsStream = [System.IO.MemoryStream]::new()
+          $writer = [System.IO.StreamWriter]::new($stringAsStream)
+          $writer.write($hashInput)
+          $writer.Flush()
+          $stringAsStream.Position = 0
+          $cpp_hash = (Get-FileHash -InputStream $stringAsStream -Algorithm SHA256).Hash.ToLower()
+          
+          echo "hash=$cpp_hash" >> $env:GITHUB_OUTPUT
           echo "C++ source hash: $cpp_hash"
 
       # Try to restore C++ build from cache
@@ -56,7 +80,7 @@ jobs:
           path: |
             ${{ env.CPP_Project }}/build
             ${{ env.CPP_PREBUILD_DIR }}
-          key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}
+          key: cpp-build-${{ matrix.os }}-${{ matrix.os == 'windows-latest' && steps.cpp-cache-key-windows.outputs.hash || steps.cpp-cache-key.outputs.hash }}
           restore-keys: |
             cpp-build-${{ matrix.os }}-
 
@@ -165,7 +189,11 @@ jobs:
             echo "  ✓ USING CACHED C++ BUILD"
             echo "========================================"
             echo ""
-            echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}"
+            if [ "${{ matrix.os }}" = "windows-latest" ]; then
+              echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key-windows.outputs.hash }}"
+            else
+              echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}"
+            fi
             echo "Build was restored from cache - no compilation needed!"
           else
             echo ""
@@ -173,7 +201,11 @@ jobs:
             echo "  ⚡ FRESH C++ BUILD COMPLETED"
             echo "========================================"
             echo ""
-            echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}"
+            if [ "${{ matrix.os }}" = "windows-latest" ]; then
+              echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key-windows.outputs.hash }}"
+            else
+              echo "Cache key: cpp-build-${{ matrix.os }}-${{ steps.cpp-cache-key.outputs.hash }}"
+            fi
             echo "Build will be cached for future runs"
           fi
 
