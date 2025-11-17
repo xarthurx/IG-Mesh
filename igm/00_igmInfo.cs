@@ -25,8 +25,8 @@ public class igmInfo : GH_AssemblyInfo {
   // Return a string representing the version.  This returns the same version as the assembly.
 
   // public override string AssemblyVersion => GetType().Assembly.GetName().Version.ToString();
-  public override string AssemblyVersion => "0.5.6";
-  public override string Version => AssemblyVersion;
+  // public override string AssemblyVersion => "0.5.6";
+  // public override string Version => AssemblyVersion;
   public override GH_LibraryLicense License => GH_LibraryLicense.opensource;
 }
 

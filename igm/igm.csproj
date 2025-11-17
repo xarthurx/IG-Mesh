@@ -14,7 +14,7 @@
   
   <PropertyGroup>
     <!-- Specifies information for Assembly and Yak -->
-    <Version>1.0</Version>
+    <Version>0.5.6</Version>
     <Title>igm</Title>
     <Company>igm Authors</Company>
     <Description>Description of igm</Description>

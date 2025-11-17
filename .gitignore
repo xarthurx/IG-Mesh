@@ -14,3 +14,4 @@ GeoSharPlusCPP/build
 bin
 _release/releaseRH8
 cppPrebuild
+igm/obj
