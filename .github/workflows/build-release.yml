@@ -1,8 +1,8 @@
 name: Build and Release
 
 on:
-  push:
-    branches: [main,macos-fix]
+  # push:
+    # branches: [main]
     tags:
       - "v*"
 
